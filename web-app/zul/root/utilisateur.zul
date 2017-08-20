@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./utilisateurWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<!--<?page zscriptLanguage="GroovyGrails"?>-->
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window id="utilisateurWin" height="100%" width="100%" style="margin:auto;" use="${utilisateurWindow}">
+        <borderlayout>
+            
+            <west id="westPanel" title="Gestion d'enregistrement" size="40%" flex="true" splittable="true" collapsible="true" open="false">
+                <groupbox id="gbCrud" width="100%" height="100%">
+                    <grid fixedLayout="true">
+                        <rows>
+                            <row>
+                                <label value="Nom et prénom"/>
+
+                                <textbox id="fieldNom" constraint="no empty: Veillez indiquez une valeur" value="@{utilisateurWin.objet.userRealName, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' width="99%"/>
+                            </row>
+                            <row>
+                                <label value="Login"/>
+
+                                <textbox id="fieldLogin" constraint="no empty: Veillez indiquez une valeur" value="@{utilisateurWin.objet.username, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' width="99%"/>
+                            </row>
+                            <row>
+                                <label value="Password"/>
+
+                                <textbox id="fieldPassword" type="password" constraint="no empty: Veillez indiquez une valeur" value="@{utilisateurWin.objet.pass, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' width="99%"/>
+                            </row>
+                            <row>
+                                <label value="Active"/>
+								 
+                                <checkbox id="fieldActive" label="?" checked="@{utilisateurWin.objet.enabled, save-when='triggerBtn.onClick'}"/>
+                            </row>
+                            <row>
+                                <label value="Email"/>
+								 
+                                <textbox id="fieldEmail" constraint="/.+@.+\.[a-z]+/ : Veillez Entrez une adresse mail valide" value="@{utilisateurWin.objet.email, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' width="99%"/>
+                            </row>                                                        
+                            <row>
+                                <label value="Groupe"/>
+                                <combobox id="lstgroupes" model="@{utilisateurWin.groupes}" selectedItem="@{utilisateurWin.groupeSelected}"  width="99%"/>                                    	
+                            </row>                                                        
+                        </rows>
+                    </grid>
+                    <separator />
+                    <button id="btnSave" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));utilisateurWin.add()" label="Sauvegarder" image="/images/skin/database_save.png"/>
+                    <button id="btnUpdate" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));utilisateurWin.update()" label="Modifier" image="/images/skin/database_edit.png" visible="false"/>
+                    <button id="btnCancel" onClick="utilisateurWin.cancel()" label="Annuler" image="/images/skin/cancel.png" visible="false"/>
+                    <button visible="false" id="triggerBtn" onBindingValidate=""/>
+                </groupbox>
+            </west>
+            <center border="none" flex="true">
+                <groupbox width="100%" height="100%">
+                    <listbox id="lstObjet" onSelect="utilisateurWin.select()" model="@{utilisateurWin.listeObjets}" 
+                             selectedItem="@{utilisateurWin.objetSelected}"  width="100%" height="100%" mold="paging" paginal="${paging}">
+                        <auxhead sclass="category-center">
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filter1" value="@{utilisateurWin.filtre.userRealName}" onOK='utilisateurWin.ofs=0;utilisateurWin.filtre.userRealName=self.value; utilisateurWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())' width="100%" />
+                            </auxheader>
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filter2" value="@{utilisateurWin.filtre.username}" onOK='utilisateurWin.ofs=0;utilisateurWin.filtre.username=self.value; utilisateurWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())' width="100%" />
+                            </auxheader>
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <checkbox id="filter3" onCheck="utilisateurWin.ofs=0;utilisateurWin.filtre.enabled=filter3.checked; utilisateurWin.filtrer()" />
+                            </auxheader>
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filter4" value="@{utilisateurWin.filtre.email}" onOK='utilisateurWin.ofs=0;utilisateurWin.filtre.email=self.value; utilisateurWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())' width="100%" />
+                            </auxheader>
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filterGroupe" model="@{utilisateurWin.groupes}" 
+                                         selectedItem="@{utilisateurWin.filtre.groupe}"
+                                         onSelect="utilisateurWin.ofs=0;utilisateurWin.filtrer();"
+                                         width="90%" />                                    						
+                            </auxheader>
+                        </auxhead>
+                        <listhead sizable="true">
+                            <listheader id="huserRealName" label="Nom et prénom" sort="auto(userRealName)" onSort="utilisateurWin.sort(event)"/>
+                            <listheader id="husername" label="Login" sort="auto(username)" onSort="utilisateurWin.sort(event)"/>
+                            <listheader id="henabled" label="Active?" />
+                            <listheader id="hemail" label="Email" sort="auto(email)" onSort="utilisateurWin.sort(event)"/>                            
+                            <listheader id="hgroupe" label="Groupe" sort="auto(groupe.intitule)" onSort="utilisateurWin.sort(event)"/>                            
+                        </listhead>
+                        <listitem self="@{each=element}">
+                            <listcell label="@{element.userRealName}"/>
+                            <listcell label="@{element.username}"/>
+                            <listcell label="@{element.enabled}"/>
+                            <listcell label="@{element.email}"/>                            
+                            <listcell label="@{element.groupe}"/>                            
+                        </listitem>
+                    </listbox>
+                    <paging id="paging" totalSize="@{utilisateurWin.tailleListe}" pageSize="@{utilisateurWin.maxNb}" onPaging="utilisateurWin.getNextElements(event);" />
+                    <separator/>
+                    <button id="btnNew" onClick="utilisateurWin.newRecord()" label="Nouveau" image="/images/skin/database_add.png"/>                    
+                </groupbox>
+            </center>
+        </borderlayout>
+    </window>
+</zk>

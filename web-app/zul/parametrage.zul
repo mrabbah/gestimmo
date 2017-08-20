@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./parametrageWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window id="parametrageWin" height="100%" width="100%" style="margin:auto;" use="${parametrageWindow}">
+    <!-- <zscript src="/zs/parametrage.zs"/> -->
+        <borderlayout>
+      <!--      <north id="eastPanel" size="65px" open="false"  title="Recherche avancée" flex="true" splittable="true"  collapsible="true"  >
+                <hlayout spacing="10px" style="margin-top:9px;margin-left:10px">
+					
+					<label value="utilisateurbis :" />
+                    <combobox id="filterutilisateurbis" model="@{parametrageWin.utilisateurbiss}" selectedItem="@{parametrageWin.filtre.utilisateurbis}" autocomplete="true" autodrop="true" mold="rounded" onSelect="parametrageWin.ofs=0;parametrageWin.filtrer()" onOK="parametrageWin.ofs=0;parametrageWin.filtrer()">
+                        <comboitem self="@{each=elementfiltreutilisateurbis}" label="@{elementfiltreutilisateurbis}"/>
+                    </combobox>
+										                    
+                </hlayout>
+            </north>
+            <west id="westPanel" title="Paramétrage" size="40%" flex="true" splittable="true" collapsible="true" open="false">
+              <groupbox id="gbCrud" width="100%" height="100%">
+                    <grid fixedLayout="true">
+                        <rows>
+						
+                            <row>
+                                <label value="AlerteDelaiJours"/>
+								 
+                                <intbox id="fieldAlerteDelaiJours" constraint="no empty: Veillez indiquez une valeur" value="@{parametrageWin.objet.alerteDelaiJours, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>												
+						
+                            <row>
+                                <label value="Nombre de jours échéance "/>
+								 
+                                <intbox id="fieldAlerteMessageParDefaut" value="@{parametrageWin.objet.alerteMessageParDefaut, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>												
+						 
+                            <row>
+                                <label value="AlerteMessageParDefaut"/>
+								 
+                                <textbox id="fieldEcheanceDelaiJours" constraint="no empty: Veillez indiquez une valeur" value="@{parametrageWin.objet.echeanceDelaiJours, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                          
+                                
+                            </row>
+                            <row>
+                                <label value="utilisateurbiss" />
+                                <combobox id="coutilisateurbiss" model="@{parametrageWin.utilisateurbiss}" selectedItem="@{parametrageWin.utilisateurbisSelected}">
+                                    <comboitem self="@{each=elementutilisateurbis}" label="@{elementutilisateurbis}"/>
+                                </combobox>
+                            </row>
+						
+                        </rows>
+                    </grid>					
+					
+                    <separator />
+                    <button id="btnSave" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));parametrageWin.add()" label="Sauvegarder" image="/images/skin/database_save.png"/>
+                    <button id="btnUpdate" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));parametrageWin.update()" label="Modifier" image="/images/skin/database_edit.png" visible="false"/>
+                    <button id="btnDelete" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));parametrageWin.delete()" label="Supprimer" image="/images/skin/database_delete.png" visible="false"/>
+                     <button id="btnNew" onClick="parametrageWin.newRecord()" label="Nouveau enregistrement" image="/images/skin/database_add.png"/> 
+                    <button id="btnCancel" onClick="parametrageWin.cancel()" label="Annuler" image="/images/skin/cancel.png"/>
+                    <button visible="false" id="triggerBtn" onBindingValidate=""/>
+                </groupbox>
+            </west>
+            -->
+            <center border="none" flex="true" title="Paramétrage de l'application : ">
+                <groupbox id="gbCrud" width="100%" height="100%">
+                    <grid fixedLayout="true">
+                        <rows>                            						
+                            <row>
+                                <label value="Nombre de jours échéance " tooltiptext="Paramètre permettant de configurer le nombre de jours avant de générer une alerte pour une échéance "/>
+								 
+                                <intbox id="fieldEcheanceDelaiJours" value="@{parametrageWin.objet.echeanceDelaiJours, save-when='triggerBtn.onClick'}" />
+                            </row>	
+                        </rows>
+                    </grid>
+                    <button id="btnUpdate" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));parametrageWin.update()" label="Modifier" image="/images/skin/database_edit.png" visible="true"/>
+                    <button visible="false" id="triggerBtn" onBindingValidate=""/>
+                </groupbox>
+            </center>
+        </borderlayout>
+<!--                <groupbox width="100%" height="100%">
+                    <listbox id="lstObjet" onSelect="parametrageWin.select()" model="@{parametrageWin.listeObjets}" selectedItem="@{parametrageWin.objetSelected}"  width="100%" height="100%" mold="paging" paginal="${paging}">
+                        <auxhead sclass="category-center">
+                            <auxheader colspan="1"/>
+							
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <intbox id="filterAlerteDelaiJours" value="@{parametrageWin.filtre.alerteDelaiJours}" width="100%">
+                                    <attribute name="onChanging">
+										<![CDATA[
+											parametrageWin.ofs=0;
+											if(event.value.equals("")) {
+												if(parametrageWin.filtre.alerteDelaiJours != null) {
+													parametrageWin.filtre.alerteDelaiJours = null;
+												}
+											} else {
+												parametrageWin.filtre.alerteDelaiJours=new Integer(event.value);
+											}
+											parametrageWin.filtrer();
+											self.focus();
+											if(!event.value.equals("")) {
+												self.setSelectionRange(self.value.toString().length(), self.value.toString().length());
+											}
+										]]>
+                                    </attribute>    
+                                </intbox>
+                            </auxheader>
+								
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterAlerteMessageParDefaut" value="@{parametrageWin.filtre.alerteMessageParDefaut}" onChanging="parametrageWin.ofs; parametrageWin.filtre.alerteMessageParDefaut=event.value; parametrageWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+								 
+                        </auxhead>
+                        <listhead sizable="true">
+                            <listheader width="32px" />
+							
+                            <listheader id="halerteDelaiJours" label="AlerteDelaiJours" sort="auto(alerteDelaiJours)" onSort="parametrageWin.sort(event)"/>	
+							
+                            <listheader id="halerteMessageParDefaut" label="AlerteMessageParDefaut" sort="auto(alerteMessageParDefaut)" onSort="parametrageWin.sort(event)"/>	
+							                                 
+                        </listhead>
+                        <listitem value="@{element}" self="@{each=element}">    
+                            <listcell image="/images/skin/icon_selection.png"/>
+                            
+                            <listcell>
+							
+                                <intbox value="@{element.alerteDelaiJours, save-when='self.onChange'}" inplace="true" onOK="parametrageWin.objet=self.parent.parent.value; parametrageWin.update();" onChange='self.style="font-weight:bold"' width="99%" />
+							
+                            </listcell>							
+							
+                            <listcell>
+							
+                                <textbox value="@{element.alerteMessageParDefaut, save-when='self.onChange'}" inplace="true" onOK="parametrageWin.objet=self.parent.parent.value; parametrageWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>							
+							     
+                        </listitem>
+                    </listbox>
+                    <paging id="paging" totalSize="@{parametrageWin.tailleListe}" pageSize="@{parametrageWin.maxNb}" onPaging="parametrageWin.getNextElements(event);" />
+                    <separator/>
+                    <grid>
+                        <columns>
+                            <column width="32px" />
+							
+                            <column />
+							
+                            <column />
+							
+                        </columns>
+                        <rows>
+                            <row>
+                                <image src="/images/skin/database_edit.png"  />
+								
+                                <intbox id="fieldalerteDelaiJoursbis" value="@{parametrageWin.objet.alerteDelaiJours, save-when='self.onChange'}" inplace="true" onOK="parametrageWin.add();" width="99%" />
+								
+                                <textbox id="fieldalerteMessageParDefautbis" value="@{parametrageWin.objet.alerteMessageParDefaut, save-when='self.onChange'}" inplace="true" onOK="parametrageWin.add();" width="99%"/>
+								  
+                            </row>
+                        </rows>
+                    </grid>
+                    <separator/>
+                    <button id="btnNew" onClick="parametrageWin.newRecord()" label="Nouveau" image="/images/skin/database_add.png"/>
+                    <button id="btnPdf" onClick="parametrageWin.genererRapportPdf()" label="Generer rapport" image="/images/skin/pdf-soubor-logo.png"/>
+                    <button id="btnExcel" onClick="parametrageWin.genererRapportExcel()" label="Generer excel" image="/images/skin/excel-icon.png"/>
+             
+                </groupbox>
+                </center>
+            </borderlayout>
+            -->
+    </window>
+</zk>

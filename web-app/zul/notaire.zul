@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./notaireWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window id="notaireWin" height="100%" width="100%" style="margin:auto;" use="${notaireWindow}">
+    <!-- <zscript src="/zs/notaire.zs"/> -->
+        <zscript>
+        <![CDATA[
+        boolean IMPORT_DONNEES = (boolean) session.getAttribute("IMPORT_DONNEES");
+        ]]>
+        </zscript>
+        <borderlayout>
+            
+            <west id="westPanel" title="Notaire" size="40%" flex="true" splittable="true" collapsible="true" open="false">
+                <groupbox id="gbCrud" width="100%" height="100%">
+                    <grid fixedLayout="true">
+                        <columns>
+                            <column width="40%"/>
+                            <column width="60%"/>
+                        </columns>
+                        <rows>
+                            <row>
+                                <label value="Nom"/>
+                                <textbox id="fieldNom" hflex="2" constraint="no empty: Veillez indiquez une valeur" value="@{notaireWin.objet.nom, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>
+                            <row>
+                                <label value="Prénom"/>
+                                <textbox id="fieldPrenom" hflex="2" constraint="no empty: Veillez indiquez une valeur" value="@{notaireWin.objet.prenom, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>
+                            <row>
+                                <label value="Adresse"/>
+                                <textbox id="fieldAdresse" hflex="2" value="@{notaireWin.objet.adresse, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>												
+                            <row>
+                                <label value="Fax"/>
+                                <cell align="left" width="99%">
+                                    <label value="+212 " width="15%"/>
+                                    <textbox id="fieldFax" value="@{notaireWin.objet.fax, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' width="70%"/>
+                                </cell>
+                            </row>												
+                            <row>
+                                <label value="TEL1"/>
+                                <cell align="left" width="99%">
+                                    <label value="+212 "  width="15%"/>
+                                    <textbox id="fieldFixe" value="@{notaireWin.objet.gsm, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' constraint="no negative,no zero" width="70%"/>
+                                </cell>
+                            </row>												
+                            <row>   
+                                <label value="TEL2"/>
+                                <cell align="left" width="99%">
+<!--                                    <label value="+212 "  width="15%"/>-->
+                                    
+                                    <textbox id="fieldGsm" hflex="2" value="@{notaireWin.objet.fixe, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' />
+                                </cell>
+                            </row>												
+                            <row>
+                                <label value="Email"/>
+                                <textbox id="fieldEmail" hflex="2" value="@{notaireWin.objet.email, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>	
+                            <row>
+                                <label value="IF"/>
+                                <textbox id="fieldIdFiscal" hflex="2" constraint="no empty: Veillez indiquez une valeur" value="@{notaireWin.objet.idFiscal, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>												
+                            <row>
+                                <label value="Patente"/>
+                                <textbox id="fieldPatente" hflex="2" constraint="no empty: Veillez indiquez une valeur" value="@{notaireWin.objet.patente, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>												
+                        </rows>
+                    </grid>					
+					
+                    <separator />
+                    <button id="btnSave" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));notaireWin.add()" label="Sauvegarder" image="/images/skin/database_save.png"/>
+                    <button id="btnUpdate" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));notaireWin.update()" label="Modifier" image="/images/skin/database_edit.png" visible="false"/>
+                    <button id="btnDelete" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));notaireWin.delete()" label="Supprimer" image="/images/skin/database_delete.png" visible="false"/>
+                    <!-- <button id="btnNew" onClick="notaireWin.newRecord()" label="Nouveau enregistrement" image="/images/skin/database_add.png"/> -->
+                    <button id="btnCancel" onClick="notaireWin.cancel()" label="Annuler" image="/images/skin/cancel.png"/>
+                    <button visible="false" id="triggerBtn" onBindingValidate=""/>
+                </groupbox>
+            </west>
+            <center border="none" flex="true">
+                <groupbox width="100%" height="100%">
+                    <listbox id="lstObjet" onSelect="notaireWin.select()" model="@{notaireWin.listeObjets}" selectedItem="@{notaireWin.objetSelected}"  width="100%" height="100%" mold="paging" paginal="${paging}">
+                        <auxhead sclass="category-center">
+                            <auxheader colspan="1"/>
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterNom" value="@{notaireWin.filtre.nom}" onOK="notaireWin.ofs; notaireWin.filtre.nom=self.value; notaireWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>	
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterPrenom" value="@{notaireWin.filtre.prenom}" onOK="notaireWin.ofs; notaireWin.filtre.prenom=self.value; notaireWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterAdresse" value="@{notaireWin.filtre.adresse}" onOK="notaireWin.ofs; notaireWin.filtre.adresse=self.value; notaireWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+								
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterFax" value="@{notaireWin.filtre.fax}" onOK="notaireWin.ofs; notaireWin.filtre.fax=self.value; notaireWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+								
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterFixe" value="@{notaireWin.filtre.fixe}" onOK="notaireWin.ofs; notaireWin.filtre.fixe=self.value; notaireWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+								
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterGsm" value="@{notaireWin.filtre.gsm}" onOK="notaireWin.ofs; notaireWin.filtre.gsm=self.value; notaireWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterEmail" value="@{notaireWin.filtre.email}" onOK="notaireWin.ofs; notaireWin.filtre.email=self.value; notaireWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+								
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterIdFiscal" value="@{notaireWin.filtre.idFiscal}" onOK="notaireWin.ofs; notaireWin.filtre.idFiscal=self.value; notaireWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+								
+                            
+								
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterPatente" value="@{notaireWin.filtre.patente}" onOK="notaireWin.ofs; notaireWin.filtre.patente=self.value; notaireWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+								
+                            
+								
+                            
+								 
+                        </auxhead>
+                        <listhead sizable="true">
+                            <listheader width="32px" />
+                            <listheader id="hnom" label="Nom" sort="auto(nom)" onSort="notaireWin.sort(event)"/>	
+                            <listheader id="hprenom" label="Prénom" sort="auto(prenom)" onSort="notaireWin.sort(event)"/>	
+                            <listheader id="hadresse" label="Adresse" sort="auto(adresse)" onSort="notaireWin.sort(event)"/>	
+							
+                            <listheader id="hfax" label="Fax" sort="auto(fax)" onSort="notaireWin.sort(event)"/>	
+			
+                            <listheader id="hgsm" label="TEL1" sort="auto(gsm)" onSort="notaireWin.sort(event)"/>
+                            <listheader id="hfixe" label="TEL2" sort="auto(fixe)" onSort="notaireWin.sort(event)"/>	
+							
+	
+                            <listheader id="hemail" label="Email" sort="auto(email)" onSort="notaireWin.sort(event)"/>		
+                            <listheader id="hidFiscal" label="IF" sort="auto(idFiscal)" onSort="notaireWin.sort(event)"/>	
+                            <listheader id="hpatente" label="Patente" sort="auto(patente)" onSort="notaireWin.sort(event)"/>	
+                        </listhead>
+                        <listitem value="@{element}" self="@{each=element}">    
+                            <listcell image="/images/skin/icon_selection.png"/>
+                            <listcell>
+							
+                                <textbox value="@{element.nom, save-when='self.onChange'}" inplace="true" onOK="notaireWin.objet=self.parent.parent.value; notaireWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>	
+                            <listcell>
+							
+                                <textbox value="@{element.prenom, save-when='self.onChange'}" inplace="true" onOK="notaireWin.objet=self.parent.parent.value; notaireWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>	
+                            <listcell>
+							
+                                <textbox value="@{element.adresse, save-when='self.onChange'}" inplace="true" onOK="notaireWin.objet=self.parent.parent.value; notaireWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>							
+							
+                            <listcell>
+							
+                                <textbox value="@{element.fax, save-when='self.onChange'}" inplace="true" onOK="notaireWin.objet=self.parent.parent.value; notaireWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>	
+                            
+                            <listcell>
+							
+                                <textbox value="@{element.gsm, save-when='self.onChange'}" inplace="true" onOK="notaireWin.objet=self.parent.parent.value; notaireWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>	
+							
+                            <listcell>
+							
+                                <textbox value="@{element.fixe, save-when='self.onChange'}" inplace="true" onOK="notaireWin.objet=self.parent.parent.value; notaireWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>							
+							
+						
+                            <listcell>
+							
+                                <textbox value="@{element.email, save-when='self.onChange'}" inplace="true" onOK="notaireWin.objet=self.parent.parent.value; notaireWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>			
+                            <listcell>
+							
+                                <textbox value="@{element.idFiscal, save-when='self.onChange'}" inplace="true" onOK="notaireWin.objet=self.parent.parent.value; notaireWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>							
+							
+                            						
+							
+                            <listcell>
+							
+                                <textbox value="@{element.patente, save-when='self.onChange'}" inplace="true" onOK="notaireWin.objet=self.parent.parent.value; notaireWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>							
+							
+                            						
+							
+                            						
+							     
+                        </listitem>
+                    </listbox>
+                    <paging id="paging" totalSize="@{notaireWin.tailleListe}" pageSize="@{notaireWin.maxNb}" onPaging="notaireWin.getNextElements(event);" />
+                    <separator/>
+                    <grid>
+                        <columns>
+                            <column width="32px" />
+							
+                            <column />
+							
+                            <column />
+							
+                            <column />
+							
+                            <column />
+							
+                            <column />
+							
+                            <column />
+							
+                            <column />
+							
+                            <column />
+							
+                            <column />
+							
+                        </columns>
+                        <rows>
+                            <row>
+                                <image src="/images/skin/database_edit.png"  />
+				
+                                <textbox id="fieldnombis" value="@{notaireWin.objet.nom, save-when='self.onChange'}" inplace="true" onOK="notaireWin.add();" width="99%"/>
+					
+                                <textbox id="fieldprenombis" value="@{notaireWin.objet.prenom, save-when='self.onChange'}" inplace="true" onOK="notaireWin.add();" width="99%"/>
+				
+                                <textbox id="fieldadressebis" value="@{notaireWin.objet.adresse, save-when='self.onChange'}" inplace="true" onOK="notaireWin.add();" width="99%"/>
+								
+                                <textbox id="fieldfaxbis" value="@{notaireWin.objet.fax, save-when='self.onChange'}" inplace="true" onOK="notaireWin.add();" width="99%"/>
+
+                                <textbox id="fieldgsmbis" value="@{notaireWin.objet.gsm, save-when='self.onChange'}" inplace="true" onOK="notaireWin.add();" width="99%"/>				
+                                                                
+                                <textbox id="fieldfixebis" value="@{notaireWin.objet.fixe, save-when='self.onChange'}" inplace="true" onOK="notaireWin.add();" width="99%"/>
+								
+                                <textbox id="fieldemailbis" value="@{notaireWin.objet.email, save-when='self.onChange'}" inplace="true" onOK="notaireWin.add();" width="99%"/>
+				
+                                <textbox id="fieldidFiscalbis" value="@{notaireWin.objet.idFiscal, save-when='self.onChange'}" inplace="true" onOK="notaireWin.add();" width="99%"/>
+                                			
+                                <textbox id="fieldpatentebis" value="@{notaireWin.objet.patente, save-when='self.onChange'}" inplace="true" onOK="notaireWin.add();" width="99%"/>
+								                                				                         				  
+                            </row>
+                        </rows>
+                    </grid>
+                    <separator/>
+                    <button id="btnNew" onClick="notaireWin.newRecord()" label="Nouveau" image="/images/skin/database_add.png"/>                    
+<!--                    <button id="btnNewdd" onClick="notaireWin.test()" label="test split" image="/images/skin/database_add.png"/>-->
+<!--                  <button id="btnPdf" onClick="notaireWin.genererRapportPdf()" label="Generer rapport" image="/images/skin/pdf-soubor-logo.png"/>
+                    <button id="btnExcel" onClick="notaireWin.genererRapportExcel()" label="Generer excel" image="/images/skin/excel-icon.png"/>                -->
+                    <fileupload id="btnImport" label="Import en masse" onUpload="notaireWin.importation(event.getMedia())" image="/images/skin/BriefcaseOpen-16x16.png" visible="${IMPORT_DONNEES}"/>
+                </groupbox>
+            </center>
+        </borderlayout>
+    </window>
+</zk>

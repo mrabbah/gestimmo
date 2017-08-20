@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./alerteWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window id="alerteWin" height="100%" width="100%" style="margin:auto;" use="${alerteWindow}">
+    <!-- <zscript src="/zs/alerte.zs"/> -->
+        <borderlayout>
+            <north id="eastPanel" size="65px" open="false"  title="Recherche avancée" flex="true" splittable="true"  collapsible="true"  >
+                <hlayout spacing="10px" style="margin-top:9px;margin-left:10px">
+			
+                   <!--<label value="Projet :" />-->
+                    
+                    <!--
+                    <label value="Client :" />
+                    <combobox id="filterclient" model="@{alerteWin.clientss}" selectedItem="@{alerteWin.filtre.phase.client}" autocomplete="true" autodrop="true" mold="rounded" onSelect="alerteWin.ofs=0;alerteWin.filtrer()" onOK="alerteWin.ofs=0;alerteWin.filtrer()">
+                        <comboitem self="@{each=elementfiltreclient}" label="@{elementfiltreclient}"/>
+                    </combobox>
+                    -->
+<!--                    <label value="Phase :" />
+                    <combobox id="filterphase" model="@{alerteWin.phases}" selectedItem="@{alerteWin.filtre.phase}" autocomplete="true" autodrop="true" mold="rounded" onSelect="alerteWin.ofs=0;alerteWin.filtrer()" onOK="alerteWin.ofs=0;alerteWin.filtrer()">
+                        <comboitem self="@{each=elementfiltrephase}" label="@{elementfiltrephase}"/>
+                    </combobox>-->
+										                    
+                </hlayout>
+            </north>
+            <west id="westPanel" title="Alerte" size="50%" flex="true" splittable="true" collapsible="true" open="false">
+                <groupbox id="gbCrud" width="100%" height="100%">
+                    <grid fixedLayout="true">
+                        <rows>
+                            
+                            <row>
+                                <cell width="15%">
+                                    <label value="Projet " />
+                                </cell>
+                                <cell>
+                                    <combobox id="coprojets" hflex="1" model="@{alerteWin.projets}" selectedItem="@{alerteWin.projetSelected}" onSelect='alerteWin.ActualiserClientProjet("projet",true)'>
+                                        <comboitem self="@{each=elementprojet}" label="@{elementprojet}"/>
+                                    </combobox>
+                                    <textbox id="projetText" disabled="true" value="@{alerteWin.objet.projet}" width="99%" visible="false" />
+                                </cell>
+                            </row>
+                            
+                            <row>
+                                <label value="Client " />
+                                <cell>
+                                    <combobox id="coclients"  hflex="1" model="@{alerteWin.clients}" selectedItem="@{alerteWin.clientSelected}"  onSelect='alerteWin.ActualiserClientProjet("client",true)'>
+                                        <comboitem self="@{each=elementclient}" label="@{elementclient}"/>
+                                    </combobox>
+                                    <textbox id="clientText" disabled="true" value="@{alerteWin.objet.client}" width="99%" visible="false" />
+                                </cell>
+                            </row>
+                            
+<!--                            <row>
+                                <label value="Phase " />
+                                <combobox id="cophases"  hflex="1" model="@{alerteWin.phases}" selectedItem="@{alerteWin.phaseSelected}">
+                                    <comboitem self="@{each=elementphase}" label="@{elementphase}"/>
+                                </combobox>
+                            </row>-->
+						
+                            <row>
+                                <label value="Date alerte"/>
+								 
+                                <datebox id="fieldDate"  hflex="1" constraint="no empty: Veillez indiquez une valeur" format="dd/MM/yyyy" value="@{alerteWin.objet.date, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>												
+						
+                            <row>
+                                <label value="Date déclenchement"/>
+								 
+                                <datebox id="fieldDateDeclenchement"  hflex="1" constraint="no empty: Veillez indiquez une valeur" format="dd/MM/yyyy" value="@{alerteWin.objet.dateDeclenchement, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>												
+			<!--			
+                            <row>
+                                <label value="DateModification"/>
+								 
+                                <datebox id="fieldDateModification" constraint="no empty: Veillez indiquez une valeur" format="dd/MM/yyyy" value="@{alerteWin.objet.dateModification, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>												
+			-->		
+                            <row>
+                                <label value="Contenu"/>
+                                
+<!--                                <fckeditor id="fieldMessagePersonalise" width="99%" value="@{alerteWin.objet.messagePersonalise,access='both', save-when='self.onChanging'}"/>-->
+                                <textbox id="fieldContenu"  multiline="true" rows="3" width="99%" value="@{alerteWin.objet.messagePersonalise, save-when='triggerBtn.onClick'}" />
+                            </row>												
+						
+                            <row>
+                                <label value="Statut"/>
+								 
+                                <combobox id="costatuts"  hflex="1" model="@{alerteWin.statuts}" selectedItem="@{alerteWin.statutSelected}">
+                                    <comboitem self="@{each=elementstatut}"  label="@{elementstatut}"/>
+                                </combobox>
+                            </row>																								
+						
+                        </rows>
+                    </grid>					
+					
+                    <separator />
+                    <button id="btnSave" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));alerteWin.add()" label="Sauvegarder" image="/images/skin/database_save.png"/>
+                    <button id="btnUpdate" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));alerteWin.update()" label="Modifier" image="/images/skin/database_edit.png" visible="false"/>
+                    <button id="btnDelete" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));alerteWin.delete()" label="Supprimer" image="/images/skin/database_delete.png" visible="false"/>
+                    <!-- <button id="btnNew" onClick="alerteWin.newRecord()" label="Nouveau enregistrement" image="/images/skin/database_add.png"/> -->
+                    <button id="btnCancel" onClick="alerteWin.cancel()" label="Annuler" image="/images/skin/cancel.png"/>
+                    <button visible="false" id="triggerBtn" onBindingValidate=""/>
+                </groupbox>
+            </west>
+            <center border="none" flex="true">
+                <groupbox width="100%" height="100%">
+                    <listbox id="lstObjet" onSelect="alerteWin.select()" model="@{alerteWin.listeObjets}" selectedItem="@{alerteWin.objetSelected}"  width="100%" height="100%" mold="paging" paginal="${paging}">
+                        <auxhead sclass="category-center">
+                            <auxheader colspan="1"/>
+                                                        
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filterprojet" model="@{alerteWin.projetsF}" selectedItem="@{alerteWin.filtre.projet}" autocomplete="true" autodrop="true" mold="rounded" onSelect="alerteWin.ofs=0;alerteWin.filtrer()" onOK="alerteWin.ofs=0;alerteWin.filtrer()" width="90%">
+                                    <comboitem self="@{each=elementfiltreprojet}" label="@{elementfiltreprojet}"/>
+                                </combobox>
+                                <!--<textbox id="filterProjet" value="@{alerteWin.filtre.phase.projet}" onChanging="alerteWin.ofs; alerteWin.filtre.phase.projet=event.value; alerteWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>-->
+                            </auxheader>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filterclient" model="@{alerteWin.clientsF}" selectedItem="@{alerteWin.filtre.client}" autocomplete="true" autodrop="true" mold="rounded" onSelect="alerteWin.ofs=0;alerteWin.filtrer()" onOK="alerteWin.ofs=0;alerteWin.filtrer()" width="90%">
+                                    <comboitem self="@{each=elementfiltreclient}" label="@{elementfiltreclient}"/>
+                                </combobox>
+                            </auxheader>
+
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <datebox id="filterDate" format="dd/MM/yyyy" value="@{alerteWin.filtre.date}" onOK= "alerteWin.ofs=0; alerteWin.filtrer(); self.focus();" width="90%"/>
+                            </auxheader>
+								
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <datebox id="filterDateDeclenchement" format="dd/MM/yyyy" value="@{alerteWin.filtre.dateDeclenchement}" onOK= "alerteWin.ofs=0; alerteWin.filtrer(); self.focus();" width="90%"/>
+                            </auxheader>
+								
+                           <!--
+                           <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <datebox id="filterDateModification" format="dd/MM/yyyy" value="@{alerteWin.filtre.dateModification}" onOK="alerteWin.ofs=0; alerteWin.filtrer(); self.focus();" width="90%"/>
+                            </auxheader>
+				-->				
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterMessagePersonalise" value="@{alerteWin.filtre.messagePersonalise}" onOK="alerteWin.ofs; alerteWin.filtre.messagePersonalise=self.value; alerteWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+								
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />                                
+                                <combobox id="filterStatut" model="@{alerteWin.statuts}" selectedItem="@{alerteWin.filtre.statut}" autocomplete="true" autodrop="true" mold="rounded" onSelect="alerteWin.ofs=0;alerteWin.filtrer()" onOK="alerteWin.ofs=0;alerteWin.filtrer()" width="90%">
+                                    <comboitem self="@{each=elementfiltrestatut}" label="@{elementfiltrestatut}"/>
+                                </combobox>
+                            </auxheader>
+								 
+                        </auxhead>
+                        <listhead sizable="true">
+                            <listheader width="32px" />
+                            
+                            <listheader id="hprojet" label="Projet" sort="auto(projet.code)" onSort="alerteWin.sort(event)"/>	
+				
+                            <listheader id="hclient" label="Client" sort="auto(client.nom)" onSort="alerteWin.sort(event)"/>                                                        
+                            
+                            <listheader id="hdate" label="Date alerte" sort="auto(date)" onSort="alerteWin.sort(event)"/>	
+							
+                            <listheader id="hdateDeclenchement" label="Date déclenchement" sort="auto(dateDeclenchement)" onSort="alerteWin.sort(event)"/>	
+							
+                           <!-- <listheader id="hdateModification" label="DateModification" sort="auto(dateModification)" onSort="alerteWin.sort(event)"/>	-->
+							
+                            <listheader id="hmessagePersonalise" label="Contenu" sort="auto(messagePersonalise)" onSort="alerteWin.sort(event)"/>	
+							
+                            <listheader id="hstatut" label="Statut" sort="auto(statut.intitule)" onSort="alerteWin.sort(event)"/>	
+							                                 
+                        </listhead>
+                        <listitem value="@{element}" self="@{each=element}">    
+                            <listcell image="/images/skin/icon_selection.png"/>
+                            
+                            <listcell label="@{element.projet}">				
+                            </listcell>	
+                            
+                            <listcell label="@{element.client}">
+                            </listcell>	
+                                                       
+                            
+                            <listcell>
+							
+                                <datebox format="dd/MM/yyyy" value="@{element.date, save-when='self.onChange'}" inplace="true" onOK="alerteWin.objet=self.parent.parent.value; alerteWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>							
+							
+                            <listcell>
+							
+                                <datebox format="dd/MM/yyyy" value="@{element.dateDeclenchement, save-when='self.onChange'}" inplace="true" onOK="alerteWin.objet=self.parent.parent.value; alerteWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>							
+			<!--				
+                            <listcell>
+							
+                                <datebox format="dd/MM/yyyy" value="@{element.dateModification, save-when='self.onChange'}" inplace="true" onOK="alerteWin.objet=self.parent.parent.value; alerteWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>							
+			-->				
+                            <listcell>
+							
+                                <textbox value="@{element.messagePersonalise, save-when='self.onChange'}" inplace="true" onOK="alerteWin.objet=self.parent.parent.value; alerteWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>							
+							
+                            <listcell label="@{element.statut}">
+                            </listcell>							
+							     
+                        </listitem>
+                    </listbox>
+                    <paging id="paging" totalSize="@{alerteWin.tailleListe}" pageSize="@{alerteWin.maxNb}" onPaging="alerteWin.getNextElements(event);" />
+                    <separator/>
+                    <grid>
+                        <columns>
+                            <column width="32px" />
+							
+                            <column />
+							
+                            <column />
+                            
+                            <column />
+							
+                            <column />
+							
+                            <column />
+							
+                            <column />
+                        
+							
+                        </columns>
+                        <rows>
+                            <row>
+                                <image src="/images/skin/database_edit.png"  />
+				
+                                
+                                <combobox id="fieldcoprojetsbis" inplace="true" width="99%" model="@{alerteWin.projets}" selectedItem="@{alerteWin.projetSelected}" onSelect='alerteWin.ActualiserClientProjet("projet",true)'
+                                          onOK="alerteWin.add()">                                    
+                                    <comboitem self="@{each=elementprojetbis}" label="@{elementprojetbis}"/>
+                                </combobox>
+                                
+                                <combobox id="fieldcoclientsbis" inplace="true" width="99%" model="@{alerteWin.clients}" selectedItem="@{alerteWin.clientSelected}" onSelect='alerteWin.ActualiserClientProjet("client",true)'
+                                          onOK="alerteWin.add()">                                    
+                                    <comboitem self="@{each=elementclientbis}" label="@{elementclientbis}"/>
+                                </combobox>
+                                
+<!--                                <combobox id="fieldcophasesbis" inplace="true" width="99%" model="@{alerteWin.phases}" selectedItem="@{alerteWin.phaseSelected}" 
+                                          onOK="alerteWin.add()">                                    
+                                    <comboitem self="@{each=elementphasebis}" label="@{elementphasebis}"/>
+                                </combobox>-->
+                                
+                                <datebox id="fielddatebis" format="dd/MM/yyyy" value="@{alerteWin.objet.date, save-when='self.onChange'}" inplace="true" onOK="alerteWin.add();" width="99%"/>
+								
+                                <datebox id="fielddateDeclenchementbis" format="dd/MM/yyyy" value="@{alerteWin.objet.dateDeclenchement, save-when='self.onChange'}" inplace="true" onOK="alerteWin.add();" width="99%"/>
+								
+                                <!--<datebox id="fielddateModificationbis" format="dd/MM/yyyy" value="@{alerteWin.objet.dateModification, save-when='self.onChange'}" inplace="true" onOK="alerteWin.add();" width="99%"/>-->
+								
+                                <textbox id="fieldmessagePersonalisebis" value="@{alerteWin.objet.messagePersonalise, save-when='self.onChange'}" inplace="true" onOK="alerteWin.add();" width="99%"/>
+								
+                                <combobox id="fieldstatutbis" inplace="true" width="99%" model="@{alerteWin.statuts}" selectedItem="@{alerteWin.statutSelected}" 
+                                          onOK="alerteWin.add()">                                    
+                                    <comboitem self="@{each=elementstatutbis}" label="@{elementstatutbis}"/>
+                                </combobox>
+                                
+                            </row>
+                        </rows>
+                    </grid>
+                    <separator/>
+                    <button id="btnNew" onClick="alerteWin.newRecord()" label="Nouveau" image="/images/skin/database_add.png"/>
+<!--                    <button id="btnPdf" onClick="alerteWin.genererRapportPdf()" label="Generer rapport" image="/images/skin/pdf-soubor-logo.png"/>
+                    <button id="btnExcel" onClick="alerteWin.genererRapportExcel()" label="Generer excel" image="/images/skin/excel-icon.png"/>-->
+                </groupbox>
+            </center>
+        </borderlayout>
+    </window>
+</zk>

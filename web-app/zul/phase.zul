@@ -1,0 +1,692 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./phaseWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+    <style>
+        .hightlight { color: #EBDDE2;} 
+
+        .labelTitlePhase {
+        font-weight: bold;        
+        color: #434543;
+        }
+    </style>
+    <window id="phaseWin" height="100%" width="100%" style="margin:auto;" use="${phaseWindow}" onUpload="phaseWin.processMedia(event.getMedias());">
+    <!-- <zscript src="/zs/phase.zs"/> -->
+        <zscript>
+        <![CDATA[
+            boolean CHANGER_DATE_EXPIRATION = (boolean) session.getAttribute("CHANGER_DATE_EXPIRATION"); 
+            boolean GESTION_PAIEMENTS_STATUT = (boolean) session.getAttribute("GESTION_PAIEMENTS_STATUT");
+            boolean GESTION_PAIEMENTS = (boolean) session.getAttribute("GESTION_PAIEMENTS");
+            boolean OPENNEW = false;
+            if (Executions.getCurrent().getParameter("ic") != null){
+            OPENNEW = true;
+            }
+            String PHASETITLE = "PHASE : " + (String) session.getAttribute("typePhase");
+            boolean IMPORT_DONNEES = (boolean) session.getAttribute("IMPORT_DONNEES");
+
+        ]]>
+        </zscript>
+
+        <borderlayout>
+            <north id="eastPanel" size="70px" open="false"  title="Recherche avancée" flex="true" splittable="true"  collapsible="true"  >
+                <hlayout spacing="10px" style="margin-top:9px;margin-left:10px">
+			
+<!--                    
+                    <label value="Bien :" />
+                    <combobox id="filterbien" model="@{phaseWin.biens}" selectedItem="@{phaseWin.filtre.bien}" autocomplete="true" autodrop="true" mold="rounded" onSelect="phaseWin.ofs=0;phaseWin.filtrer()" onOK="phaseWin.ofs=0;phaseWin.filtrer()">
+                        <comboitem self="@{each=elementfiltrebien}" label="@{elementfiltrebien}"/>
+                    </combobox>
+	-->			
+                    <label value="Notaire :" />
+                    <combobox id="filternotaire" model="@{phaseWin.notaires}" selectedItem="@{phaseWin.filtre.notaire}" autocomplete="true" autodrop="true" mold="rounded" onSelect="phaseWin.ofs=0;phaseWin.filtrer()" onOK="phaseWin.ofs=0;phaseWin.filtrer()">
+                        <comboitem self="@{each=elementfiltrenotaire}" label="@{elementfiltrenotaire}"/>
+                    </combobox>
+
+                </hlayout>
+            </north>
+            <west id="westPanel" title="${PHASETITLE}" size="100%" flex="true" splittable="true" collapsible="true" open="${OPENNEW}" border="none" style="background: #E1E6FA">
+                <borderlayout>
+                    <!--<north size="50px" border="none" title="Informations Client :">
+                    </north>
+                    -->
+                    <west id="wst" flex="true" collapsible="true" size="320px" title="Informations client">
+                        <groupbox>
+                            <grid fixedLayout="true" id="clientGrid" >
+                                <columns>
+                                    <column width="35%"/>
+                                    <column width="65%"/>
+                                </columns>
+    
+                                <rows>
+                                
+                                    <row>
+                                        <label value="Client :" />
+
+                                        <combobox id="coclients" model="@{phaseWin.clients}" selectedItem="@{phaseWin.clientSelected}" hflex="1" autocomplete="true" autodrop="true" mold="rounded">                                        
+                                              
+                                            <comboitem self="@{each=elementclient}" label="@{elementclient}"/>
+                                        </combobox>
+                                    </row>
+                          
+                                    <row>
+                                        <label value="CIN"/>
+                                        <textbox id="fieldCin" hflex="1"  value="@{phaseWin.clientSelected.cin}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' disabled="true" />
+                                    </row>		
+                                
+                                    <row>
+                                        <label value="Nom"/>
+                                        <textbox id="fieldNom" hflex="1" constraint="no empty: Veillez indiquez une valeur" value="@{phaseWin.clientSelected.nom}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' disabled="true"/>
+                                    </row>
+                                
+                                    <row>
+                                        <label value="Prénom"/>
+                                        <textbox id="fieldPrenom" hflex="1" constraint="no empty: Veillez indiquez une valeur" value="@{phaseWin.clientSelected.prenom}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' disabled="true"/>
+                                    </row>
+                                
+                                    <row>
+                                        <label value="Date de naissance"/>
+                                        <datebox id="fieldDateNaissance"  hflex="1" constraint="no empty: Veillez indiquez une valeur" format="dd/MM/yyyy" value="@{phaseWin.clientSelected.dateNaissance}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' disabled="true"/>
+                                    </row>                                                              
+                                
+                                    <row>
+                                        <label value="Tel (+212)"/>
+                                        <textbox id="fieldGsm" hflex="1" constraint="no empty: Veillez indiquez une valeur" value="@{phaseWin.clientSelected.gsm}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' disabled="true" />
+                                    </row>
+                                
+                                    <row>
+                                        <label value="Sexe"/>
+                                        <textbox id="fieldSexe" hflex="1"  value="@{phaseWin.clientSelected.sexe}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' disabled="true" />
+<!--                                        <combobox id="cosexes" hflex="1" model="@{phaseWin.sexes}" selectedItem="@{phaseWin.sexeSelected}" disabled="true">
+                                            <comboitem self="@{each=elementsexe}" label="@{elementsexe}"/>
+                                        </combobox>-->
+                                    </row>
+                                
+                                    <row>
+                                        <label value="Date Contact"/>
+                                        <datebox id="fieldDateContact"  hflex="1" constraint="no empty: Veillez indiquez une valeur" format="dd/MM/yyyy" value="@{phaseWin.clientSelected.dateContact}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' disabled="true"/>
+                                    </row>  
+                                
+                                    <row>
+                                        <label value="Ville " />
+                                        <textbox id="fieldVille" hflex="1" constraint="no empty: Veillez indiquez une valeur" value="@{phaseWin.clientSelected.ville}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' disabled="true" />
+<!--                                        <combobox id="covilles" hflex="1" model="@{phaseWin.villes}" selectedItem="@{phaseWin.villeSelected}" disabled="true">
+                                            <comboitem self="@{each=elementville}" label="@{elementville}"/>
+                                        </combobox>-->
+                                    
+                                    </row>	
+                                
+                                    <row>
+                                        <label value="Nationalité " />
+                                        <textbox id="fieldNationalite" hflex="1" constraint="no empty: Veillez indiquez une valeur" value="@{phaseWin.clientSelected.nationalite}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' disabled="true" />
+<!--                                        <combobox id="conationalites" hflex="1" model="@{phaseWin.nationalites}" selectedItem="@{phaseWin.nationaliteSelected}" disabled="true">
+                                            <comboitem self="@{each=elementnationalite}" label="@{elementnationalite}"/>
+                                        </combobox>-->
+                                    
+                                    </row>
+                                </rows>
+                            </grid>
+                            <separator/>
+                            <grid id="clientcoproprietaireGrid">  
+                               
+                                <columns>
+                                    <column width="35%" />
+                                    <column width="65%" />
+                                </columns>                            
+                                <rows>
+                                    <row>
+                                        <cell>
+                                            <label value="copropriétaire" style="font-weight:bold; color:#333333"/>
+                                        </cell>
+                                    </row>
+                                    <row>
+                                        <label value="Nom et prénom :" /> 
+                                        <textbox id="fieldnomprenomCopro" hflex="1" value="@{phaseWin.objet.coproprietaireNomPrenom}" />                                       
+                                    </row>
+                                    
+                                    <row>
+                                        <label value="CIN :" /> 
+                                        <textbox id="fieldcinCopro" hflex="1" value="@{phaseWin.objet.coproprietaireCIN}" />
+                                    </row>
+                                    
+                                    <row>
+                                        <label value="Tel :" /> 
+                                        <textbox id="fieldtelCopro" hflex="1" value="@{phaseWin.objet.coproprietaireTel}" />
+                                    </row>
+                                </rows>
+                            </grid>
+                        </groupbox>
+                    </west>
+                    <center border="none" id="ctr" flex="true" title="Informations phase" onCreate="phaseWin.activerChampsPhase();phaseWin.activerBoutonsNew(true)">
+                        <groupbox id="gbCrud" width="99%" height="99%">
+                            <tabbox width="99%" height="99%" mold="accordion-lite">
+                                <tabs>
+                                    <tab label="Prise de contact"/>
+                                    <tab label="Projet "/>
+                                    <tab label="Informations phase "/>
+                                    <tab label="Historique paiements "/>
+                                </tabs>
+                                <tabpanels>
+                                    <tabpanel>
+                                        <grid fixedLayout="true" span="true" sizedByContent="true">
+                                          
+                                            <columns>
+                                                <column label="" width="150px" />
+                                                <column label="" width="300px" />
+                                            </columns>
+                                            <rows>
+                                                <row>
+                                                    <label value="Date" />
+                                                    <datebox id="fieldDatePrisecontact" width="300px" format="dd/MM/yyyy" value="@{phaseWin.objet.dateContact}" />
+                                                </row>												
+                                                <row>
+                                                    <label value="Source d'information " />
+                                                    <combobox id="cosourceInformations" width="300px" model="@{phaseWin.sourceInformations}" selectedItem="@{phaseWin.sourceInformationSelected}">
+                                                        <comboitem self="@{each=elementsourceInformation}" label="@{elementsourceInformation}"/>
+                                                    </combobox>
+                                                </row>
+                                                <row>                                                    
+                                                    <label value="Canal " />
+                                                    <combobox id="cocanals" width="300px" model="@{phaseWin.canals}" selectedItem="@{phaseWin.canalSelected}">
+                                                        <comboitem self="@{each=elementcanal}" label="@{elementcanal}"/>
+                                                    </combobox> 
+                                                </row>
+
+                                            </rows>
+                 
+                                        </grid>
+                                    </tabpanel> 
+                                    <tabpanel height="65%" >
+                                        <grid fixedLayout="true" span="true" sizedByContent="true" >
+                                            <rows>
+                                                <row>
+                                                    <cell style="background-color:#C4D7ED; color: black;" colspan="1">
+                                                        <label value="Projet " />
+                                                    </cell>
+                                                    <cell style="background-color: #C4D7ED; color: white;" colspan="3">
+                                                        <combobox id="coprojets" hflex="1" model="@{phaseWin.projets}" selectedItem="@{phaseWin.projetSelected}" onSelect="phaseWin.genererHierarchieBien(true);" >
+                                                            <comboitem self="@{each=elementprojet}" label="@{elementprojet}"/>
+                                                        </combobox>
+                                                    </cell>
+                                                </row>
+                                                <row id="treebienRow" visible="false">
+                                                    <cell colspan="4">
+                                                        <tree id="treebien" rows="5" height="30%" model="@{phaseWin.biens}" treeitemRenderer="@{phaseWin.bienRenderer}" zclass="z-dottree" >
+                                                            <treecols sizable="true" >
+                                                                <treecol label="Code du bien" />
+                                                                <treecol label="Type" />
+                                                                <treecol label="Statut" />
+                                                            </treecols>
+                                                        </tree>    
+                                                    </cell>
+                                                </row>
+                                            </rows>
+                                        </grid>
+                                        
+                                        <grid fixedLayout="true" span="true" sizedByContent="true" sclass="hightlight">
+                                            <rows>
+
+                                                <row>
+                                                    <label value="Type de bien"  />
+                                                    <textbox id="fieldTypebien" hflex="1" value="@{phaseWin.bienSelected.type}" readonly="true"/>
+                                              
+                                                    <label value="Code"/>
+                                                    <textbox id="fieldNumero" hflex="1" value="@{phaseWin.bienSelected.numero}" readonly="true"/>
+                                                </row>
+                                                
+                                                <row>
+                                                    <label value="Superficie"/>
+                                                    <cell>
+                                                        <doublebox id="fieldSuperficie" value="@{phaseWin.bienSelected.superficie}" readonly="true" width="85%"/>
+                                                        <label value=" m²"/>
+                                                    </cell> 
+                                                    
+                                                    <label value="Prix de vente"/>
+                                                    <cell>
+                                                        <doublebox id="fieldPrixVente" value="@{phaseWin.bienSelected.prixVente}" format="#,##0.##" readonly="true" width="85%"/>
+                                                        <label value=" DH"/>
+                                                    </cell> 
+                                                </row>
+                                                
+                                                <row>
+                                                    <label value="Contenance" />
+                                                    <textbox id="fieldContenance" hflex="1" value="@{phaseWin.bienSelected.contenance}" readonly="true"/>
+                                                </row>
+                                                <row>
+                                                    <cell colspan="4">
+                                                        <button  label="Modifier bien" image="/images/skin/Actions-edit-redo-icon.png" >
+                                                            <attribute name="onClick"><![CDATA[ 
+                                                            phaseWin.genererHierarchieBien(true);
+                                                            treebienRow.visible = true;
+                                                            ]]>
+                                                            </attribute>
+                                                        </button>
+                                                    </cell>
+                                                </row>
+                                            </rows>
+                                            
+                                        </grid>
+                                         
+                                    </tabpanel>  
+                                    <tabpanel height="60%">
+                                        <grid id="gridPhaseCrud" fixedLayout="true" span="true" sizedByContent="true">
+                                            <columns>
+                                                <column label="" width="150px" />
+                                                <column label="" width="300px" />
+                                                <column label="" width="100px" />
+                                                <column label="" width="300px"/>
+                                            </columns>  
+                                            <rows>
+                                                <row>
+                                                    <label value="Code phase " />
+                                                    <textbox id="fieldNumPhase"  hflex="2" value="@{phaseWin.objet.numPhase}" disabled="true"/>
+                                                    <label value="commercial Responsable " />
+                                                    <combobox id="cocommercialResponsables" hflex="4" model="@{phaseWin.commercialResponsables}" selectedItem="@{phaseWin.commercialResponsableSelected}" disabled="true">
+                                                        <comboitem self="@{each=elementcommercialResponsable}" label="@{elementcommercialResponsable}"/>
+                                                    </combobox>
+                                                </row>      						
+                                                <row>
+                                                    <label value="Date début"/>
+                                                    <datebox id="fieldDateDebut" hflex="2" format="dd/MM/yyyy" value="@{phaseWin.objet.dateDebut}" onChange='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur"); phaseWin.actualiserDateExpiration()'/>
+                                                    <label value="Date fin"/>
+                                                    <datebox id="fieldDateFin" hflex="4" format="dd/MM/yyyy" value="@{phaseWin.objet.dateFin}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' disabled="${CHANGER_DATE_EXPIRATION == false}"/>
+                                                </row>												
+                                                <row>
+<!--                                                    <vlayout id="flist" width="400px" sclass="fileList" />
+                                                    <button id="attachBtn" sclass="attachBtn" src=""
+                                                            upload="true,maxsize=10240" label="Attach" onUpload="addItem()"/>-->
+                                   
+                                                
+                                                    <!--<button id="btnDocument" label="Ajouter document" image="/images/skin/folderb16.png" onClick="phaseWin.doModalDialogDocument()" />-->
+                                      		 
+                                                    <!--<textbox id="fieldDocumentNumerise" hflex="1" value="@{phaseWin.objet.documentNumerise}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>-->
+                                                    <button id="btnUploadDocument" label="Document numérisé" image="/images/skin/folderb16.png" onClick="Fileupload.get(-1);"/>                                                    
+                                                    <vlayout id="flist" width="400px" sclass="fileList" />
+                                                    
+                                                </row>												
+						
+                                                <row id="gridPhaseCrudRowAvecAffectation">
+                                                    
+                                                    <label value="Avec affectation"/>
+								 
+                                                    <checkbox id="fieldAvecaffectation" label="?" checked="@{phaseWin.objet.estAvecAffectation}"/>
+                                                </row>												
+						
+                                                <row id="rowInfosAffectation" visible="false">
+                                                 <!--   
+                                                    -->
+                                                </row>
+                                                
+                                                <row>
+                                                    <label value="Montant vente prévisionnel"/>
+                                                    <cell>	 
+                                                        <doublebox id="fieldMontantVente" hflex="2" constraint="no empty: Veillez indiquez une valeur" value="@{phaseWin.objet.montantVente}" onOK ="phaseWin.calculerMontantReliquat();" format="#,##0.##" />
+                                                        <label value=" DH"/>
+                                                    </cell> 
+                                                    <label id="labelMontantReliquat" value="Reste à payer"/>                                                   
+						
+                                                    <cell  id="fieldMontantReliquat">
+                                                        <doublebox hflex="4" value="@{phaseWin.objet.montantReliquat}" readonly="true" format="#,##0.##" />
+                                                        <label value=" DH"/>
+                                                    </cell> 
+                                                    
+                               
+                                                </row>	
+                                                
+                                                <row>
+                                                    <label value="Total des paiements"/>
+                                                    <cell  id="fieldTotalpaiement">
+                                                        <doublebox hflex="1" value="@{phaseWin.objet.totalPaiements}" readonly="true" format="#,##0.##" />
+                                                        <label value=" DH"/>
+                                                    </cell> 
+                                                </row>
+                                                
+                                                <row id="fieldMontantReel">
+                                                    <label value="Montant vente réel"/>
+                                                    <cell >
+                                                        <doublebox hflex="2" value="@{phaseWin.objet.totalPaiements}" readonly="true" format="#,##0.##" />
+                                                        <label value=" DH"/>
+                                                    </cell> 
+                                                </row>                                                    
+	
+                                                <row id="gridPhaseCrudRowNotaire">
+                                                    <label value="notaire " />
+                                                    <combobox id="conotaires" hflex="2" model="@{phaseWin.notaires}" selectedItem="@{phaseWin.notaireSelected}">
+                                                        <comboitem self="@{each=elementnotaire}" label="@{elementnotaire}"/>
+                                                    </combobox>
+                                                </row>
+                                                
+                                                <row>
+                                                    <label value="Statut de la phase"/>
+                                                    <combobox id="costatuts" hflex="1" model="@{phaseWin.statuts}" selectedItem="@{phaseWin.statutSelected}" disabled="true" >
+                                                        <comboitem self="@{each=elementstatut}" label="@{elementstatut}"/>
+                                                    </combobox>	 
+                                            
+                                                </row>	
+                                                <row >
+                                                    <cell>
+                                                        <label value="Commentaire"/>
+                                                    </cell>
+                                                    <cell colspan="3">
+                                                        <textbox id="fieldCommentaire"  multiline="true" rows="3" width="99%" value="@{phaseWin.objet.commentaire}" />
+                                                    </cell>
+                                                </row>
+	
+                                            </rows>
+                                        </grid>
+                                    </tabpanel>
+                                    <tabpanel height="65%">
+                                        <separator/>
+                                        
+                                        <listbox id="lstpaiements" model="@{phaseWin.lstPaiements}" onSelect="phaseWin.selectPaiement()" selectedItem="@{phaseWin.paiementSelected}" visible="${GESTION_PAIEMENTS}" width="99%" vflex="true">
+                                            <listhead sizable="true">
+                                                <listheader width="32px"/>
+                                                <listheader label="Date paiement" />
+                                                <listheader label="Date encaissement"/>	
+                                                <listheader label="Montant paiement (DH)"/>
+                                                <listheader label="Phase paiement"/>	
+                                                <listheader label="Mode paiement" width="120px"/>
+                                                <listheader label="Statut" width="150px"/>
+                                                <listheader width="49px"/>
+                                                
+                                            </listhead>
+                                            <listitem self="@{each=elementpaiement}" value="@{elementpaiement}" > 
+                                                <listcell image="/images/skin/icon_selection.png"/>                   							
+                                                <listcell>
+                                                    <datebox value="@{elementpaiement.datePaiement}" width="99%" format="dd/MM/yyyy" buttonVisible="false" readonly="true"/>
+                                                </listcell>
+                                                <listcell>
+                                                    <datebox value="@{elementpaiement.dateEncaissement}" width="99%" format="dd/MM/yyyy" buttonVisible="false" readonly="true"/>
+                                                </listcell>
+                                                <listcell>
+                                                    <doublebox value="@{elementpaiement.montant}" format="#,##0.##" width="99%" readonly="true"/>
+                                                </listcell>
+                                                <!--<listcell label="@{elementpaiement.type}"/>	-->
+                                                <listcell label="@{elementpaiement.intitulePhasePaiement}"/>
+                                                <listcell label="@{elementpaiement.modePaiement}"/>	
+                                                <listcell label="@{elementpaiement.statut}"/>
+                                                <listcell >
+                                                    <button id="btnRecu" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));phaseWin.genererRecu(self.parent.parent.value)" width="30px" image="/images/skin/Recu.png"/>
+                                                </listcell>
+                                               
+                                            </listitem>
+                                        </listbox>
+                                        <separator/> 
+                                        <grid id="gridPaiementbis" width="99%" visible="${GESTION_PAIEMENTS}" >
+                                            <columns>
+                                                <column width="32px"/>							
+                                                <column />							
+                                                <column />							
+                                                <column/>							
+                                                <column/>                                                
+                                                <column width="120px"/>                                                
+                                                <column width="150px"/>                                                
+                                                <column width="58px"/>
+                                            					                                                						
+                                            </columns>
+                                            <rows>
+                                                <row id="rowPaiement" style="background: #B0CC99">                                               
+                                                    <image src="/images/skin/database_edit.png"  />                                                    
+                                                    <datebox id="fieldPaiementdatePaiementbis" format="dd/MM/yyyy" value="@{phaseWin.nouveauPaiement.datePaiement}" inplace="true" onOK="phaseWin.addPaiement()" width="99%"/>								
+                                                    <datebox id="fieldPaiementdateEncaissementbis" format="dd/MM/yyyy" value="@{phaseWin.nouveauPaiement.dateEncaissement}" inplace="true" onOK="phaseWin.addPaiement()" width="99%"/>								
+                                                    <cell>
+                                                        <doublebox id="fieldPaiementmontantbis" value="@{phaseWin.nouveauPaiement.montant}" inplace="true" onOK="phaseWin.addPaiement()" format="#,##0.##" width="80%" />                                                    
+                                                        <label value=" DH"/>
+                                                    </cell><!--                                              
+                                                    <combobox id="cotypePaiementsbis" model="@{phaseWin.typePaiements}" selectedItem="@{phaseWin.typePaiementSelected}"  hflex="1" onOK='phaseWin.addPaiement()' visible="false">
+                                                        <comboitem self="@{each=elementtypePiament}" label="@{elementtypePiament}" />
+                                                    </combobox>   -->
+                                                    
+                                                    <label value="@{phaseWin.nouveauPaiement.intitulePhasePaiement}"/>
+                                                    <combobox id="comodePaiementsbis" model="@{phaseWin.modePaiements}" selectedItem="@{phaseWin.modePaiementSelected}"  hflex="1" onOK='phaseWin.addPaiement()'>
+                                                        <comboitem self="@{each=elementmp}" label="@{elementmp}" />
+                                                    </combobox>                                                    
+                                                    <combobox id="costatutPaiementbis" model="@{phaseWin.statutPaiements}" selectedItem="@{phaseWin.statutPaiementSelected}"  hflex="1" onOK='phaseWin.addPaiement()' disabled="${GESTION_PAIEMENTS_STATUT == false}" >
+                                                        <comboitem self="@{each=elementstatutPaiementbis}" label="@{elementstatutPaiementbis}" />
+                                                    </combobox>                                                    
+                                                    <button id="btnAddpaiement" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));phaseWin.addPaiement()" width="30px" image="/images/skin/Action-edit-add-icon-16_16.png"/>                                                                 
+                                                             
+                                                </row>
+                                                
+                                            </rows>
+                                        </grid>                                       
+                                       
+                                    </tabpanel>
+                                </tabpanels>
+                            </tabbox>
+                            <separator />
+                            <vlayout visible="false" >
+                                <button id="btnDelete" onClick="" label="" visible="false" width="0px" />
+                            </vlayout>
+                            <button id="btnSave" onClick="phaseWin.add()" label="Sauvegarder" image="/images/skin/database_save.png"/>
+                            <button id="btnetapesuivante" label="Passer à l'etape suivante" image="/images/skin/ArrowRight-16x16.png">
+                                <attribute name="onClick"><![CDATA[
+Messagebox.show("Merci de confirmer le passage à l'étape suivante ?", "Confirmation", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
+    public void onEvent(Event evt) throws InterruptedException {
+        if (evt.getName().equals("onOK")) {
+        TRTOK = true;
+        try
+        {
+        Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));
+        phaseWin.etapeSuivante();
+        }
+        catch (err)
+        {
+        alert("Erreur lors de l'enregistrement !");
+        TRTOK = false;
+        }
+           if (TRTOK){}
+        } else {
+            alert("Modification annulée !");
+        }
+    }
+});
+]]>
+                                </attribute>
+                            </button>
+                            
+                            <button id="btnUpdate" onClick="phaseWin.update()" label="Modifier" image="/images/skin/database_edit.png" visible="false" />
+                            
+                    <!-- <button id="btnNew" onClick="phaseWin.newRecord()" label="Nouveau enregistrement" image="/images/skin/database_add.png"/> -->
+                            <button id="btnCloturer" onClick="phaseWin.cloturerContrat()" label="Cloturer le contrat" image="/images/skin/validate.png" visible="false">
+                                <attribute name="onClick"><![CDATA[
+Messagebox.show("Êtes-vous sûr de vouloir clôturer le contrat ?", "Confirmation", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
+    public void onEvent(Event evt) throws InterruptedException {
+        if (evt.getName().equals("onOK")) {
+        TRTOK = true;
+        try
+        {
+        Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));
+        phaseWin.cloturerContrat();
+        }
+        catch (err)
+        {
+        alert("Erreur lors de l'enregistrement !");
+        TRTOK = false;
+        }
+           if (TRTOK){}
+        } else {
+            alert("Modification annulée !");
+        }
+    }
+});
+]]>
+                                </attribute>
+                            </button>
+                            <button id="btnNewP" onClick="phaseWin.nouvellePhase()" popup="Cliquer sur nouveau pour créer une nouvelle phase" label="Nouvelle phase" image="/images/skin/database_add.png"/>
+                            <button id="btnCancel" onClick="phaseWin.cancel()" label="Fermer" image="/images/skin/cancel.png"/>                            
+                            <button visible="false" id="triggerBtn" onBindingValidate=""/>
+                            
+                        </groupbox>
+                    </center>
+                </borderlayout>
+            </west>
+            <center border="none" flex="true">
+                <groupbox width="100%" height="100%">
+                    <listbox id="lstObjet" onSelect="phaseWin.select()" model="@{phaseWin.listeObjets}" selectedItem="@{phaseWin.objetSelected}"  width="100%" height="100%" mold="paging" paginal="${paging}">
+                        <auxhead sclass="category-center" style="background: #E1E6FA">                            
+                            <auxheader colspan="8" align="center">
+                                <label id="PHASETITLElst" value="${PHASETITLE}" sclass="labelTitlePhase"/>
+                            </auxheader>
+                        </auxhead>
+                        
+                        <auxhead sclass="category-center">                            
+                            <auxheader colspan="1"/>
+                            <auxheader colspan="1">                               
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filterprojet" model="@{phaseWin.projets}" selectedItem="@{phaseWin.filtre.projet}" autocomplete="true" autodrop="true" mold="rounded" onSelect="phaseWin.ofs=0;phaseWin.filtrer()" onOK="phaseWin.ofs=0;phaseWin.filtrer()" width="90%">
+                                    <comboitem self="@{each=elementfiltreprojet}" label="@{elementfiltreprojet}"/>
+                                </combobox>
+                            </auxheader>
+                            
+                            <auxheader colspan="1">                                
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filterclient" model="@{phaseWin.clients}" selectedItem="@{phaseWin.filtre.client}" autocomplete="true" autodrop="true" mold="rounded" onSelect="phaseWin.ofs=0;phaseWin.filtrer()" onOK="phaseWin.ofs=0;phaseWin.filtrer()" width="90%">
+                                    <comboitem self="@{each=elementfiltreclient}" label="@{elementfiltreclient}"/>
+                                </combobox>
+                            </auxheader>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterNumPhase" value="@{phaseWin.filtre.numPhase}" onOK="phaseWin.ofs; phaseWin.filtre.numPhase=self.value; phaseWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="90%"/>
+                            </auxheader>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />                               
+                                <datebox id="filterDateDebut" format="dd/MM/yyyy" value="@{phaseWin.filtre.dateDebut}" onOK= "phaseWin.ofs=0; phaseWin.filtrer(); self.focus();" width="90%"/>
+                            </auxheader>
+								
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <datebox id="filterDateFin" format="dd/MM/yyyy" value="@{phaseWin.filtre.dateFin}" onOK= "phaseWin.ofs=0; phaseWin.filtrer(); self.focus();" width="90%"/>
+                            </auxheader>
+			
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <doublebox id="filterMontantVente" value="@{phaseWin.filtre.montantVente}" width="100%">
+                                    <attribute name="onOK">
+										<![CDATA[
+											phaseWin.ofs=0;
+											if(self.value.equals("")) {
+												if(phaseWin.filtre.montantVente != null) {
+													phaseWin.filtre.montantVente = null;
+												}
+											} else {
+												phaseWin.filtre.montantVente=new Double(self.value);
+											}
+											phaseWin.filtrer();
+											self.focus();
+											if(!self.value.equals("")) {
+												self.setSelectionRange(self.value.toString().length(), self.value.toString().length());
+											}
+										]]>
+                                    </attribute>    
+                                </doublebox>
+                            </auxheader>
+								
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+
+                                <combobox id="filterstatut" model="@{phaseWin.statuts}" selectedItem="@{phaseWin.filtre.statut}" autocomplete="true" autodrop="true" mold="rounded" onSelect="phaseWin.ofs=0;phaseWin.filtrer()" onOK="phaseWin.ofs=0;phaseWin.filtrer()" width="90%">
+                                    <comboitem self="@{each=elementfiltrestatut}" label="@{elementfiltrestatut}"/>
+                                </combobox>
+                            </auxheader>
+			<!--					
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterIntitule" value="@{phaseWin.filtre.intitule}" onChanging="phaseWin.ofs; phaseWin.filtre.intitule=event.value; phaseWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+			-->					 
+                        </auxhead>               
+                        <listhead sizable="true">
+                            <listheader width="32px" />
+							
+                            <listheader id="hprojet" label="Projet" sort="auto(projet.code)" onSort="phaseWin.sort(event)"/>	
+                            <listheader id="hclient" label="Client" sort="auto(client.nom)" onSort="phaseWin.sort(event)"/>
+                            <listheader id="hnumPhase" label="Code" sort="auto(numPhase)" onSort="phaseWin.sort(event)"/>
+                            <listheader id="hdateDebut" label="Date début" sort="auto(dateDebut)" onSort="phaseWin.sort(event)"/>	
+							
+                            <listheader id="hdateFin" label="Date fin" sort="auto(dateFin)" onSort="phaseWin.sort(event)"/>	
+							
+                            <!--<listheader id="hestExpire" label="EstExpire" sort="auto(estExpire)" onSort="phaseWin.sort(event)"/>	-->
+							
+                            <!--<listheader id="hmontantReliquat" label="MontantReliquat" sort="auto(montantReliquat)" onSort="phaseWin.sort(event)"/>	-->
+							
+                            <listheader id="hmontantVente" label="Montant vente prévisionnel (DH)" sort="auto(montantVente)" onSort="phaseWin.sort(event)"/>	
+							
+                            <listheader id="hstatut" label="Statut" sort="auto(statut)" onSort="phaseWin.sort(event)"/>	
+							
+                            <!--<listheader id="hintitule" label="Intitule" sort="auto(intitule)" onSort="phaseWin.sort(event)"/>	-->
+							                                 
+                        </listhead>
+                        <listitem value="@{element}" self="@{each=element}">    
+                            <listcell image="/images/skin/icon_selection.png"/>
+                            
+                            <listcell label="@{element.projet}">
+							
+                               <!-- <textbox value="@{element.projet, save-when='self.onChange'}" inplace="true" onOK="echeanceWin.objet=self.parent.parent.value; echeanceWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>-->
+							
+                            </listcell>	
+                            
+                            <listcell label="@{element.client}">
+							
+                             <!--   <textbox value="@{element.client, save-when='self.onChange'}" inplace="true" onOK="echeanceWin.objet=self.parent.parent.value; echeanceWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>-->
+							
+                            </listcell>	
+                            
+                            <listcell label="@{element.numPhase}">	
+                            </listcell>	
+                            
+                            <listcell>
+							
+                                <datebox format="dd/MM/yyyy" value="@{element.dateDebut, save-when='self.onChange'}" inplace="true" onOK="phaseWin.objet=self.parent.parent.value; phaseWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>							
+							
+                            <listcell>
+							
+                                <datebox format="dd/MM/yyyy" value="@{element.dateFin, save-when='self.onChange'}" inplace="true" onOK="phaseWin.objet=self.parent.parent.value; phaseWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>							
+		
+                            <listcell>
+							
+                                <doublebox value="@{element.montantVente, save-when='self.onChange'}" inplace="true" onOK="phaseWin.objet=self.parent.parent.value; phaseWin.update();" onChange='self.style="font-weight:bold"' width="99%" />
+							
+                            </listcell>							
+						
+                            <listcell label="@{element.statut}"/>					
+							
+							     
+                        </listitem>
+                    </listbox>
+                    <paging id="paging" totalSize="@{phaseWin.tailleListe}" pageSize="@{phaseWin.maxNb}" onPaging="phaseWin.getNextElements(event);" />
+                    <separator/>
+                    
+                    <separator/>
+                    <button id="btnNew" onClick="phaseWin.newRecord()" label="Nouveau" image="/images/skin/database_add.png"/>
+                    <fileupload id="btnImport" label="Import en masse" onUpload="phaseWin.importation(event.getMedia())" image="/images/skin/BriefcaseOpen-16x16.png" visible="${IMPORT_DONNEES}"/>
+                    <button id="btnNettaoyage" onClick="phaseWin.nettoyerAffectationClientsUtilisateurs()" label="Nettoyage Affectation Clients Utilisateurs" visible="${IMPORT_DONNEES}"/>
+                   <!-- <button id="btnPdf" onClick="phaseWin.genererRapportPdf()" label="Generer rapport" image="/images/skin/pdf-soubor-logo.png"/>
+                    <button id="btnExcel" onClick="phaseWin.genererRapportExcel()" label="Generer excel" image="/images/skin/excel-icon.png"/>
+                -->
+                    <button id="btnActualiser" onClick="phaseWin.filtrer()" label="Actualiser" image="/images/skin/refresh-icon.png"/>
+                </groupbox>
+            </center>
+        </borderlayout>
+        <window id="modalDialogDocument" title="Ajouter document" border="normal" width="460px"
+                closable="true" action="show: slideDown;hide: slideUp" position="center,center" visible = "false" onClose="self.visible = false; event.stopPropagation();">
+            <hlayout>
+                <textbox id="fieldIntitule"  visible = 'false'/>
+                <!--<button  id="btnUploadDocument" label="Document numérisé" onClick="Fileupload.get(-1);"/>-->
+                <button  label="Ajouter" onClick='phaseWin.ajouterDocument()'/> 
+                <button  label="Supprimer" onClick='phaseWin.supprimerDocument()'/> 
+            </hlayout>
+        </window>
+    </window>
+
+</zk>

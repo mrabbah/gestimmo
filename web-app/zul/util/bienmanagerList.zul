@@ -1,0 +1,126 @@
+
+<zk>
+    <groupbox id="gbCrud" width="100%" height="100%">
+        <listbox id="lstBien" width="99%" height="200px" rows="4">
+            <auxhead sclass="category-center">
+                <auxheader colspan="1"/>
+                <auxheader colspan="1">
+                    <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                    <textbox id="filterNumero" width="100%"/>
+                </auxheader>
+                <auxheader colspan="1">
+                    <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                    <textbox id="filterContenance" width="100%"/>
+                </auxheader> 
+                <auxheader colspan="1">
+                    <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                    <doublebox id="filterPrixVente" width="100%" />
+                </auxheader>
+                <auxheader colspan="1">
+                    <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                    <doublebox id="filterSuperficieConstruite" width="100%" />
+                </auxheader>
+                <auxheader colspan="1">
+                    <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                    <doublebox id="filterSuperficieVendable" width="100%" />
+                </auxheader>
+                <auxheader colspan="1">
+                    <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                    <doublebox id="filterSuperficie" width="100%" />
+                </auxheader>
+                <auxheader colspan="1">
+                    <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                    <textbox id="filterTitreFoncier" width="100%"/>
+                </auxheader>
+                <auxheader colspan="1">
+                    <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                    <textbox id="filterStatut" width="100%"/>
+                </auxheader>
+            </auxhead>
+            <listhead sizable="true">
+                <listheader width="32px" />
+                <listheader id="hnumero" label="Numéro" sort="auto(numero)" />	
+                <listheader id="hcontenance" label="Contenance" sort="auto(contenance)" />	
+                <listheader id="hprixVente" label="Prix de vente (DH)" sort="auto(prixVente)" />	
+                <listheader id="hsuperficieConstruite" label="Superficie construite (m²)" sort="auto(superficieConstruite)" />	
+                <listheader id="hsuperficieVendable" label="Superficie vendable (m²)" sort="auto(superficieVendable)"/>	
+                <listheader id="hsuperficie" label="Superficie (m²)" sort="auto(superficie)"/>	
+                <listheader id="htitrefoncier" label="Titre foncier" sort="auto(titreFoncier)"/>	
+                <listheader id="hstatut" label="Statut" sort="auto(statut)"/>	
+            </listhead>
+
+        </listbox>
+        <separator/>
+        <grid fixedLayout="true" visible="false" >
+            <columns>
+							
+                <column width="15%"/>
+							
+                <column width="35%"/>
+							
+                <column width="15%"/>
+							
+                <column width="35%"/>
+
+							
+            </columns>
+            <rows>
+                <row>
+                    <label value="Numéro"/>
+                    <textbox id="fieldNumero" hflex="2" constraint="no empty: Veillez indiquez une valeur" />
+                    <label value="Contenance " />
+<!--                    <combobox id="cocontenances" hflex="4" />-->
+                    <textbox id="fieldContenance" hflex="4" />
+                </row>
+                <row>
+                    <label value="Prix de vente"/>
+                    <cell>
+                        <doublebox id="fieldPrixVente" hflex="1" format="#,##0.##" />
+                        <label value=" DH"/>
+                    </cell>
+                    <label value="Superficie construite"/>
+                    <cell>
+                        <doublebox id="fieldSuperficieConstruite" hflex="1" format="#,##0.##" />
+                        <label value=" m²"/>
+                    </cell>
+                </row>												
+                <row>
+                    <label value="Superficie vendable"/>
+                    <cell>
+                        <doublebox id="fieldSuperficieVendable" hflex="1" format="#,##0.##" />
+                        <label value=" m²"/>
+                    </cell>
+                    <label value="Superficie cadastrale"/>
+                    <cell>
+                        <doublebox id="fieldSuperficie" hflex="1" format="#,##0.##" />
+                        <label value=" m²"/>
+                    </cell>
+                </row>												
+                <row>
+                    <label value="Bien parent " />
+                    <combobox id="cobienParents" hflex="1" />
+                    <label value="Titre foncier"/>
+                    <textbox id="fieldTitreFoncier" hflex="1" />
+                </row>
+                <row>
+                    <label value="Statut"/>
+                    <label id="fieldStatut" hflex="1" />
+                </row>
+                <row>
+                    <button id="btnSave" label="Ajouter" image="/images/skin/database_save.png" visible="false"/>
+                    <button id="btnUpdate" label="Modifier" image="/images/skin/database_edit.png" visible="false"/>
+                    <button id="btnDelete" label="Supprimer" image="/images/skin/database_delete.png" visible="false"/>
+                    <button id="btnCancel" label="Annuler" image="/images/skin/database_delete.png" visible="false"/>  
+                </row>
+            </rows>
+            
+        </grid>					
+					
+        <separator />
+        
+        <button id="btnPdf" image="/images/skin/pdf-soubor-logo.png"  />
+        <button id="btnExcel" image="/images/skin/Excel-icon.png" />
+
+        
+    </groupbox>
+</zk>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./monCompteWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<!--<?page zscriptLanguage="GroovyGrails"?>-->
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window id="monCompteWin" title="Mes informations" border="normal" 
+    width="500px" height="250px"  position="center" visible="true"
+    closable="true" action="show: slideIn({duration: 1000}); hide: slideUp({duration: 300})" 
+    xmlns:c="client" use="${monCompteWindow}">
+        <groupbox id="gbCrud" >
+            <grid fixedLayout="true">
+                <rows>
+                    <row>
+                        <label value="Nom et prénom"/>
+                        <textbox id="fieldNom" constraint="no empty: Veillez indiquez une valeur" value="@{monCompteWin.utilisateur.userRealName, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' hflex="1"/>
+                    </row>
+                    <row>
+                        <label value="Login"/>
+                        <textbox id="fieldLogin" constraint="no empty: Veillez indiquez une valeur" value="@{monCompteWin.utilisateur.username, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' hflex="1"/>
+                    </row>
+                    <row>
+                        <label value="Mot de passe"/>
+                        <textbox id="fieldPassword" type="password" constraint="no empty: Veillez indiquez une valeur" value="@{monCompteWin.utilisateur.pass, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' hflex="1"/>
+                    </row>                    
+                    <row>
+                        <label value="Email"/>
+                        <textbox id="fieldEmail" constraint="/.+@.+\.[a-z]+/ : Veillez Entrez une adresse mail valide" value="@{monCompteWin.utilisateur.email, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' hflex="1"/>
+                    </row>                                                                                                                               
+                </rows>
+            </grid>
+            <separator />
+            <button id="btnUpdate" label="Mettre à jour" image="/images/skin/database_edit.png">
+                <attribute name="onClick">
+                    <![CDATA[
+                    Messagebox.show("Etes vous sûr de vouloir continuer ?", "Confirmation", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
+                        public void onEvent(Event evt) throws InterruptedException {
+                            if (evt.getName().equals("onOK")) {
+                                Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));
+                                monCompteWin.update();
+                                Events.sendEvent(new Event(Events.ON_CLOSE,monCompteWin));
+                            } 
+                        }
+                    });
+                    ]]>
+                </attribute>
+            </button>
+            <button visible="false" id="triggerBtn" onBindingValidate=""/>
+        </groupbox>
+    </window>
+</zk>

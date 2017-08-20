@@ -1,0 +1,17 @@
+package com.choranet.commun
+
+
+class MailJob {
+    
+    def alerteService
+    
+    static triggers = {
+        cron name: 'mailTrigger', startDelay:3600000, cronExpression: '0 0 02 * * ?'
+        //cron name: 'phaseTrigger', startDelay:60000, cronExpression: '0 * 11 * * ?' // test execution apres 1min du demrage systeme, execution chaque minitue 
+    }
+    def group = "StatutGroup"
+
+    def execute(){
+        alerteService.jobMailExecute()
+    }
+}

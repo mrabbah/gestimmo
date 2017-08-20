@@ -1,0 +1,104 @@
+
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./installWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window id="installWin" height="100%" width="100%" style="margin:auto;" use="${choraClientInfoWindow}" >
+        <image  src="/images/skin/wizard.png" width="100%" height="200px"/>
+        <separator />
+        <groupbox id="gbCrud" width="100%" height="100%">
+            <grid fixedLayout="true">
+                <rows>
+			
+                    <row>
+                        <label value="Raison social"/>
+							 
+                        <textbox id="fieldNomsociete" hflex="1" constraint="no empty: Veillez indiquez une valeur" value="@{installWin.objet.nomsociete, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                        <label value="Forme Juridique"/>
+								 
+                        <textbox id="fieldRaisonSocial" hflex="1" value="@{installWin.objet.raisonSocial, save-when='triggerBtn.onClick'}" />
+                    </row>	
+                    
+                    <row>
+                        <label value="Adresse"/>
+								 
+                        <textbox id="fieldAdresse" hflex="1"  value="@{installWin.objet.adresse, save-when='triggerBtn.onClick'}"/>
+                        <label value="Code postale"/>
+								 
+                        <textbox id="fieldCodePostale" hflex="1" value="@{installWin.objet.codePostale, save-when='triggerBtn.onClick'}" />
+                    </row>
+                 
+                    <row>
+                        <label value="Ville"/>
+								 
+                        <textbox id="fieldville" hflex="1"  value="@{installWin.objet.ville, save-when='triggerBtn.onClick'}"/>
+                        <label value="Pays"/>
+								 
+                        <textbox id="fieldpays" hflex="1" value="@{installWin.objet.pays, save-when='triggerBtn.onClick'}" />
+                    </row>
+                                               
+                    <row>
+                        <label value="Telephone"/>
+								 
+                        <textbox id="fieldTelephone" hflex="1"  value="@{installWin.objet.telephone, save-when='triggerBtn.onClick'}"/>
+                        <label value="Fax"/>
+								 
+                        <textbox id="fieldFax" hflex="1" value="@{installWin.objet.fax, save-when='triggerBtn.onClick'}" />
+                    </row>
+                                                 
+                    <row>
+                        <label value="Email"/>
+								 
+                        <textbox id="fieldEmail" hflex="1" value="@{installWin.objet.email, save-when='triggerBtn.onClick'}"/>
+                        <label value="Patente"/>
+								 
+                        <textbox id="fieldPatente" hflex="1" value="@{installWin.objet.patente, save-when='triggerBtn.onClick'}" />
+                    </row>
+                            
+              
+                    <row>
+                        <label value="RC"/>
+								 
+                        <textbox id="fieldRC" hflex="1" value="@{installWin.objet.rc, save-when='triggerBtn.onClick'}" />
+                        <label value="IDF"/>
+								 
+                        <textbox id="fieldIDF" hflex="1" value="@{installWin.objet.idF, save-when='triggerBtn.onClick'}"/>
+                    </row>
+                    
+                                                                                                                                          
+                    <row>
+                        <label value="Cnss"/>
+								 
+                        <textbox id="fieldCnss" hflex="1" value="@{installWin.objet.cnss, save-when='triggerBtn.onClick'}"/>
+                        <label value="Site"/>
+								 
+                        <textbox id="fieldSite" hflex="1" value="@{installWin.objet.site, save-when='triggerBtn.onClick'}"/>
+                    </row>
+                    <row>
+                        <label value="Repertoir Backup"/>
+                        <textbox id="fieldRepertoirBackup" hflex="1" value="@{installWin.objet.repertoirBackup, save-when='triggerBtn.onClick'}"/>
+                    </row>
+                    
+                    <row>                   
+                        <fileupload  id="btnUpload" label="Charger logo" onUpload="installWin.updateLogo(event.getMedia())" />
+                        <image id="appercuLogo" width="90px" height="90px" content="@{installWin.objet.trans_logo}" />
+                    </row>
+                </rows>
+            </grid>
+                    
+                 
+            <separator />
+            
+            <button id="btnUpdate"  label="Enregistrer" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));installWin.enregistrer();" image="/images/skin/database_edit.png" visible="true" />
+
+            <button visible="false" id="triggerBtn" onBindingValidate=""/>
+        </groupbox>
+          
+    </window>
+</zk>
+

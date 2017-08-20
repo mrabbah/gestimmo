@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./priseInformationWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window id="priseInformationWin" height="100%" width="100%" style="margin:auto;" use="${priseInformationWindow}">
+    <!-- <zscript src="/zs/priseInformation.zs"/> -->
+        <borderlayout>
+           <!--
+           <north id="eastPanel" size="65px" open="false"  title="Recherche avancée" flex="true" splittable="true"  collapsible="true"  >
+                <hlayout spacing="10px" style="margin-top:9px;margin-left:10px">                                                                                
+					
+                </hlayout>
+            </north>
+            -->
+            <west id="westPanel" title="Prise d'information" size="40%" flex="true" splittable="true" collapsible="true" open="false">
+                <groupbox id="gbCrud" width="100%" height="100%">
+                    <grid fixedLayout="true">
+                        <rows>
+						
+                            <row>
+                                <label value="Date"/>
+								 
+                                <datebox id="fieldDate" hflex="1" constraint="no empty: Veillez indiquez une valeur" format="dd/MM/yyyy" value="@{priseInformationWin.objet.date, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>												
+				            
+                            <row>
+                                <label value="Projet " />
+                                <combobox id="coprojets" hflex="1" model="@{priseInformationWin.projets}" selectedItem="@{priseInformationWin.projetSelected}">
+                                    <comboitem self="@{each=elementprojet}" label="@{elementprojet}"/>
+                                </combobox>
+                            </row>
+                            
+                            <row>
+                                <label value="Client " />
+                                <combobox id="coclients" hflex="1" model="@{priseInformationWin.clients}" selectedItem="@{priseInformationWin.clientSelected}">
+                                    <comboitem self="@{each=elementclient}" label="@{elementclient}"/>
+                                </combobox>
+                            </row>
+                            
+                            <row>
+                                <label value="Source d'information " />
+                                <combobox id="cosourceInformations" hflex="1" model="@{priseInformationWin.sourceInformations}" selectedItem="@{priseInformationWin.sourceInformationSelected}">
+                                    <comboitem self="@{each=elementsourceInformation}" label="@{elementsourceInformation}"/>
+                                </combobox>
+                            </row>
+						
+                            <row>
+                                <label value="Canal " />
+                                <combobox id="cocanals" hflex="1" model="@{priseInformationWin.canals}" selectedItem="@{priseInformationWin.canalSelected}">
+                                    <comboitem self="@{each=elementcanal}" label="@{elementcanal}"/>
+                                </combobox>
+                            </row>
+
+                        </rows>
+                    </grid>					
+					
+                    <separator />
+                    <button id="btnSave" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));priseInformationWin.add()" label="Sauvegarder" image="/images/skin/database_save.png"/>
+                    <button id="btnUpdate" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));priseInformationWin.update()" label="Modifier" image="/images/skin/database_edit.png" visible="false"/>
+                    <button id="btnDelete" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));priseInformationWin.delete()" label="Supprimer" image="/images/skin/database_delete.png" visible="false"/>
+                    <!-- <button id="btnNew" onClick="priseInformationWin.newRecord()" label="Nouveau enregistrement" image="/images/skin/database_add.png"/> -->
+                    <button id="btnCancel" onClick="priseInformationWin.cancel()" label="Annuler" image="/images/skin/cancel.png"/>
+                    <button visible="false" id="triggerBtn" onBindingValidate=""/>
+                </groupbox>
+            </west>
+            <center border="none" flex="true">
+                <groupbox width="100%" height="100%">
+                    <listbox id="lstObjet" onSelect="priseInformationWin.select()" model="@{priseInformationWin.listeObjets}" selectedItem="@{priseInformationWin.objetSelected}"  width="100%" height="100%" mold="paging" paginal="${paging}">
+                        <auxhead sclass="category-center">
+                            <auxheader colspan="1"/>
+                                                        
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filterprojet" model="@{priseInformationWin.projets}" selectedItem="@{priseInformationWin.filtre.projet}" autocomplete="true" autodrop="true" mold="rounded" onSelect="priseInformationWin.ofs=0;priseInformationWin.filtrer()" onOK="priseInformationWin.ofs=0;priseInformationWin.filtrer()">
+                                    <comboitem self="@{each=elementfiltreprojet}" label="@{elementfiltreprojet}"/>
+                                </combobox>
+                            </auxheader>
+                            
+                            <auxheader colspan="1"> 
+                                <combobox id="filterclient" model="@{priseInformationWin.clients}" selectedItem="@{priseInformationWin.filtre.client}" autocomplete="true" autodrop="true" mold="rounded" onSelect="priseInformationWin.ofs=0;priseInformationWin.filtrer()" onOK="priseInformationWin.ofs=0;priseInformationWin.filtrer()">
+                                    <comboitem self="@{each=elementfiltreclient}" label="@{elementfiltreclient}"/>
+                                </combobox>
+                            </auxheader>
+                                      				                          
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filtersourceInformation" model="@{priseInformationWin.sourceInformations}" selectedItem="@{priseInformationWin.filtre.sourceInformation}" autocomplete="true" autodrop="true" mold="rounded" onSelect="priseInformationWin.ofs=0;priseInformationWin.filtrer()" onOK="priseInformationWin.ofs=0;priseInformationWin.filtrer()">
+                                    <comboitem self="@{each=elementfiltresourceInformation}" label="@{elementfiltresourceInformation}"/>
+                                </combobox>
+					                             
+                            </auxheader>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filtercanal" model="@{priseInformationWin.canals}" selectedItem="@{priseInformationWin.filtre.canal}" autocomplete="true" autodrop="true" mold="rounded" onSelect="priseInformationWin.ofs=0;priseInformationWin.filtrer()" onOK="priseInformationWin.ofs=0;priseInformationWin.filtrer()">
+                                    <comboitem self="@{each=elementfiltrecanal}" label="@{elementfiltrecanal}"/>
+                                </combobox>                                
+                            </auxheader>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <datebox id="filterDate" format="dd/MM/yyyy" value="@{priseInformationWin.filtre.date}" onOK="priseInformationWin.ofs=0; priseInformationWin.filtrer(); self.focus();" width="90%"/>
+                            </auxheader>
+								 
+                        </auxhead>
+                        <listhead sizable="true">
+                            <listheader width="32px" />                         
+                            <listheader id="hprojet" label="Projet" sort="auto(projet)" onSort="priseInformationWin.sort(event)"/>
+                            <listheader id="hclient" label="Client" sort="auto(client)" onSort="priseInformationWin.sort(event)"/>				
+                            <listheader id="hsourceinformation" label="Source information" sort="auto(sourceinformation)" onSort="priseInformationWin.sort(event)"/>				
+                            <listheader id="hcanal" label="Canal" sort="auto(canal)" onSort="priseInformationWin.sort(event)"/>				
+                            <listheader id="hdate" label="Date" sort="auto(date)" onSort="priseInformationWin.sort(event)"/>	
+                        </listhead>
+                        <listitem value="@{element}" self="@{each=element}">    
+                            <listcell image="/images/skin/icon_selection.png"/>
+                            
+                            <listcell label="@{element.projet}">
+		
+                            </listcell>	
+                            
+                            <listcell label="@{element.client}">
+				
+                            </listcell>	
+                            
+                            <listcell label="@{element.sourceInformation}">
+                            </listcell>	
+                            
+                            <listcell label="@{element.canal}">
+                            </listcell>	
+                            
+                            <listcell>
+							
+                                <datebox format="dd/MM/yyyy" value="@{element.date, save-when='self.onChange'}" inplace="true" onOK="priseInformationWin.objet=self.parent.parent.value; priseInformationWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>	
+							     
+                        </listitem>
+                    </listbox>
+                    <paging id="paging" totalSize="@{priseInformationWin.tailleListe}" pageSize="@{priseInformationWin.maxNb}" onPaging="priseInformationWin.getNextElements(event);" />
+                    <separator/>
+                    <grid>
+                        <columns>
+                            <column width="32px" />
+                           
+                            <column />
+                            <column />
+                            <column />
+                            <column />
+                            <column />
+							
+                        </columns>
+                        <rows>
+                            <row>
+                                <image src="/images/skin/database_edit.png"  />
+                                
+                                <combobox id="fieldcoprojetsbis" inplace="true" width="99%" constraint="no empty : Veillez choisir une valeur" model="@{priseInformationWin.projets}" selectedItem="@{priseInformationWin.projetSelected}" 
+                                          onOK="priseInformationWin.add()">                                    
+                                    <comboitem self="@{each=elementprojetbis}" label="@{elementprojetbis}"/>
+                                </combobox>
+                                
+                                <combobox id="fieldcoclientsbis" inplace="true" width="99%" constraint="no empty : Veillez choisir une valeur" model="@{priseInformationWin.clients}" selectedItem="@{priseInformationWin.clientSelected}" 
+                                          onOK="priseInformationWin.add()">                                    
+                                    <comboitem self="@{each=elementclientbis}" label="@{elementclientbis}"/>
+                                </combobox>
+                                
+                                <combobox id="fieldcosourceinformationsbis" inplace="true" width="99%" constraint="no empty : Veillez choisir une valeur" model="@{priseInformationWin.sourceInformations}" selectedItem="@{priseInformationWin.sourceInformationSelected}" 
+                                          onOK="priseInformationWin.add()">                                    
+                                    <comboitem self="@{each=elementsourceinformationbis}" label="@{elementsourceinformationbis}"/>
+                                </combobox>
+                               
+                                <combobox id="fieldcocanalsbis" inplace="true" width="99%" constraint="no empty : Veillez choisir une valeur" model="@{priseInformationWin.canals}" selectedItem="@{priseInformationWin.canalSelected}" 
+                                          onOK="priseInformationWin.add()">                                    
+                                    <comboitem self="@{each=elementcanalbis}" label="@{elementcanalbis}"/>
+                                </combobox>
+								
+                                <datebox id="fielddatebis" format="dd/MM/yyyy" value="@{priseInformationWin.objet.date, save-when='self.onChange'}" inplace="true" onOK="priseInformationWin.add();" width="99%"/>
+								  
+                            </row>
+                        </rows>
+                    </grid>
+                    <separator/>
+                    <button id="btnNew" onClick="priseInformationWin.newRecord()" label="Nouveau" image="/images/skin/database_add.png"/>
+                    <button id="btnPdf" onClick="priseInformationWin.genererRapportPdf()" label="Generer rapport" image="/images/skin/pdf-soubor-logo.png"/>
+                    <button id="btnExcel" onClick="priseInformationWin.genererRapportExcel()" label="Generer excel" image="/images/skin/excel-icon.png"/>
+                </groupbox>
+            </center>
+        </borderlayout>
+    </window>
+</zk>

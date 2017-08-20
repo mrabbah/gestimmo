@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./clientWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window id="clientWin" height="100%" width="100%" style="margin:auto;" use="${clientWindow}">
+    <!-- <zscript src="/zs/client.zs"/> -->
+        <zscript>
+        <![CDATA[
+        boolean IMPORT_DONNEES = (boolean) session.getAttribute("IMPORT_DONNEES");
+        ]]>
+        </zscript>
+        <borderlayout>
+            <north id="eastPanel" size="65px" open="false"  title="Recherche avancée" flex="true" splittable="true"  collapsible="true"  >
+                <hlayout spacing="10px" style="margin-top:9px;margin-left:10px">
+					
+                    <label value="nationalite :" />
+                    <combobox id="filternationalite" model="@{clientWin.nationalites}" selectedItem="@{clientWin.filtre.nationalite}" autocomplete="true" autodrop="true" mold="rounded" onSelect="clientWin.ofs=0;clientWin.filtrer()" onOK="clientWin.ofs=0;clientWin.filtrer()">
+                        <comboitem self="@{each=elementfiltrenationalite}" label="@{elementfiltrenationalite}"/>
+                    </combobox>
+					
+                    <label value="ville :" />
+                    <combobox id="filterville" model="@{clientWin.villes}" selectedItem="@{clientWin.filtre.ville}" autocomplete="true" autodrop="true" mold="rounded" onSelect="clientWin.ofs=0;clientWin.filtrer()" onOK="clientWin.ofs=0;clientWin.filtrer()">
+                        <comboitem self="@{each=elementfiltreville}" label="@{elementfiltreville}"/>
+                    </combobox>
+										                    
+                </hlayout>
+            </north>
+            <west id="westPanel" title="Client" size="99%" flex="true" splittable="true" collapsible="true" open="false">
+                <groupbox id="gbCrud" width="100%" height="100%">
+                    <grid fixedLayout="true">
+                        <rows>
+                            <row>
+                                <label value="CIN"/>
+                                <textbox id="fieldCin" hflex="1" value="@{clientWin.objet.cin, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>
+                            
+                            <row>
+                                <label value="Nom"/>
+                                <textbox id="fieldNom" hflex="1" constraint="no empty: Veillez indiquez une valeur" onChange="self.setValue(self.getValue().toUpperCase().trim());" value="@{clientWin.objet.nom, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                                <cell align="right">
+                                    <label value="Prénom : " />
+                                </cell>
+                                <textbox id="fieldPrenom" hflex="1" constraint="no empty: Veillez indiquez une valeur" value="@{clientWin.objet.prenom, save-when='triggerBtn.onClick'}" onChange="self.setValue(self.getValue().toUpperCase().trim());" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                           
+                            </row>
+
+                            <row>
+                                <label value="Date de naissance"/>
+                                <datebox id="fieldDateNaissance" hflex="1" format="dd/MM/yyyy" value="@{clientWin.objet.dateNaissance, save-when='triggerBtn.onClick'}"/>
+                                <cell align="right">                            
+                                    <label value="Sexe : "/>
+                                </cell>
+                                <combobox id="cosexes" hflex="1" model="@{clientWin.sexes}" selectedItem="@{clientWin.objet.sexe, save-when='triggerBtn.onClick'}">
+                                    <comboitem self="@{each=elementsexeClient}" label="@{elementsexeClient}"/>
+                                </combobox>
+
+                            </row>
+                            
+                            <row>
+                                <label value="Tel 1"/>
+                                <cell align="left" width="99%">
+                                    <label value="+212 " width="15%"/>
+                                    <textbox id="fieldGsm" value="@{clientWin.objet.gsm, save-when='triggerBtn.onClick'}" constraint="no negative,no zero" width="70%"/>
+                                </cell>
+                                                                
+                                <cell align="right">
+                                    <label value="Tel 2 : "/>
+                                </cell>
+                                <cell align="left" width="99%">
+                                    <label value="" width="15%"/>
+                                    <textbox id="fieldFixe" value="@{clientWin.objet.fixe, save-when='triggerBtn.onClick'}" width="70%"/>
+                                </cell>
+                            </row>
+                            
+                            <row>
+                                <label value="E-mail"/>
+                                <textbox id="fieldMail" hflex="1" value="@{clientWin.objet.mail, save-when='triggerBtn.onClick'}"  onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            
+                                <cell align="right">
+                                    <label value="Date contact : "/>
+                                </cell>
+                                <datebox id="fieldDateContact" hflex="1" constraint="no empty: Veillez indiquez une valeur" format="dd/MM/yyyy" value="@{clientWin.objet.dateContact, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' onCreate="self.value = new Date()"/>                           
+                            </row>
+                            
+                            <row>
+                                <label value="Adresse"/>
+                                <cell colspan="3">                                    
+                                    <textbox id="fieldAdresse" hflex="1" multiline="true" rows="2" value="@{clientWin.objet.adresse, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                                </cell>
+                            </row>												
+										
+                            <row>
+                                <label value="Ville " />
+                                <combobox id="covilles" hflex="1" model="@{clientWin.villes}" selectedItem="@{clientWin.villeSelected}">
+                                    <comboitem self="@{each=elementville}" label="@{elementville}"/>
+                                </combobox>
+                    	                          
+                                <cell align="right">
+                                    <label value="Nationalité : " />
+                                </cell>
+                                <combobox id="conationalites" hflex="1" model="@{clientWin.nationalites}" selectedItem="@{clientWin.nationaliteSelected}">
+                                    <comboitem self="@{each=elementnationalite}" label="@{elementnationalite}"/>
+                                </combobox>
+                            </row>
+											
+				<!--		
+                            <row>
+                                <label value="DateModification"/>
+								 
+                                <datebox id="fieldDateModification" constraint="no empty: Veillez indiquez une valeur" format="dd/MM/yyyy" value="@{clientWin.objet.dateModification, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>												
+						-->
+                            <row>
+                                <label value="Commentaire"/>
+                                <cell colspan="3">                                  
+                                    <textbox id="fieldCommentaire" hflex="1" multiline="true" rows="4" value="@{clientWin.objet.commentaire, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                                </cell>
+                            </row>
+                            
+                            <row>
+                                <label value="Statut" />
+                                <combobox id="costatuts" hflex="1" model="@{clientWin.statuts}" selectedItem="@{clientWin.statutSelected}">
+                                    <comboitem self="@{each=elementstatut}" label="@{elementstatut}"/>
+                                </combobox>
+                            </row>
+						
+                        </rows>
+                    </grid>					
+					
+                    <separator />
+                    <button id="btnSave" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));clientWin.add()" label="Sauvegarder" image="/images/skin/database_save.png"/>
+                    <button id="btnUpdate" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));clientWin.update()" label="Modifier" image="/images/skin/database_edit.png" visible="false"/>
+                    <button id="btnDelete" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));clientWin.delete()" label="Supprimer" image="/images/skin/database_delete.png" visible="false">
+                        <attribute name="onClick"><![CDATA[
+Messagebox.show("Merci de confirmer la suppression ?", "Confirmation", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
+    public void onEvent(Event evt) throws InterruptedException {
+        if (evt.getName().equals("onOK")) {
+        TRTOK = true;
+        try
+        {
+        Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));
+        clientWin.delete();
+        }
+        catch (err)
+        {
+        alert("Erreur lors de la suppression !");
+        TRTOK = false;
+        }
+           if (TRTOK){}
+        } else {
+            alert("Suppression annulée !");
+        }
+    }
+});
+]]>
+                        </attribute>
+                    </button>
+                    <!-- <button id="btnNew" onClick="clientWin.newRecord()" label="Nouveau enregistrement" image="/images/skin/database_add.png"/> -->
+                    <button id="btnCancel" onClick="clientWin.cancel()" label="Annuler" image="/images/skin/cancel.png" />
+                    <button visible="false" id="triggerBtn" onBindingValidate=""/>
+                </groupbox>
+            </west>
+            <center border="none" flex="true">
+                <groupbox width="100%" height="100%">
+                    <listbox id="lstObjet" onSelect="clientWin.select()" model="@{clientWin.listeObjets}" selectedItem="@{clientWin.objetSelected}"  width="100%" height="100%" mold="paging" paginal="${paging}">
+                        <auxhead sclass="category-center">
+                            <auxheader colspan="1"/>
+				<!--			
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterAdresse" value="@{clientWin.filtre.adresse}" onChanging="clientWin.ofs; clientWin.filtre.adresse=event.value; clientWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+					-->			
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterCin" value="@{clientWin.filtre.cin}" onOK="clientWin.ofs; clientWin.filtre.cin=self.value; clientWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterNom" value="@{clientWin.filtre.nom}" onOK="clientWin.ofs; clientWin.filtre.nom=self.value; clientWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+								
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterPrenom" value="@{clientWin.filtre.prenom}" onOK="clientWin.ofs; clientWin.filtre.prenom=self.value; clientWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterSexe" value="@{clientWin.filtre.sexe}" onOK="clientWin.ofs; clientWin.filtre.sexe=self.value; clientWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+				<!--				
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterCommentaire" value="@{clientWin.filtre.commentaire}" onChanging="clientWin.ofs; clientWin.filtre.commentaire=event.value; clientWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+				-->	
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <datebox id="filterDateContact" format="dd/MM/yyyy" value="@{clientWin.filtre.dateContact}" onOK="clientWin.ofs=0; clientWin.filtrer(); self.focus();" width="90%"/>
+                            </auxheader>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <datebox id="filterDateNaissance" format="dd/MM/yyyy" value="@{clientWin.filtre.dateNaissance}" onOK="clientWin.ofs=0; clientWin.filtrer(); self.focus();" width="90%"/>
+                            </auxheader>
+
+				<!--				
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <datebox id="filterDateModification" format="dd/MM/yyyy" value="@{clientWin.filtre.dateModification}" onOK="clientWin.ofs=0; clientWin.filtrer(); self.focus();" width="90%"/>
+                            </auxheader>
+				-->				
+			
+                        <!--
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterFixe" value="@{clientWin.filtre.fixe}" onChanging="clientWin.ofs; clientWin.filtre.fixe=event.value; clientWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+			-->					
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterGsm" value="@{clientWin.filtre.gsm}" onOK="clientWin.ofs; clientWin.filtre.gsm=self.value; clientWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+								
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+<!--                                <textbox id="filterStatut" value="@{clientWin.filtre.statut}" onChanging="clientWin.ofs; clientWin.filtre.statut=event.value; clientWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>-->
+                                <combobox id="filterStatut" model="@{clientWin.statuts}" selectedItem="@{clientWin.filtre.statut}" autocomplete="true" autodrop="true" mold="rounded" onSelect="clientWin.ofs=0;clientWin.filtrer()" width="90%">
+                                    <comboitem self="@{each=elementfiltrestatut}" label="@{elementfiltrestatut}"/>
+                                </combobox>
+                            </auxheader>
+								 
+                        </auxhead>
+                        <listhead sizable="true">
+                            <listheader width="32px" />
+							
+                           <!-- <listheader id="hadresse" label="Adresse" sort="auto(adresse)" onSort="clientWin.sort(event)"/>	-->
+							
+                            <listheader id="hcin" label="CIN" sort="auto(cin)" onSort="clientWin.sort(event)"/>	
+				                      
+                            <listheader id="hnom" label="Nom" sort="auto(nom)" onSort="clientWin.sort(event)"/>	
+							
+                            <listheader id="hprenom" label="Prénom" sort="auto(prenom)" onSort="clientWin.sort(event)"/>			
+                           <!-- <listheader id="hcommentaire" label="Commentaire" sort="auto(commentaire)" onSort="clientWin.sort(event)"/>	-->
+				 
+                            <listheader id="hsexe" label="Sexe" sort="auto(sexe)" onSort="clientWin.sort(event)"/>	
+							
+                            <listheader id="hdateContact" label="Date contact" sort="auto(dateContact)" onSort="clientWin.sort(event)"/>	
+							
+                           <!-- <listheader id="hdateModification" label="DateModification" sort="auto(dateModification)" onSort="clientWin.sort(event)"/>	-->
+							
+                            <listheader id="hdateNaissance" label="Date naissance" sort="auto(dateNaissance)" onSort="clientWin.sort(event)"/>	
+							
+                          <!--  <listheader id="hfixe" label="Fixe" sort="auto(fixe)" onSort="clientWin.sort(event)"/>	-->
+                          
+                            
+							
+                            <listheader id="hgsm"  label="(+212) Tel 1" sort="auto(gsm)" onSort="clientWin.sort(event)"/>	
+                           			
+                            <listheader id="hstatut" label="Statut" sort="auto(statut.intitule)" onSort="clientWin.sort(event)"/>	
+							                                 
+                        </listhead>
+                        <listitem value="@{element}" self="@{each=element}">    
+                            <listcell image="/images/skin/icon_selection.png"/>
+							
+                            <listcell>
+							
+                                <textbox value="@{element.cin, save-when='self.onChange'}" inplace="true" onOK="clientWin.objet=self.parent.parent.value; clientWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>		
+                            
+                            <listcell>
+							
+                                <textbox value="@{element.nom, save-when='self.onChange'}" inplace="true" onOK="clientWin.objet=self.parent.parent.value; clientWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>							
+							
+                            <listcell>
+							
+                                <textbox value="@{element.prenom, save-when='self.onChange'}" inplace="true" onOK="clientWin.objet=self.parent.parent.value; clientWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>	
+                            
+                            <listcell label="@{element.sexe}">
+<!--							
+                                <textbox value="@{element.sexe, save-when='self.onChange'}" inplace="true" onOK="clientWin.objet=self.parent.parent.value; clientWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							-->
+                            </listcell>	
+							
+                            <listcell>
+							
+                                <datebox format="dd/MM/yyyy" value="@{element.dateContact, save-when='self.onChange'}" inplace="true" onOK="clientWin.objet=self.parent.parent.value; clientWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>							
+							
+                            <listcell>
+							
+                                <datebox format="dd/MM/yyyy" value="@{element.dateNaissance, save-when='self.onChange'}" inplace="true" onOK="clientWin.objet=self.parent.parent.value; clientWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>							
+							
+                            <listcell >
+                                <hlayout>                 
+                                    <label value="(+212)"/> 
+                                    <textbox  value= "@{element.gsm, save-when='self.onChange'}" inplace="true" onOK="clientWin.objet=self.parent.parent.value; clientWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>                               	
+                                </hlayout>
+                            </listcell>							
+							
+                            <listcell>
+							
+                                <textbox value="@{element.statut, save-when='self.onChange'}" inplace="true" onOK="clientWin.objet=self.parent.parent.value; clientWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>							
+							     
+                        </listitem>
+                    </listbox>
+                    <paging id="paging" totalSize="@{clientWin.tailleListe}" pageSize="@{clientWin.maxNb}" onPaging="clientWin.getNextElements(event);" />
+                    <separator/>
+<!--                    <grid>
+                        <columns>
+                            <column width="32px" />
+							
+                            <column />
+							
+                            <column />
+							
+                            <column />
+							
+                            <column />
+							
+                            <column />
+							
+                            <column />
+							
+                            <column />
+							
+                            <column />
+							
+                        </columns>
+                        <rows>
+                            <row>
+                                <image src="/images/skin/database_edit.png"  />
+								
+                                <textbox id="fieldcinbis" value="@{clientWin.objet.cin, save-when='self.onChange'}" inplace="true" onOK="clientWin.add();" width="99%"/>
+				
+                                <textbox id="fieldnombis" value="@{clientWin.objet.nom, save-when='self.onChange'}" inplace="true" onOK="clientWin.add();" width="99%"/>
+								
+                                <textbox id="fieldprenombis" value="@{clientWin.objet.prenom, save-when='self.onChange'}" inplace="true" onOK="clientWin.add();" width="99%"/>
+				
+                                <textbox id="fieldsexebis" value="@{clientWin.objet.sexe, save-when='self.onChange'}" inplace="true" onOK="clientWin.add();" width="99%"/>
+                                
+                                <datebox id="fielddateContactbis" format="dd/MM/yyyy" value="@{clientWin.objet.dateContact, save-when='self.onChange'}" inplace="true" onOK="clientWin.add();" width="99%"/>
+								
+                                <datebox id="fielddateNaissancebis" format="dd/MM/yyyy" value="@{clientWin.objet.dateNaissance, save-when='self.onChange'}" inplace="true" onOK="clientWin.add();" width="99%"/>
+								
+                                <textbox id="fieldgsmbis" value="@{clientWin.objet.gsm, save-when='self.onChange'}" inplace="true" onOK="clientWin.add();" width="99%"/>
+				
+                                <textbox id="fieldstatutbis" value="@{clientWin.objet.statut, save-when='self.onChange'}" inplace="true" onOK="clientWin.add();" width="99%"/>
+								  
+                            </row>
+                        </rows>
+                    </grid>-->
+                    <separator/>
+                    <button id="btnNew" onClick="clientWin.newRecord()" label="Nouveau" image="/images/skin/database_add.png"/>
+                   <!-- <button id="btnPdf" onClick="clientWin.genererRapportPdf()" label="Generer rapport" image="/images/skin/pdf-soubor-logo.png"/>
+                    <button id="btnExcel" onClick="clientWin.genererRapportExcel()" label="Generer excel" image="/images/skin/excel-icon.png"/>
+                -->
+                    <fileupload id="btnImport" label="Import en masse" onUpload="clientWin.importation(event.getMedia())" image="/images/skin/BriefcaseOpen-16x16.png" visible="${IMPORT_DONNEES}"/>
+                    <button id="btnInspection" onClick="clientWin.getClientsNonAffectes()" label="Obtenir la liste des clients/prospects Non affectés" visible="${IMPORT_DONNEES}"/>
+                    <button id="btnActualiser" onClick="clientWin.filtrer()" label="Actualiser" image="/images/skin/refresh-icon.png"/>
+                </groupbox>
+            </center>
+        </borderlayout>
+    </window>
+</zk>

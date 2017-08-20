@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?page id="LOGIN" title="GESTIMMO"?>
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+    
+    <zscript>
+        <![CDATA[
+            String login = "";
+            String password = "";
+            Boolean checked = false;
+            if(session.getAttribute("login") != null) {
+                login = (String) session.getAttribute("login");
+            }
+            if(session.getAttribute("password") != null) {
+                password = (String) session.getAttribute("password");
+                checked = true;
+            }
+            
+        ]]>
+    </zscript>
+    
+    <window id="loginWnd" title="GESTIMMO" use="${loginWindow}" border="normal" height="300px" width="600px" mode="modal" position="center">
+        <caption image="/images/skin/cle.png" label="Veuillez vous identifiez!"/>
+        <h:form method="post" action="/gestimmo/choraBarrage/check" id='loginForm'>
+            <grid style="width:50%;margin-top:80px;margin-left:25%">
+                <rows>
+                    <row>
+                        <label id="lusername"  value="Login:"/>
+                        <textbox focus="true" id="j_username" name="j_username"  value="${login}"   width="95%" />
+                    </row>
+                    <row>
+                        <label id="lpassword"  value="Password:"/>
+                        <textbox name="j_password" id="j_password" type="password"  value="${password}" width="95%" />
+                    </row>
+                    <row>
+                        <checkbox id="remember_me" name="remember_me" label="Rester connecté" checked="${checked == true}" />
+                        <h:input type="submit" value="Submit" class="z-button" style="width:95%"/>
+                    </row>            
+                </rows>
+            </grid>
+            <grid style="width:50%;margin-left:25%" visible="${param.login_error}">
+                <rows>
+                    <row>
+                        <label id="message" style="color:red;" value="Login et/ou mot de passe incorrect(s)" visible="${param.login_error}" />
+                    </row>
+                </rows>
+            </grid>
+        </h:form>
+    </window>    
+</zk>

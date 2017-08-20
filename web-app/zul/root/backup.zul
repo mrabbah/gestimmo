@@ -1,0 +1,77 @@
+
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./backupWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window id="backupWin" height="100%" width="100%" style="margin:auto;" use="${backupRestoreWindow}">
+        <borderlayout>
+            <center>
+                <vbox align="center" pack="center" height="100%" width="100%">
+                    <button label="Lancer la sauvegarde" width="500px" height="200px" image="/images/skin/sauvgarder.png" orient="vertical">
+                        <attribute name="onClick"><![CDATA[
+                            Messagebox.show("Etes vous sÃ»r de vouloir lancer la sauvegarde ? \nAttention : cette opération peux prendre quelques minutes", "Confirmation", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
+                                public void onEvent(Event evt) throws InterruptedException {
+                                    if (evt.getName().equals("onOK")) {
+                                        Clients.showBusy("Sauvegarde en cours veillez patientez...");
+                                        try
+                                        {
+                                            backupWin.sauveguarderBdD();
+                                            Clients.clearBusy();
+                                            alert("Opération effectuée avec succÃ¨s");
+                                        }
+                                        catch (err)
+                                        {
+                                            Clients.clearBusy();
+                                            alert("Erreur lors de l'enregistrement !\n" + err);
+                                        }
+                                    } 
+                                }
+                            });
+                        ]]>
+                        </attribute>    
+                    </button>
+                    <button label="Lancer la restauration" width="500px" height="200px" image="/images/skin/database-import.png" orient="vertical">
+                        <attribute name="onClick"><![CDATA[
+                            Messagebox.show("Etes vous sÃ»r de vouloir lancer la restauration ?\nAttention : Cette opération va supprimer tous les données actuelles", "Confirmation", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
+                                public void onEvent(Event evt) throws InterruptedException {
+                                    if (evt.getName().equals("onOK")) {
+                                        Clients.showBusy("Sauvegarde en cours veillez patientez...");
+                                        try
+                                        {
+                                            backupWin.restaurerDb();
+                                            Clients.clearBusy();
+                                            alert("Opération effectuée avec succÃ¨s");
+                                        }
+                                        catch (err)
+                                        {
+                                            Clients.clearBusy();
+                                            alert("Erreur lors de l'enregistrement !\n" + err);
+                                        }
+                                    } 
+                                }
+                            });
+                        ]]>
+                        </attribute>
+                    </button>
+                </vbox>
+            </center>
+            <east title="Liste des sauveguardes" size="25%" flex="true">
+                <listbox id="lbsauveguardes" model="@{backupWin.listeDesSauveguardes}" 
+                        selectedItem="@{backupWin.sauveguardeSelectionee}"
+                        fixedLayout="true" multiple="false">
+                    <listhead>
+                        <listheader label=""/>							
+                    </listhead>
+                    <listitem self="@{each=elementSauveguarde}">
+                        <listcell label="@{elementSauveguarde}"/>							
+                    </listitem>								
+                </listbox>
+            </east>
+        </borderlayout>
+    </window>
+</zk>

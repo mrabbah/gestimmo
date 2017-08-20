@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./auditLogEventWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window id="auditLogEventWin" height="100%" width="100%" style="margin:auto;" use="${auditLogEventWindow}">
+    <!-- <zscript src="/zs/auditLogEvent.zs"/> -->
+        <borderlayout>            
+            <center border="none" flex="true">
+                <groupbox width="100%" height="100%">
+                    <listbox id="lstObjet" model="@{auditLogEventWin.listeObjets}" width="100%" height="100%" mold="paging" paginal="${paging}">
+                        <auxhead sclass="category-center">
+                            <auxheader colspan="1"/>
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filteractor" value="@{auditLogEventWin.filtre.actor}" onOK="auditLogEventWin.ofs; auditLogEventWin.filtre.actor=self.value; auditLogEventWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterclassName" value="@{auditLogEventWin.filtre.className}" onOK="auditLogEventWin.ofs; auditLogEventWin.filtre.className=self.value; auditLogEventWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filtereventName" value="@{auditLogEventWin.filtre.eventName}" onOK="auditLogEventWin.ofs; auditLogEventWin.filtre.eventName=self.value; auditLogEventWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterpropertyName" value="@{auditLogEventWin.filtre.propertyName}" onOK="auditLogEventWin.ofs; auditLogEventWin.filtre.propertyName=self.value; auditLogEventWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filteroldValue" value="@{auditLogEventWin.filtre.oldValue}" onOK="auditLogEventWin.ofs; auditLogEventWin.filtre.oldValue=self.value; auditLogEventWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader> 
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filternewValue" value="@{auditLogEventWin.filtre.newValue}" onOK="auditLogEventWin.ofs; auditLogEventWin.filtre.newValue=self.value; auditLogEventWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>      
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <datebox id="filterDateCreation" format="dd/MM/yyyy hh:mm" value="@{auditLogEventWin.filtre.dateCreated}" onOK= "auditLogEventWin.ofs; auditLogEventWin.filtre.dateCreated; auditLogEventWin.filtrer(); self.focus();" width="90%"/>
+                            </auxheader>
+                            
+                        </auxhead>
+                        <listhead sizable="true">
+                            <listheader width="32px" />
+                            <listheader id="hactor" label="Utilisateur" sort="auto(actor)" onSort="auditLogEventWin.sort(event)"/>	
+                            <listheader id="hclassName" label="Objet" sort="auto(className)" onSort="auditLogEventWin.sort(event)"/>
+                            <listheader id="heventName" label="Evènement" sort="auto(eventName)" onSort="auditLogEventWin.sort(event)"/>	
+                            <listheader id="hpropertyName" label="Propriété changée" sort="auto(propertyName)" onSort="auditLogEventWin.sort(event)"/>	
+                            <listheader id="holdValue" label="Ancienne valeur" sort="auto(oldValue)" onSort="auditLogEventWin.sort(event)"/>	
+                            <listheader id="hnewValue" label="Nouvelle valeur" sort="auto(newValue)" onSort="auditLogEventWin.sort(event)"/>	
+                            <listheader id="hdateCreated" label="Date" sort="auto(dateCreated)" onSort="auditLogEventWin.sort(event)"/>	
+                        </listhead>
+                        <listitem value="@{element}" self="@{each=element}">    
+                            <listcell image="/images/skin/icon_selection.png"/>
+                            <listcell label="@{element.actor}" />				
+                            <listcell label="@{element.className}" />				
+                            <listcell label="@{element.eventName}" />				
+                            <listcell label="@{element.propertyName}" />				
+                            <listcell label="@{element.oldValue}" />				
+                            <listcell label="@{element.newValue}" />				
+                            <listcell>
+                                <datebox value="@{element.dateCreated}" inplace="true" format="dd/MM/yyyy hh:mm"  /> 
+                            </listcell>				
+                        </listitem>
+                    </listbox>
+                    <paging id="paging" totalSize="@{auditLogEventWin.tailleListe}" pageSize="@{auditLogEventWin.maxNb}" onPaging="auditLogEventWin.getNextElements(event);" />
+                </groupbox>
+            </center>
+        </borderlayout>
+    </window>
+</zk>

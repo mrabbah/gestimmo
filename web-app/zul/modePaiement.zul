@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./modePaiementWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window id="modePaiementWin" height="100%" width="100%" style="margin:auto;" use="${modePaiementWindow}">
+    <!-- <zscript src="/zs/modePaiement.zs"/> -->
+        <borderlayout>
+            
+           <west id="westPanel" title="Mode de paiement" size="40%" flex="true" splittable="true" collapsible="true" open="false">
+                <groupbox id="gbCrud" width="100%" height="100%">
+                    <grid fixedLayout="true">
+                        <rows>
+						
+                            <row>
+                                <label value="Type"/>
+								 
+                                <textbox id="fieldType" constraint="no empty: Veillez indiquez une valeur" value="@{modePaiementWin.objet.type, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>												
+						 
+						
+                        </rows>
+                    </grid>					
+					
+                    <separator />
+                    <button id="btnSave" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));modePaiementWin.add()" label="Sauvegarder" image="/images/skin/database_save.png"/>
+                    <button id="btnUpdate" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));modePaiementWin.update()" label="Modifier" image="/images/skin/database_edit.png" visible="false"/>
+                    <button id="btnDelete" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));modePaiementWin.delete()" label="Supprimer" image="/images/skin/database_delete.png" visible="false"/>
+                    <!-- <button id="btnNew" onClick="modePaiementWin.newRecord()" label="Nouveau enregistrement" image="/images/skin/database_add.png"/> -->
+                    <button id="btnCancel" onClick="modePaiementWin.cancel()" label="Annuler" image="/images/skin/cancel.png"/>
+                    <button visible="false" id="triggerBtn" onBindingValidate=""/>
+                </groupbox>
+            </west>
+            <center border="none" flex="true">
+                <groupbox width="100%" height="100%">
+                    <listbox id="lstObjet" onSelect="modePaiementWin.select()" model="@{modePaiementWin.listeObjets}" selectedItem="@{modePaiementWin.objetSelected}"  width="100%" height="100%" mold="paging" paginal="${paging}">
+                        <auxhead sclass="category-center">
+                            <auxheader colspan="1"/>
+							
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterType" value="@{modePaiementWin.filtre.type}" onOK="modePaiementWin.ofs; modePaiementWin.filtre.type=self.value; modePaiementWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+								 
+                        </auxhead>
+                        <listhead sizable="true">
+                            <listheader width="32px" />
+							
+                            <listheader id="htype" label="Type" sort="auto(type)" onSort="modePaiementWin.sort(event)"/>	
+							                                 
+                        </listhead>
+                        <listitem value="@{element}" self="@{each=element}">    
+                            <listcell image="/images/skin/icon_selection.png"/>
+                            
+                            <listcell>
+							
+                                <textbox value="@{element.type, save-when='self.onChange'}" inplace="true" onOK="modePaiementWin.objet=self.parent.parent.value; modePaiementWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>							
+							     
+                        </listitem>
+                    </listbox>
+                    <paging id="paging" totalSize="@{modePaiementWin.tailleListe}" pageSize="@{modePaiementWin.maxNb}" onPaging="modePaiementWin.getNextElements(event);" />
+                    <separator/>
+                    <grid>
+                        <columns>
+                            <column width="32px" />
+							
+                            <column />
+							
+                        </columns>
+                        <rows>
+                            <row>
+                                <image src="/images/skin/database_edit.png"  />
+								
+                                <textbox id="fieldtypebis" value="@{modePaiementWin.objet.type, save-when='self.onChange'}" inplace="true" onOK="modePaiementWin.add();" width="99%"/>
+								  
+                            </row>
+                        </rows>
+                    </grid>
+                    <separator/>
+                    <button id="btnNew" onClick="modePaiementWin.newRecord()" label="Nouveau" image="/images/skin/database_add.png"/>
+                    <button id="btnPdf" onClick="modePaiementWin.genererRapportPdf()" label="Generer rapport" image="/images/skin/pdf-soubor-logo.png"/>
+                    <button id="btnExcel" onClick="modePaiementWin.genererRapportExcel()" label="Generer excel" image="/images/skin/excel-icon.png"/>
+                </groupbox>
+            </center>
+        </borderlayout>
+    </window>
+</zk>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Rapport_des_locations" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.464100000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="197"/>
+	<parameter name="nomsociete" class="java.lang.String"/>
+	<parameter name="titrerapport" class="java.lang.String"/>
+	<parameter name="montantCaractere" class="java.lang.String"/>
+	<parameter name="numpaiement" class="java.lang.String"/>
+	<field name="phase.client.nom" class="java.lang.String"/>
+	<field name="phase.client.prenom" class="java.lang.String"/>
+	<field name="phase.client.cin" class="java.lang.String"/>
+	<field name="phase.client.adresse" class="java.lang.String"/>
+	<field name="phase.client.gsm" class="java.lang.String"/>
+	<field name="phase.client.mail" class="java.lang.String"/>
+	<field name="phase.bien.type" class="java.lang.String"/>
+	<field name="phase.projet.code" class="java.lang.String"/>
+	<field name="montant" class="java.lang.Double"/>
+	<field name="phase.projet.designation" class="java.lang.String"/>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="72">
+			<frame>
+				<reportElement mode="Opaque" x="0" y="-20" width="555" height="92" backcolor="#006699"/>
+				<textField>
+					<reportElement x="20" y="20" width="323" height="43" forecolor="#FFFFFF"/>
+					<textElement>
+						<font size="18" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{nomsociete}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="343" y="32" width="202" height="20" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right">
+						<font size="12" isBold="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{titrerapport}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="298">
+			<staticText>
+				<reportElement x="21" y="37" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Nom et prénom :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="21" y="59" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[N° CIN :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="21" y="80" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Situation familiale :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="21" y="101" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Profession :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="21" y="122" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Adresse * :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="21" y="143" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Téléphone :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="273" y="143" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[E-mail :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="21" y="173" width="352" height="20"/>
+				<textElement>
+					<font size="11" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Conditions de validité de la présente réservation :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="21" y="193" width="420" height="20"/>
+				<textElement/>
+				<text><![CDATA[Je soussigné(e) déclare par la présente confirmer mon acte de réservation d’un(e)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="21" y="237" width="268" height="20"/>
+				<textElement/>
+				<text><![CDATA[Cette réservation est accompagnée d’un versement]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="137" y="37" width="236" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{phase.client.nom} + " " + $F{phase.client.prenom}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="137" y="59" width="236" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{phase.client.cin}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="137" y="122" width="236" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{phase.client.adresse}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="137" y="143" width="136" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{phase.client.gsm}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="385" y="143" width="130" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{phase.client.mail}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="441" y="193" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{phase.bien.type}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="21" y="213" width="145" height="20"/>
+				<textElement/>
+				<text><![CDATA[dans l’ensemble immobilier]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="166" y="213" width="275" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{phase.projet.code} + " " + $F{phase.projet.designation}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="292" y="237" width="249" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{montantCaractere} + " Dirhams" ]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="175" y="8" width="340" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{numpaiement}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="8" width="146" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[ACTE DE RESERVATION N°]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+</jasperReport>

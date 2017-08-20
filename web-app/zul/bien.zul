@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./bienWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window id="bienWin" height="100%" width="100%" style="margin:auto;" use="${bienWindow}">
+    <!-- <zscript src="/zs/bien.zs"/> -->
+        <zscript>
+        <![CDATA[
+        boolean IMPORT_DONNEES = (boolean) session.getAttribute("IMPORT_DONNEES");
+        ]]>
+        </zscript>
+        <borderlayout>
+            <west id="westPanel" title="Bien" size="40%" flex="true" splittable="true" collapsible="true" open="false">
+                <groupbox id="gbCrud" width="100%" height="100%">
+                    <grid fixedLayout="true">
+                        <rows>
+						
+                            <row>
+                                <label value="Statut Bien"/>
+								 
+                                <textbox id="fieldStatut" value="@{bienWin.objet.statut}" disabled="true" />
+                            </row>
+                        </rows>
+
+                    </grid>					
+					
+                    <separator />
+                    <button id="btnBloquer" onClick="bienWin.bloquerBien();" label="Bloquer" image=""/>
+                    <button id="btnCancel" onClick="bienWin.cancel()" label="Annuler" image="/images/skin/cancel.png"/>
+                </groupbox>
+            </west>
+            
+            <center border="none" flex="true" autoscroll="true">
+                <groupbox width="100%" height="100%">
+                    <listbox id="lstObjet" onSelect="bienWin.select()" model="@{bienWin.listeObjets}" selectedItem="@{bienWin.objetSelected}"  width="100%" height="100%" mold="paging" paginal="${paging}">
+                        <auxhead sclass="category-center">
+                            <auxheader colspan="1"/>  
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filterprojet" width="90%" model="@{bienWin.projets}" selectedItem="@{bienWin.filtre.projet}" autocomplete="true" autodrop="true" mold="rounded" onSelect="bienWin.ofs=0;bienWin.filtrer()" onOK="bienWin.ofs=0;bienWin.filtrer()">
+                                    <comboitem self="@{each=elementfiltreprojetf}" label="@{elementfiltreprojetf}"/>
+                                </combobox>
+                            </auxheader> 
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterClient" value="@{bienWin.filtre.client}" onOK="bienWin.ofs; bienWin.filtre.client=self.value; bienWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <!--<textbox id="filtertypeBien" value="@{bienWin.filtre.type}" onChanging="bienWin.ofs; bienWin.filtre.type=event.value; bienWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>-->
+                                <combobox id="filtertypeBien" width="90%" model="@{bienWin.types}" selectedItem="@{bienWin.filtre.type}" autocomplete="true" autodrop="true" mold="rounded" onSelect="bienWin.ofs=0;bienWin.filtrer()" onOK="bienWin.ofs=0;bienWin.filtrer()">
+                                    <comboitem self="@{each=elementfiltretypebien}" label="@{elementfiltretypebien}"/>
+                                </combobox>
+                            </auxheader> 
+                                                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterNumero" value="@{bienWin.filtre.numero}" onOK="bienWin.ofs; bienWin.filtre.numero=self.value; bienWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <!--<textbox id="filtercontenance" value="@{bienWin.filtre.contenance}" onChanging="bienWin.ofs; bienWin.filtre.contenance=event.value; bienWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>-->
+<!--                                <combobox id="filtercontenances" width="90%" model="@{bienWin.contenances}" selectedItem="@{bienWin.filtre.contenance}" autocomplete="true" autodrop="true" mold="rounded" onSelect="bienWin.ofs=0;bienWin.filtrer()" onOK="bienWin.ofs=0;bienWin.filtrer()">
+                                    <comboitem self="@{each=elementfiltrecontenance}" label="@{elementfiltrecontenance}"/>
+                                </combobox>-->
+				
+                            </auxheader> 
+								
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <doublebox id="filterPrixVente" value="@{bienWin.filtre.prixVente}" width="100%">
+                                    <attribute name="onOK">
+										<![CDATA[
+											bienWin.ofs=0;
+											if(self.value.equals("")) {
+												if(bienWin.filtre.prixVente != null) {
+													bienWin.filtre.prixVente = null;
+												}
+											} else {
+												bienWin.filtre.prixVente=new Double(self.value);
+											}
+											bienWin.filtrer();
+											self.focus();
+											if(!self.value.equals("")) {
+												self.setSelectionRange(self.value.toString().length(), self.value.toString().length());
+											}
+										]]>
+                                    </attribute>    
+                                </doublebox>
+                            </auxheader>
+			<!--					
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <doublebox id="filterSuperficieConstruite" value="@{bienWin.filtre.superficieConstruite}" width="100%">
+                                    <attribute name="onChanging">
+										<![CDATA[
+											bienWin.ofs=0;
+											if(event.value.equals("")) {
+												if(bienWin.filtre.superficieConstruite != null) {
+													bienWin.filtre.superficieConstruite = null;
+												}
+											} else {
+												bienWin.filtre.superficieConstruite=new Double(event.value);
+											}
+											bienWin.filtrer();
+											self.focus();
+											if(!event.value.equals("")) {
+												self.setSelectionRange(self.value.toString().length(), self.value.toString().length());
+											}
+										]]>
+                                    </attribute>    
+                                </doublebox>
+                            </auxheader>
+								
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <doublebox id="filterSuperficieVendable" value="@{bienWin.filtre.superficieVendable}" width="100%">
+                                    <attribute name="onChanging">
+										<![CDATA[
+											bienWin.ofs=0;
+											if(event.value.equals("")) {
+												if(bienWin.filtre.superficieVendable != null) {
+													bienWin.filtre.superficieVendable = null;
+												}
+											} else {
+												bienWin.filtre.superficieVendable=new Double(event.value);
+											}
+											bienWin.filtrer();
+											self.focus();
+											if(!event.value.equals("")) {
+												self.setSelectionRange(self.value.toString().length(), self.value.toString().length());
+											}
+										]]>
+                                    </attribute>    
+                                </doublebox>
+                            </auxheader>
+				-->	
+                                
+                                								
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <doublebox id="filterSuperficie" value="@{bienWin.filtre.superficie}" width="100%">
+                                    <attribute name="onOK">
+										<![CDATA[
+											bienWin.ofs=0;
+											if(self.value.equals("")) {
+												if(bienWin.filtre.superficie != null) {
+													bienWin.filtre.superficie = null;
+												}
+											} else {
+												bienWin.filtre.superficie=new Double(self.value);
+											}
+											bienWin.filtrer();
+											self.focus();
+											if(!self.value.equals("")) {
+												self.setSelectionRange(self.value.toString().length(), self.value.toString().length());
+											}
+										]]>
+                                    </attribute>    
+                                </doublebox>
+                            </auxheader>
+                           
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterTitreFoncier" value="@{bienWin.filtre.titreFoncier}" onOK="bienWin.ofs; bienWin.filtre.titreFoncier=self.value; bienWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+ 
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <!--<textbox id="filterStatut" value="@{bienWin.filtre.statut}" onChanging="bienWin.ofs; bienWin.filtre.statut=event.value; bienWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>-->
+                                <combobox id="filterstatuts" width="90%" model="@{bienWin.statuts}" selectedItem="@{bienWin.filtre.statut}" autocomplete="true" autodrop="true" mold="rounded" onSelect="bienWin.ofs=0;bienWin.filtrer()" onOK="bienWin.ofs=0;bienWin.filtrer()">
+                                    <comboitem self="@{each=elementfiltrestatut}" label="@{elementfiltrestatut}"/>
+                                </combobox>
+                            </auxheader>
+                            
+
+								 
+                        </auxhead>
+                        <listhead sizable="true">
+                            <listheader width="32px" />                 
+                            
+                            <listheader id="hProjet" label="Projet" sort="auto(projet.code)" onSort="bienWin.sort(event)"/>	
+                            
+                            <listheader id="hclient" label="Client " sort="auto(projet.client)" onSort="bienWin.sort(event)"/>	
+                          
+                            <listheader id="htype" label="Type" sort="auto(type.intitule)" onSort="bienWin.sort(event)"/>	
+                          
+                            <listheader id="hnumero" label="Numéro" sort="auto(numero)" onSort="bienWin.sort(event)"/>	
+                            
+                            <listheader id="hcontenance" label="Contenance" sort="auto(contenance)" onSort="bienWin.sort(event)"/>	
+			
+                           <!-- <listheader id="hniveau" label="Niveau" sort="auto(niveau)" onSort="bienWin.sort(event)"/>	-->
+							
+                            <listheader id="hprixVente" label="Prix de vente (DH)" sort="auto(prixVente)" onSort="bienWin.sort(event)"/>	
+			
+                            <!--<listheader id="hsuperficieConstruite" label="Superficie construite" sort="auto(superficieConstruite)" onSort="bienWin.sort(event)"/>	
+							
+                            <listheader id="hsuperficieVendable" label="Superficie vendable" sort="auto(superficieVendable)" onSort="bienWin.sort(event)"/>	
+				-->  
+                            <listheader id="hsuperficie" label="Superficie (m²)" sort="auto(superficie)" onSort="bienWin.sort(event)"/>	
+                           
+                            <listheader id="htitrefoncier" label="Titre foncier" sort="auto(titreFoncier)" onSort="bienWin.sort(event)"/>	
+                           		
+                            <listheader id="hstatut" label="Statut" sort="auto(statut.intitule)" onSort="bienWin.sort(event)"/>	
+                        </listhead>
+                        <listitem value="@{element}" self="@{each=element}">    
+                            <listcell image="/images/skin/icon_selection.png"/>
+                            <!--<listcell label="@{element.trans_code}"/>-->
+                            
+                            <listcell label="@{element.projet}">
+                               <!-- <textbox value="@{element.projet, save-when='self.onChange'}" inplace="true" onOK="bienWin.objet=self.parent.parent.value; bienWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>-->
+                            </listcell>
+                            <listcell label="@{element.client}"/>    
+                            
+                            <listcell label="@{element.type}">
+                                <!--<textbox value="@{element.type, save-when='self.onChange'}" inplace="true" onOK="bienWin.objet=self.parent.parent.value; bienWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>-->
+                            </listcell>
+                                
+                            <listcell label="@{element.numero}">
+<!--                                <textbox value="@{element.numero, save-when='self.onChange'}" inplace="true" onOK="bienWin.objet=self.parent.parent.value; bienWin.update();" onChange='self.style="font-weight:bold"' width="99%" />-->
+                            </listcell>
+                                
+                            <listcell label="@{element.contenance}">
+                                <!--<textbox value="@{element.contenance, save-when='self.onChange'}" inplace="true" onOK="bienWin.objet=self.parent.parent.value; bienWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>-->
+                            </listcell>
+							
+                            <listcell>
+                                <doublebox value="@{element.prixVente}" inplace="true" format="#,##0" readonly="true"  width="99%" />
+                            </listcell>							
+							
+                            <listcell>
+                                <doublebox value="@{element.superficie}" inplace="true" width="99%" format="#,##0" readonly="true" />
+                            </listcell>	
+                            
+                            <listcell label="@{element.titreFoncier}">
+<!--                                <textbox value="@{element.titreFoncier, save-when='self.onChange'}" inplace="true" onOK="bienWin.objet=self.parent.parent.value; bienWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>-->
+                            </listcell>	
+                            
+                            <listcell label="@{element.statut}">							
+                               <!-- <textbox value="@{element.statut, save-when='self.onChange'}" inplace="true" onOK="bientWin.objet=self.parent.parent.value; bienWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>-->
+							
+                            </listcell>			     
+                        </listitem>
+                    </listbox>
+                    <paging id="paging" totalSize="@{bienWin.tailleListe}" pageSize="@{bienWin.maxNb}" onPaging="bienWin.getNextElements(event);" />
+                    <separator/>                    
+<!--                    <button id="btnPdf" onClick="bienWin.genererRapportPdf()" label="Generer rapport" image="/images/skin/pdf-soubor-logo.png"/>-->
+                    <fileupload id="btnImport" label="Import en masse" onUpload="bienWin.importation(event.getMedia())" image="/images/skin/BriefcaseOpen-16x16.png" visible="${IMPORT_DONNEES}" />
+                    <button id="btnNettoyage" onClick="bienWin.nettoyerStatutBien()" label="Nettoyer statut bien après import" visible="${IMPORT_DONNEES}"/>
+<!--                    <button id="btnExcel" onClick="bienWin.genererRapportExcel()" label="Generer excel" image="/images/skin/excel-icon.png"/>
+                    <button id="btnNew" onClick="" label="" width="0px" height="0px" image="" visible="false"/>-->
+                    <button id="btnActualiser" onClick="bienWin.actualiser()" label="Actualiser" image="/images/skin/refresh-icon.png"/>
+<!--                    <button id="btnUpdateBienClient" onClick="bienWin.updateBienClient()" label="Mettre à jour" image="/images/skin/Actions-edit-undo-icon.png"/>-->
+                </groupbox>
+            </center>
+        </borderlayout>
+    </window>
+</zk>

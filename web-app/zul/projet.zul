@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./projetWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?component name="bienmanager" macroURI="/zul/util/bienmanager.zul" class="com.choranet.zk.BienManager"?>
+
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window id="projetWin" height="100%" width="100%" style="margin:auto;" use="${projetWindow}">
+    <!-- <zscript src="/zs/projet.zs"/> -->
+            <zscript>
+        <![CDATA[
+        boolean IMPORT_DONNEES = (boolean) session.getAttribute("IMPORT_DONNEES");
+        ]]>
+        </zscript>
+        <borderlayout>            
+            <west id="westPanel" title="Projet détails" size="100%" flex="true" splittable="true" collapsible="true" open="false" border="none">
+                <borderlayout>
+                    <west id="wst" flex="true" collapsible="true" size="400px" title="infos projet">
+                        <vbox>
+                            <grid fixedLayout="true">
+                                <rows>
+                                    <row>
+                                        <label value="Désignation"/>
+                                        <textbox id="fieldDesignation" hflex ="1"  constraint="no empty: Veillez indiquez une valeur" value="@{projetWin.objet.designation, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' width="99%"/>
+                                    </row>
+                                    <row>
+                                        <label value="Code"/>
+                                        <textbox id="fieldCode" hflex ="1"  constraint="no empty: Veillez indiquez une valeur" value="@{projetWin.objet.code, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' width="99%"/>
+                                    </row>
+                                    <row>
+                                        <label value="Société du projet" />
+                                        <combobox id="cogroupeClients" hflex="1" model="@{projetWin.groupeClients}" selectedItem="@{projetWin.groupeClientSelected}" width="99%" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'>
+                                            <comboitem self="@{each=elementgroupeClient}" label="@{elementgroupeClient}"/>
+                                        </combobox>
+                                    </row>
+                                    <row>
+                                        <label value="Modèle " />
+                                        <combobox id="comodeles" hflex="1" model="@{projetWin.modeles}" selectedItem="@{projetWin.modeleSelected}" width="99%" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'>
+                                            <comboitem self="@{each=elementmodele}" label="@{elementmodele}"/>
+                                        </combobox>
+                                    </row>
+                                    <row>
+                                        <label value="Type " />
+                                        <combobox id="cotypes" hflex="1" model="@{projetWin.types}" selectedItem="@{projetWin.typeSelected}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'>
+                                            <comboitem self="@{each=elementtype}" label="@{elementtype}"/>
+                                        </combobox>
+                                    </row>
+                                    
+                                    <row>
+                                        <label value="Délai option "/>
+                                        <cell>
+                                            <doublebox id="fieldDelaiO" constraint="no empty: Veillez indiquez une valeur" value="@{projetWin.objet.delaiOption, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' width="75%"/>
+                                            <label value=" jour(s)"/>
+                                        </cell>
+                                    </row>
+                                    
+                                    <row>
+                                        <label value="Délai Réservation "/>
+                                        <cell>
+                                            <doublebox id="fieldDelaiR" constraint="no empty: Veillez indiquez une valeur" value="@{projetWin.objet.delaiReservation, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' width="75%"/>
+                                            <label value=" jour(s)"/>
+                                        </cell>
+                                    </row>
+                                    
+                                    <row>
+                                        <label value="Délai compromis "/>
+                                        <cell>
+                                            <doublebox id="fieldDelaiC" constraint="no empty: Veillez indiquez une valeur" value="@{projetWin.objet.delaiCompromis, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' width="75%"/>
+                                            <label value=" jour(s)"/>
+                                        </cell>
+                                    </row>
+                                    
+                                    <row>
+                                        <label value="Délai contrat "/>
+                                        <cell>
+                                            <doublebox id="fieldDelaiCt" constraint="no empty: Veillez indiquez une valeur" value="@{projetWin.objet.delaiContrat, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' width="75%"/>
+                                            <label value=" jour(s)"/>
+                                        </cell>
+                                    </row>
+                                    
+                                    <row>
+                                        <label value="Adresse"/>
+                                        <textbox id="fieldAdresse" hflex="1" multiline="true" rows="5"  value="@{projetWin.objet.adresse, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' width="99%"/>
+                                    </row>	
+                                    <row>
+                                        <label value="Ville " />
+                                        <combobox id="covilles" hflex="1" model="@{projetWin.villes}" selectedItem="@{projetWin.villeSelected}" width="99%" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'>
+                                            <comboitem self="@{each=elementville}" label="@{elementville}"/>
+                                        </combobox>
+                                    </row>
+                                    <row>
+                                        <label value="Réservation en ligne" tooltiptext="Cette option permet aux visiteurs d'envoyer une demande concernant un bien via le site web"/>
+								 
+                                        <checkbox id="fieldreservationEnLigne" label="?" checked="@{projetWin.objet.reservationEnLigne, save-when='triggerBtn.onClick'}" tooltiptext="Cette option permet aux visiteurs d'envoyer une demande concernant un bien via le site web"/>
+                                    </row>
+                                    <row>
+                                        <label value="Génération option en ligne" tooltiptext="Cette option permet aux visiteurs de générer une phase [Option] via le site web"/>
+								 
+                                        <checkbox id="fieldGenerationOption" label="?" checked="@{projetWin.objet.generationOptionEnLigne, save-when='triggerBtn.onClick'}" tooltiptext="Cette option permet aux visiteurs de générer une phase [Option] via le site web"/>
+                                    </row>
+                                    <row>
+                                        <label value="Statut"/>
+                                        <combobox id="costatuts" hflex="1" model="@{projetWin.statuts}" selectedItem="@{projetWin.statutSelected}" width="99%" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'>
+                                            <comboitem self="@{each=elementstatut}" label="@{elementstatut}"/>
+                                        </combobox>
+                                    </row>	
+                                </rows>
+                            </grid>	
+                            <separator />
+                            <hbox>
+                                <button id="btnSave" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));projetWin.add()" label="Sauvegarder" image="/images/skin/database_save.png"/>
+                                <button id="btnUpdate" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));projetWin.update()" label="Modifier" image="/images/skin/database_edit.png" visible="false"/>
+                                <button id="btnDelete" label="Supprimer" image="/images/skin/database_delete.png" visible="false">
+                                    
+                                    
+                                    <attribute name="onClick"><![CDATA[
+Messagebox.show("Merci de confirmer la suppression ?", "Confirmation", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
+    public void onEvent(Event evt) throws InterruptedException {
+        if (evt.getName().equals("onOK")) {
+        TRTOK = true;
+        try
+        {
+        Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));
+        projetWin.delete();
+        }
+        catch (err)
+        {
+        alert("Erreur lors de la suppression !");
+        TRTOK = false;
+        }
+           if (TRTOK){}
+        } else {
+            alert("Suppression annulée !");
+        }
+    }
+});
+]]>
+                                    </attribute>
+                                </button>
+                                <button id="btnNewP" onClick="projetWin.nouveauProjet()" popup="Cliquer sur nouveau pour créer un nouveau projet" label="Nouveau projet" image="/images/skin/database_add.png" />
+                                <button id="btnCancel" onClick="projetWin.cancel()" label="Annuler" image="/images/skin/cancel.png"/>
+                                <button visible="false" id="triggerBtn" onBindingValidate=""/>
+                            </hbox>
+                        </vbox>
+                    </west>
+                    <center border="none" id="ctr" flex="true" title="Biens projet" >
+<!--                        <groupbox width="99%" height="570px" >-->
+                        <vbox>
+                            <tabbox id = "tabboxCrudBien" width="99%" mold="accordion-lite">
+                                <tabs id="tabsCrudBien" />
+                                <tabpanels id="tabpanelsCrudBien" />
+                            </tabbox>
+                        </vbox>
+<!--                        </groupbox>-->
+                    </center>
+                </borderlayout>
+            </west>
+            <center border="none" flex="true">
+                <groupbox width="100%" height="100%">
+                    <listbox id="lstObjet" onSelect="projetWin.select()" model="@{projetWin.listeObjets}" selectedItem="@{projetWin.objetSelected}"  width="100%" height="100%" mold="paging" paginal="${paging}">
+                        <auxhead sclass="category-center">
+                            <auxheader colspan="1">
+                                
+                            </auxheader>
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterCode" value="@{projetWin.filtre.code}" onOK="projetWin.ofs; projetWin.filtre.code=self.value; projetWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="90%"/>
+                            </auxheader>
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterDesignation" value="@{projetWin.filtre.designation}" onOK="projetWin.ofs; projetWin.filtre.designation=self.value; projetWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="90%"/>
+                            </auxheader>
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+<!--                                <textbox id="filterStatutbien" value="@{projetWin.filtre.statut}" onChanging="projetWin.ofs; projetWin.filtre.statut=event.value; projetWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="90%"/>-->
+                                <combobox id="filterStatutp" model="@{projetWin.statuts}" selectedItem="@{projetWin.filtre.statut}" autocomplete="true" autodrop="true" mold="rounded" onSelect="projetWin.ofs=0;projetWin.filtrer()" onOK="projetWin.ofs=0;projetWin.filtrer()" width="90%">
+                                    <comboitem self="@{each=elementfiltrestatut}" label="@{elementfiltrestatut}"/>
+                                </combobox>
+                            </auxheader>                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterAdresse" value="@{projetWin.filtre.adresse}" onOK="projetWin.ofs; projetWin.filtre.adresse=self.value; projetWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="90%"/>
+                            </auxheader>                                                       
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filterville" model="@{projetWin.villes}" selectedItem="@{projetWin.filtre.ville}" autocomplete="true" autodrop="true" mold="rounded" onSelect="projetWin.ofs=0;projetWin.filtrer()" onOK="projetWin.ofs=0;projetWin.filtrer()" width="90%">
+                                    <comboitem self="@{each=elementfiltreville}" label="@{elementfiltreville}"/>
+                                </combobox>
+                            </auxheader>
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filtertype" model="@{projetWin.types}" selectedItem="@{projetWin.filtre.type}" autocomplete="true" autodrop="true" mold="rounded" onSelect="projetWin.ofs=0;projetWin.filtrer()" onOK="projetWin.ofs=0;projetWin.filtrer()" width="90%">
+                                    <comboitem self="@{each=elementfiltretype}" label="@{elementfiltretype}"/>
+                                </combobox>
+                            </auxheader>
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filtermodele" model="@{projetWin.modeles}" selectedItem="@{projetWin.filtre.modele}" autocomplete="true" autodrop="true" mold="rounded" onSelect="projetWin.ofs=0;projetWin.filtrer()" onOK="projetWin.ofs=0;projetWin.filtrer()" width="90%">
+                                    <comboitem self="@{each=elementfiltremodele}" label="@{elementfiltremodele}"/>
+                                </combobox>
+                            </auxheader>			
+                        </auxhead>
+                        <listhead sizable="true">
+                            <listheader width="32px" />
+                            <listheader id="hcode" label="Code" sort="auto(code)" onSort="projetWin.sort(event)"/>	
+                            <listheader id="hdesignation" label="Désignation" sort="auto(designation)" onSort="projetWin.sort(event)"/>	
+                            <listheader id="hstatutbien" label="Statut" sort="auto(statut.intitule)" onSort="projetWin.sort(event)"/>	
+                            <listheader id="hadresse" label="Adresse" sort="auto(adresse)" onSort="projetWin.sort(event)"/>	
+                            <listheader id="hville" label="Ville" sort="auto(ville.intitule)" onSort="projetWin.sort(event)"/>	
+                            <listheader id="htypebien" label="Type" sort="auto(type.intitule)" onSort="projetWin.sort(event)"/>	
+                            <listheader id="hmodele" label="Modèle" sort="auto(modele.code)" onSort="projetWin.sort(event)"/>	
+                        </listhead>
+                        <listitem value="@{element}" self="@{each=element}">    
+                            <listcell image="/images/skin/icon_selection.png"/>
+                            <listcell label ="@{element.code}">
+<!--                                <textbox value="@{element.code, save-when='self.onChange'}" inplace="true" onOK="projetWin.objet=self.parent.parent.value; projetWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>-->
+                            </listcell>
+                            <listcell label = "@{element.designation}">
+<!--                                <textbox value="@{element.designation, save-when='self.onChange'}" inplace="true" onOK="projetWin.objet=self.parent.parent.value; projetWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>-->
+                            </listcell>
+                            <listcell>
+                                <textbox value="@{element.statut, save-when='self.onChange'}" inplace="true" onOK="projetWin.objet=self.parent.parent.value; projetWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+                            </listcell>	
+                            <listcell>
+                                <textbox value="@{element.adresse, save-when='self.onChange'}" inplace="true" onOK="projetWin.objet=self.parent.parent.value; projetWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+                            </listcell>							
+                            <listcell label ="@{element.ville}">
+                                <!--<textbox value="@{element.ville, save-when='self.onChange'}" inplace="true" onOK="projetWin.objet=self.parent.parent.value; projetWin.update();" onChange='self.style="font-weight:bold"' width="99%" />-->
+                            </listcell>	
+                            <listcell label ="@{element.type}">
+                                <!--<textbox value="@{element.type, save-when='self.onChange'}" inplace="true" onOK="projetWin.objet=self.parent.parent.value; projetWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>-->
+                            </listcell>
+                            <listcell label ="@{element.modele}">
+                                <!--<textbox value="@{element.modele, save-when='self.onChange'}" inplace="true" onOK="projetWin.objet=self.parent.parent.value; projetWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>-->
+                            </listcell>
+                        </listitem>
+                    </listbox>
+                    <paging id="paging" totalSize="@{projetWin.tailleListe}" pageSize="@{projetWin.maxNb}" onPaging="projetWin.getNextElements(event);"/>
+                    <separator/>                    
+                    <button id="btnNew" onClick="projetWin.newRecord()" label="Nouveau" image="/images/skin/database_add.png" />
+                    <button id="btnActualiser" onClick="projetWin.filtrer()" label="Actualiser" image="/images/skin/refresh-icon.png" />
+                    <fileupload id="btnImport" label="Import en masse" onUpload="projetWin.importation(event.getMedia())" image="/images/skin/BriefcaseOpen-16x16.png" visible="${IMPORT_DONNEES}"/>
+<!--                    <button id="btnPdf" onClick="projetWin.genererRapportPdf()" label="Generer rapport" image="/images/skin/pdf-soubor-logo.png"/>
+                    <button id="btnExcel" onClick="projetWin.genererRapportExcel()" label="Generer excel" image="/images/skin/excel-icon.png"/>-->
+                </groupbox>
+            </center>
+        </borderlayout>
+    </window>
+</zk>

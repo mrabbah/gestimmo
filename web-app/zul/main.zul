@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?page id="gesticom" title="GESTION COMMERCIALE OMNIDIOR"?>
+<?link rel="stylesheet" type="text/css" href="/macros/category.css.dsp?v=${desktop.webApp.build}"?>
+<?script type="text/javascript" src="/macros/zksandbox.js.dsp?v=${desktop.webApp.build}"?>
+<?script type="text/javascript" content="jq.IE6_ALPHAFIX=/24x24.png|32x32.png|48x48.png|128x128.png|ButtonBlue.png|ButtonGray.png|small.png|small-sel.png|normal.png|normal-sel.png|large.png|large-sel.png/;"?>
+<?meta name="keywords" content="Gestion commerciale OMNIDIOR" ?>
+<?component name="category" extends="button" widgetClass="com.choranet.zk.Category" mold="default"?>
+<?component name="categorybar" extends="div" widgetClass="com.choranet.zk.Categorybar"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" root="mainWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c" ?>
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+<!--    <style dynamic="true">
+        div.z-listcell-cnt {
+            font-weight: bold;  
+            font-size: 14px;
+        }
+        
+    </style>-->
+
+    <zscript src="./main.zs"/>   
+    
+    <window id="mainWin" border="normal" height="750px" width="100%" style="margin-left:auto;margin-right:auto;margin-top:5px;" use="${mainWindow}">
+        <borderlayout id="main">
+            <north border="none" size="90px" sclass="demo-header" collapsible="true">
+                <div>     
+
+                    <div sclass="demo-logo pointer">
+                        <a href="@{mainWin.site}" target="_blank">
+                            <image width="150px" height="80px" content="@{mainWin.trans_logo}"/>
+                        </a>
+                    </div>
+                    <categorybar zclass="demo-categorybar" id="header">   
+
+                        <category id="cg_tdb" image="${imgPath}/menu/Column-Chart-icon.png" label="TDB" onClick='xcontents.src = "/zul/tdb.zul"' zclass="demo-category" if="${TDB == true}"/>  
+<!--                        <category id="cg_bel" image="${imgPath}/Column-Chart-icon.png" label="Bien en ligne"  zclass="demo-category" onClick='xcontents.src = "/zul/reservation.zul?cp=BA001&amp;cb=465"'  />-->
+                        <category id="cg_phaseprojet" image="${imgPath}/menu/ProjectOmni.png" label="Projet" onClick='projetmenu.open(self, "after_start")' zclass="demo-category" if="${GESTION_PROJETS == true}"/>
+                        <popup id="projetmenu" width="200px">
+                            <toolbar orient="vertical" mold="panel">
+                                <toolbarbutton image="${imgPath}/ProjectOmni-small.png" label="Projet" onClick='projetmenu.close();xcontents.src = "/zul/projet.zul"' if="${GESTION_PROJETS == true}"/>  
+                                <!--<toolbarbutton image="${imgPath}/tranche-small.png" label="Tranche" onClick='projetmenu.close();xcontents.src = "/zul/tranche.zul"'/>  -->
+                                <toolbarbutton image="${imgPath}/Search-Folder-icon.png" label="Rechercher bien" onClick='projetmenu.close();xcontents.src = "/zul/bien.zul"' if="${GESTION_BIENS == true}"/>  
+                            </toolbar>
+                        </popup>
+                        <category id="cg_client" image="${imgPath}/menu/Customer.png" label="Client" onClick='xcontents.src = "/zul/client.zul"' zclass="demo-category" if="${GESTION_CLIENTS == true}"/>                     
+<!--                        <category id="cg_clientmenu" image="${imgPath}/Customer.png" label="Client" onClick='clientmenu.open(self, "after_start")' zclass="demo-category" if="${GESTION_CLIENTS == true}"/>
+                        <popup id="clientmenu" width="200px">
+                            <toolbar orient="vertical" mold="panel">
+                                <toolbarbutton label="Client" width="150px" image="${imgPath}/Users-icon_small.png" onClick='clientmenu.close();xcontents.src = "/zul/client.zul"' if="${GESTION_CLIENTS == true}"/>  
+                                <toolbarbutton label="Prise de contact" width="150px" image="${imgPath}/Contacts-icon_small.png" onClick='clientmenu.close(); xcontents.src = "/zul/priseInformation.zul"' if="${PRISES_CONTACT == true}"/>  
+                            </toolbar>
+                        </popup>-->
+                        <category id="cg_phasemenu" image="${imgPath}/menu/User-Files-icon.png" label="Phase" onClick='phasemenu.open(self, "after_start")' zclass="demo-category" if="${GESTION_PHASES == true}"/>
+                        <popup id="phasemenu" width="200px">
+                            <toolbar orient="vertical" mold="panel">
+                                
+                                <toolbarbutton image="${imgPath}/Folder-Options-icon-small.png" label="Option" if="${GESTION_OPTIONS == true}"> 
+                                    <attribute name="onClick">
+                                        <![CDATA[
+                                            session.setAttribute("typePhase","OPTION" );
+                                            xcontents.src = null;
+                                            xcontents.src = "/zul/phase.zul";
+                                            phasemenu.close();
+                                        ]]>
+                                       
+                                    </attribute>
+                                </toolbarbutton>
+    
+                                
+                                <toolbarbutton image="${imgPath}/reservationagenda-psd -small.png" label="Réservation" if="${GESTION_RESERVATIONS == true}">  
+                                    <attribute name="onClick">
+                                        <![CDATA[
+                                            session.setAttribute("typePhase","RESERVATION" );
+                                            xcontents.src = null;
+                                            xcontents.src = "/zul/phase.zul";
+                                            phasemenu.close();
+                                        ]]>
+                                       
+                                    </attribute>
+                                </toolbarbutton>
+                                <toolbarbutton image="${imgPath}/folder-contract-icon-small.png" label="Compromis" if="${GESTION_COMPROMIS == true}">  
+                                    <attribute name="onClick">
+                                        <![CDATA[
+                                            session.setAttribute("typePhase","COMPROMIS" );
+                                            xcontents.src = null;
+                                            xcontents.src = "/zul/phase.zul";
+                                            phasemenu.close();
+                                        ]]>
+                                       
+                                    </attribute>
+                                </toolbarbutton>
+                                <toolbarbutton image="${imgPath}/Contract-icon-small.png" label="Contrat" if="${GESTION_CONTRATS == true}">  
+                                    <attribute name="onClick">
+                                        <![CDATA[
+                                            session.setAttribute("typePhase","CONTRAT" );
+                                            xcontents.src = null;
+                                            xcontents.src = "/zul/phase.zul";
+                                            phasemenu.close();
+                                        ]]>
+                                       
+                                    </attribute>
+                                </toolbarbutton>
+                                <toolbarbutton image="${imgPath}/Document-Delete-icon-small.png" label="Annulation" onClick='phasemenu.close();xcontents.src = "/zul/annulation.zul"' if="${GESTION_ANNULATIONS == true}"/>  
+                            </toolbar>
+                        </popup>
+                        
+                        <category id="cg_echeance" image="${imgPath}/menu/Scheduled-Tasks-icon.png" label="Echeance" onClick='xcontents.src = "/zul/echeance.zul"' zclass="demo-category" if="${GESTION_ECHEANCES == true}"/>  
+                        <category id="cg_paiement" image="${imgPath}/menu/payment.png" label="Paiement" onClick='xcontents.src = "/zul/paiement.zul"' zclass="demo-category" if="${GESTION_PAIEMENTS == true}"/>  
+                        <category id="cg_alerte" image="${imgPath}/menu/alerte.png" label="Alerte" onClick='xcontents.src = "/zul/alerte.zul"' zclass="demo-category" if="${GESTION_ALERTS == true}"/>  
+                        <category id="cg_notaire" image="${imgPath}/menu/3D-Library.png" label="Notaire" onClick='xcontents.src = "/zul/notaire.zul"' zclass="demo-category" if="${GESTION_NOTAIRES == true}"/>  
+                    
+                        <category id="cg_parametragemenu" image="${imgPath}/menu/Folder-White-Configure.png" label="Paramétrage" onClick='parametragemenu.open(self, "after_start")' zclass="demo-category" if="${PARAMETRAGE == true}"/>
+                        <popup id="parametragemenu" width="250px">
+                            <toolbar orient="vertical" mold="panel">
+                                <toolbarbutton image="${imgPath}/modeLe.png" label="Modèles" onClick='parametragemenu.close();xcontents.src = "/zul/modele.zul"' if="${GESTION_MODELES == true}"/> 
+                                <toolbarbutton image="${imgPath}/mtype.png" label="Modèles architecture" onClick='parametragemenu.close();xcontents.src = "/zul/modeleType.zul"' if="${GESTION_MODELES == true}"/>                                
+                                <toolbarbutton image="${imgPath}/Invoice-small.png" label="Modes paiement" onClick='parametragemenu.close();xcontents.src = "/zul/modePaiement.zul"' if="${GESTION_MODES_PAIEMENT == true}"/>  
+                                <toolbarbutton image="${imgPath}/Canal-small.png" label="Canal" onClick='parametragemenu.close();xcontents.src = "/zul/canal.zul"' if="${GESTION_CANAUX == true}"/>  
+                                <toolbarbutton image="${imgPath}/infosgroupe-small.png" label="Source d'information" onClick='parametragemenu.close();xcontents.src = "/zul/sourceInformation.zul"' if="${GESTION_SOURCES_INFORMATION == true}"/>  
+                                <toolbarbutton image="${imgPath}/Glow-Ball-small.png" label="Pays" onClick='parametragemenu.close();xcontents.src = "/zul/pays.zul"' if="${GESTION_PAYS == true}"/>  
+                                <toolbarbutton image="${imgPath}/way-small.png" label="Ville" onClick='parametragemenu.close();xcontents.src = "/zul/ville.zul"' if="${GESTION_VILLES == true}"/>  
+                                <toolbarbutton image="${imgPath}/World-Wide-Web-small.png" label="Nationalite" onClick='parametragemenu.close();xcontents.src = "/zul/nationalite.zul"' if="${GESTION_NATIONALITES == true}"/>  
+                                <toolbarbutton image="${imgPath}/chart-search-icon-small.png" label="Type" onClick='parametragemenu.close();xcontents.src = "/zul/type.zul"' if="${GESTION_TYPES == true}"/>  
+                                <toolbarbutton image="${imgPath}/Control-Panel-icon.png" label="Statut" onClick='parametragemenu.close();xcontents.src = "/zul/statut.zul"' if="${GESTION_STATUTS == true}"/>  
+<!--                                <toolbarbutton image="${imgPath}/measurmet-small.png" label="Contenance" onClick='parametragemenu.close();xcontents.src = "/zul/contenance.zul"' if="${GESTION_CONTENANCES == true}"/>  -->
+                                <toolbarbutton image="${imgPath}/Group-icon.png" label="Affectation projet client" onClick='parametragemenu.close();xcontents.src = "/zul/utilisateurProjetClient.zul"' if="${GESTION_AFFECTATIONS == true}"/>                            
+                                <toolbarbutton image="${imgPath}/settings-icon.png" label="Configuration" onClick='parametragemenu.close();xcontents.src = "/zul/parametrage.zul"' if="${ADMINISTRATION == true}"/>                            
+                            </toolbar>
+                        </popup>
+                        <category id="cg_admin" image="${imgPath}/menu/Configuration_Settings.png" label="Administration" onClick='adminmenu.open(self, "after_start")' zclass="demo-category" if="${ADMINISTRATION == true}"/>
+                        <popup id="adminmenu" width="250px">
+                            <toolbar orient="vertical" mold="panel">
+                                <toolbarbutton image="${imgPath}/User-Files-icon 32-32.png" label="Utilisateurs" onClick='adminmenu.close();xcontents.src = "/zul/root/utilisateur.zul"' if="${GESTION_UTILISATEURS == true}"/> 
+                                <toolbarbutton image="${imgPath}/users-small.png" label="Groupes utilisateurs" onClick='adminmenu.close();xcontents.src = "/zul/root/groupeUtilisateur.zul"' if="${GESTION_GROUPES == true}"/>                            
+                                <toolbarbutton image="${imgPath}/information.png" label="Informations société" onClick='adminmenu.close();xcontents.src = "/zul/root/clientinfo.zul"' if="${INFORMATIONS_SOCIETE == true}"/>                            
+                                <toolbarbutton image="${imgPath}/search-b-icon-small.png" label="Audit système" onClick='adminmenu.close();xcontents.src = "/zul/audit.zul"' if="${AUDIT_SYSTEM == true}"/>                            
+<!--                                <toolbarbutton image="${imgPath}/cd-burner-copy-icon 32-32.png" label="Sauvegurder Restaurer" onClick='adminmenu.close();xcontents.src = "/zul/root/backup.zul"' if="${BACKUP == true}"/>                            -->
+                            </toolbar>
+                        </popup>                        
+                        <category zclass="demo-category" id="cg_help" image="${imgPath}/menu/help_2.png" label="Aide" onClick='helpmenu.open(self, "after_start")' />  
+<!--                        <category zclass="demo-category" id="cg_logout" href="/logout" image="${imgPath}/App-shutdown.png" label="Se deconnecter" />  -->
+                        <category  image="${imgPath}/menu/App-shutdown.png" label="Se deconnecter" zclass="demo-category" >  
+                            <attribute name="onClick">
+                                        <![CDATA[
+Messagebox.show("Êtes-vous sûr de vouloir quitter ?", "Confirmation", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
+    public void onEvent(Event evt) throws InterruptedException {
+        if (evt.getName().equals("onOK")) {
+Executions.sendRedirect("/logout");
+        }
+    }
+});
+                                        ]]>
+                                       
+                            </attribute>
+                       </category>
+                    </categorybar>
+                </div>
+            </north>
+            <center autoscroll="true" flex="true">                
+                <include src="@{mainWindow.currentinclude}" style="padding:3px;" id="xcontents" progressing="true" />
+            </center>
+        </borderlayout>        
+        <popup id="helpmenu" width="230px">
+            <toolbar orient="vertical" mold="panel">
+                <toolbarbutton label="Aide" width="200px" image="${imgPath}/help.png" href="/aide/index.html" target="_blank">    
+                    <attribute name="onClick">
+                    <![CDATA[
+                        helpmenu.close();
+                        
+                    ]]>
+                    </attribute>
+                </toolbarbutton>
+                <toolbarbutton label="Changer mes informations" width="200px" image="${imgPath}/identity.png">
+                    <attribute name="onClick">
+                    <![CDATA[
+                        helpmenu.close();
+                        Executions.createComponents("/zul/aide/moncompte.zul", null, null).doModal();
+                    ]]>
+                    </attribute>
+                </toolbarbutton>
+                <separator bar="true" width="200px" />
+                <toolbarbutton label="A propos de" width="200px" image="${imgPath}/about_32.png">
+                    <attribute name="onClick">
+                    <![CDATA[
+                        helpmenu.close();
+                        Executions.createComponents("/zul/aide/apropos.zul", null, null).doModal();
+                    ]]>
+                    </attribute>
+                </toolbarbutton>                
+            </toolbar>
+        </popup>
+    </window>
+</zk>

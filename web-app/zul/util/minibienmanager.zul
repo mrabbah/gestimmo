@@ -1,0 +1,15 @@
+
+<zk>
+    <groupbox id="gbCrud" width="100%" height="100%">
+
+        <grid fixedLayout="true">
+            <rows>									
+                <row>
+                    <label value="Bien parent " />
+                    <combobox id="lstBien"/>                    
+                </row>	
+            </rows>
+        </grid>	
+        
+    </groupbox>
+</zk>

@@ -1,0 +1,163 @@
+
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./clientinfoWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window id="clientinfoWin" height="100%" width="100%" style="margin:auto;" use="${choraClientInfoWindow}">
+        <borderlayout>
+            <center border="none" flex="true" >
+                <groupbox width="100%" height="100%">
+                    <listbox id="lstObjet" onSelect="clientinfoWin.select()" model="@{clientinfoWin.listeObjets}" selectedItem="@{clientinfoWin.objetSelected}"  width="100%" height="100%" mold="paging" paginal="${paging}">
+                        <listhead sizable="true">
+                            <listheader width="32px" />                            
+                            <listheader id="hnomsociete" label="Société" sort="auto(nomsociete)" onSort="clientinfoWin.sort(event)"/>
+                            <listheader id="hraisonSocial" label="Raison social" sort="auto(raisonSocial)" onSort="clientinfoWin.sort(event)"/>
+                            <listheader id="hpatente" label="Patente" sort="auto(patente)" onSort="clientinfoWin.sort(event)"/>
+                            <listheader id="hidF" label="IF" sort="auto(idF)" onSort="clientinfoWin.sort(event)"/>
+                            <listheader id="hrc" label="RC" sort="auto(rc)" onSort="clientinfoWin.sort(event)"/>                    
+                        </listhead>
+                        <listitem value="@{element}" self="@{each=element}">    
+                            <listcell image="/images/skin/icon_selection.png"/>
+                            <listcell label="@{element.nomsociete}"/>
+                            <listcell label="@{element.raisonSocial}"/>
+                            <listcell label="@{element.patente}"/>
+                            <listcell label="@{element.idF}"/>
+                            <listcell label="@{element.rc}"/>							     
+                        </listitem>
+                    </listbox>
+                    <paging id="paging" totalSize="@{clientinfoWin.tailleListe}" pageSize="@{clientinfoWin.maxNb}" onPaging="clientinfoWin.getNextElements(event);" />
+                    <separator/>	
+                
+                    <button id="btnNew" onClick="clientinfoWin.newRecord()" label="Nouveau" image="/images/skin/database_add.png"/>
+<!--                    <button id="btnPdf" onClick="clientinfoWin.genererRapportPdf()" label="Generer rapport" image="/images/skin/pdf-soubor-logo.png"/>
+                    <button id="btnExcel" onClick="clientinfoWin.genererRapportExcel()" label="Generer excel" image="/images/skin/excel-icon.png"/>               -->
+                </groupbox>
+            </center>
+            <west id="westPanel" title="Groupe" size="40%" flex="true" splittable="true" collapsible="true" open="false">
+                <groupbox id="gbCrud" width="100%" height="100%">
+                    <grid fixedLayout="true">
+                        <rows>
+			
+                            <row>
+                                <label value="Raison social"/>
+							 
+                                <textbox id="fieldNomsociete" hflex="1" constraint="no empty: Veillez indiquez une valeur" value="@{clientinfoWin.objet.nomsociete, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                                <label value="Forme Juridique"/>
+								 
+                                <textbox id="fieldRaisonSocial" hflex="1" value="@{clientinfoWin.objet.raisonSocial, save-when='triggerBtn.onClick'}" />
+                            </row>	
+                    
+                            <row>
+                                <label value="Adresse"/>
+								 
+                                <textbox id="fieldAdresse" hflex="1"  value="@{clientinfoWin.objet.adresse, save-when='triggerBtn.onClick'}"/>
+                                <label value="Code postale"/>
+								 
+                                <textbox id="fieldCodePostale" hflex="1" value="@{clientinfoWin.objet.codePostale, save-when='triggerBtn.onClick'}" />
+                            </row>
+                 
+                            <row>
+                                <label value="Ville"/>
+								 
+                                <textbox id="fieldville" hflex="1"  value="@{clientinfoWin.objet.ville, save-when='triggerBtn.onClick'}"/>
+                                <label value="Pays"/>
+								 
+                                <textbox id="fieldpays" hflex="1" value="@{clientinfoWin.objet.pays, save-when='triggerBtn.onClick'}" />
+                            </row>
+                                               
+                            <row>
+                                <label value="Telephone"/>
+								 
+                                <textbox id="fieldTelephone" hflex="1"  value="@{clientinfoWin.objet.telephone, save-when='triggerBtn.onClick'}"/>
+                                <label value="Fax"/>
+								 
+                                <textbox id="fieldFax" hflex="1" value="@{clientinfoWin.objet.fax, save-when='triggerBtn.onClick'}" />
+                            </row>
+                                                 
+                            <row>
+                                <label value="Email"/>
+								 
+                                <textbox id="fieldEmail" hflex="1" value="@{clientinfoWin.objet.email, save-when='triggerBtn.onClick'}"/>
+                                <label value="Patente"/>
+								 
+                                <textbox id="fieldPatente" hflex="1" value="@{clientinfoWin.objet.patente, save-when='triggerBtn.onClick'}" />
+                            </row>
+                            
+              
+                            <row>
+                                <label value="RC"/>
+								 
+                                <textbox id="fieldRC" hflex="1" value="@{clientinfoWin.objet.rc, save-when='triggerBtn.onClick'}" />
+                                <label value="IDF"/>
+								 
+                                <textbox id="fieldIDF" hflex="1" value="@{clientinfoWin.objet.idF, save-when='triggerBtn.onClick'}"/>
+                            </row>
+                    
+                                                                                                                                          
+                            <row>
+                                <label value="Cnss"/>
+								 
+                                <textbox id="fieldCnss" hflex="1" value="@{clientinfoWin.objet.cnss, save-when='triggerBtn.onClick'}"/>
+                                <label value="Site"/>
+								 
+                                <textbox id="fieldSite" hflex="1" value="@{clientinfoWin.objet.site, save-when='triggerBtn.onClick'}"/>
+                            </row>
+                            <row>
+                                <label value="Repertoir Backup"/>
+                                <textbox id="fieldRepertoirBackup" hflex="1" value="@{clientinfoWin.objet.repertoirBackup, save-when='triggerBtn.onClick'}"/>
+                            </row>
+                    
+                            <row>                   
+                                <fileupload  id="btnUpload" label="Charger logo" onUpload="clientinfoWin.updateLogo(event.getMedia())" />
+<!--                                <image id="appercuLogo" width="90px" height="90px" content="@{clientinfoWin.objet.trans_logo}" />-->
+                                <image id="appercuLogo" width="90px" height="90px" />
+                            </row>
+                        </rows>
+                    </grid>
+                    
+                 
+                    <separator />
+            
+                    <button id="btnUpdate"  label="Modifier" image="/images/skin/database_edit.png" visible="true">
+                        <attribute name="onClick"><![CDATA[
+Messagebox.show("Voulez-vous enregistrer les modifications apportées ?", "Confirmation", Messagebox.OK | Messagebox.IGNORE  | Messagebox.CANCEL, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
+    public void onEvent(Event evt) throws InterruptedException {
+        if (evt.getName().equals("onOK")) {
+        TRTOK = true;
+        try
+        {
+        Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));
+        clientinfoWin.update();
+        }
+        catch (err)
+        {
+        alert("Erreur lors de l'enregistrement !");
+        TRTOK = false;
+        }
+           if (TRTOK){ alert("Modifications enregistrées !");}
+        } else if (evt.getName().equals("onIgnore")) {
+            Messagebox.show("Annuler les modifications", "Attention", Messagebox.OK, Messagebox.EXCLAMATION);
+        } else {
+            alert("Modifications annulées !");
+        }
+    }
+});
+]]>
+                        </attribute>
+                    </button>
+                    <button id="btnSave" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));clientinfoWin.add()" label="Sauvegarder" image="/images/skin/database_save.png"/>                   
+                    <button id="btnDelete" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));clientinfoWin.delete()" label="Supprimer" image="/images/skin/database_delete.png" visible="false"/>
+                    <!-- <button id="btnNew" onClick="paysWin.newRecord()" label="Nouveau enregistrement" image="/images/skin/database_add.png"/> -->
+                    <button id="btnCancel" onClick="clientinfoWin.cancel()" label="Annuler" image="/images/skin/cancel.png" visible="false"/>
+
+                    <button visible="false" id="triggerBtn" onBindingValidate=""/>
+                </groupbox>
+            </west>
+        </borderlayout>
+    </window>
+</zk>

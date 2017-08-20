@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./bienEnLigneWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+    <style>
+        .hightlight { color: #EBDDE2;} 
+
+        .labelTitleG {
+        font-weight: bold;        
+        color: #434543;
+        }
+    </style>
+    <window id="bienEnLigneWin" height="100%" width="100%" style="margin:auto;" use="${bienEnLigneWindow}" contentStyle="overflow:auto" >
+        <borderlayout>
+            <north id="eastPanel" size="175px" open="true"  title="Réservation bien en ligne : " flex="true" splittable="true"  collapsible="true">
+                <groupbox id="gb1" width="100%" height="100%" >
+                    <grid span="true" height="135px" width="99%" style="overflow:auto">
+
+                        <columns>
+                            <column width="10%"/>
+                            <column width="23%"/>
+                            <column width="10%"/>
+                            <column width="23%"/>
+                            <column width="10%"/>
+                            <column width="24%"/>
+                        </columns>
+                        <rows>
+                            <row style="background: #E1E6FA" >
+                                <cell colspan="6">
+                                    <label id="bienH" value="Informations du bien :" sclass="labelTitleG"/>
+                                </cell>
+                            </row>
+                            <row>
+                                <label value="Projet "  />                                 
+                                <textbox id="fieldProjet" hflex="2" value="@{bienEnLigneWin.bien.projet.designation}" readonly="true"/>                                                                        
+
+                                <cell align="right">            
+                                    <label value="Code bien"/>
+                                </cell>
+                                <textbox id="fieldNumero" hflex="4" value="@{bienEnLigneWin.bien.numero}" readonly="true"/>
+                                            
+                                <cell align="right">            
+                                    <label value="Type de bien"/>
+                                </cell>
+                                <textbox id="fieldTypebien" hflex="6" value="@{bienEnLigneWin.bien.type}" readonly="true"/>
+                            </row>                                                
+                                
+                            <row>
+                                <label value="Superficie"/>
+                                <cell>
+                                    <doublebox id="fieldSuperficie" hflex="2" value="@{bienEnLigneWin.bien.superficie}" readonly="true"/>
+                                    <label value=" m²"/>
+                                </cell> 
+                                
+                                <cell align="right">        
+                                    <label value="Superficie construite"/>
+                                </cell>
+                                <cell>
+                                    <doublebox id="fieldSuperficieConstruite" hflex="4" value="@{bienEnLigneWin.bien.superficieConstruite}" readonly="true"/>
+                                    <label value=" m²"/>
+                                </cell> 
+                                
+                                <cell align="right">        
+                                    <label value="Superficie vendable"/>
+                                </cell>
+                                <cell>
+                                    <doublebox id="fieldSuperficieVendable" hflex="6" value="@{bienEnLigneWin.bien.superficieVendable}" readonly="true"/>
+                                    <label value=" m²"/>
+                                </cell> 
+                            </row>
+                                
+                            <row>
+                                <label value="Contenance" />
+                                <textbox id="fieldContenance" hflex="2" value="@{bienEnLigneWin.bien.contenance}" readonly="true"/>
+                               
+                                <cell align="right">               
+                                    <label value="Prix de vente"/>
+                                </cell>
+                                <cell>
+                                    <doublebox id="fieldPrixVente" hflex="4" value="@{bienEnLigneWin.bien.prixVente}" format="#,##0.##" readonly="true"/>
+                                    <label value=" DH"/>
+                                </cell>                   
+
+                                <cell align="right">
+                                    <label value="Etat bien" />
+                                </cell>
+                                <textbox id="fieldEtatBien" hflex="6" value="@{bienEnLigneWin.bien.statut}" readonly="true" style="background: #EFF0FF" />
+                           
+                            </row>
+                        </rows>
+                                            
+                    </grid>
+                </groupbox>                        
+            </north>
+            <center id="centerpanel" onOpen="true" flex="true" >
+                <groupbox width="100%" height="100%" >
+                    <grid fixedLayout="true" span="true" height="99%" width="99%" style="overflow:auto">
+                        <columns>
+                            <column width="10%"/>
+                            <column width="23%"/>
+                            <column width="10%"/>
+                            <column width="23%"/>
+                            <column width="10%"/>
+                            <column width="24%"/>
+                        </columns>
+                        <rows>
+                            <row style="background: #D0E09D" >
+                                <cell colspan="6">
+                                    <label id="clientH" value="Veuillez saisir les informations du client : " sclass="labelTitleG"/>
+                                </cell>
+                            </row>
+                            <row>
+                                <label value="CIN"/>
+                                <textbox id="fieldCin" hflex="2" value="@{bienEnLigneWin.client.cin, save-when='btnSend.onClick'}" />
+                                
+                                <cell align="right">
+                                    <label value="Nom"/>
+                                </cell>
+                                <textbox id="fieldNom" hflex="4"  value="@{bienEnLigneWin.client.nom, save-when='btnSend.onClick'}" constraint="no empty: Veillez indiquez une valeur" />
+                                
+                                <cell align="right">
+                                    <label value="Prénom : " />
+                                </cell>
+                                <textbox id="fieldPrenom" hflex="6" value="@{bienEnLigneWin.client.prenom, save-when='btnSend.onClick'}" constraint="no empty: Veillez indiquez une valeur" />
+                           
+                            </row>
+                            <row>
+                                <cell align="left" width="99%">
+                                    <label value="E-mail"/>
+                                </cell>
+                                <textbox id="fieldMail" hflex="2" value="@{bienEnLigneWin.client.mail, save-when='btnSend.onClick'}" />
+                               
+                                <cell align="right">
+                                    <label value="Tel 1 : (+212)"/>
+                                </cell>
+                                <cell align="left" width="99%">
+                                    <intbox id="fieldGsm" hflex="4" value="@{bienEnLigneWin.client.gsm, save-when='btnSend.onClick'}" constraint="no empty: Veillez indiquez une valeur" />
+                                </cell>
+                                
+                                <cell align="right">
+                                    <label value="Tel 2 : "/>
+                                </cell>
+                                <cell align="left" width="99%">
+                                    <textbox id="fieldFixe" hflex="6" value="@{bienEnLigneWin.client.fixe, save-when='btnSend.onClick'}"/>
+                                </cell>
+                            </row>
+                            
+                            <row>
+                                <cell >                            
+                                    <label value="Sexe : "/>
+                                </cell>
+                                <combobox id="cosexes" hflex="2" model="@{bienEnLigneWin.sexes}" selectedItem="@{bienEnLigneWin.client.sexe, save-when='btnSend.onClick'}">
+                                    <comboitem self="@{each=elementsexeClient}" label="@{elementsexeClient}"/>
+                                </combobox>
+                                <cell align="right">
+                                    <label value="Date de naissance"/>
+                                </cell>
+                                <datebox id="fieldDateNaissance" hflex="4" format="dd/MM/yyyy" value="@{bienEnLigneWin.client.dateNaissance, save-when='btnSend.onClick'}"/>
+
+                                <cell align="right">
+                                    <label value="Nationalité : " />
+                                </cell>
+                                <combobox id="conationalites" hflex="6" model="@{bienEnLigneWin.nationalites}" selectedItem="@{bienEnLigneWin.nationaliteSelected, save-when='btnSend.onClick'}">
+                                    <comboitem self="@{each=elementnationalite}" label="@{elementnationalite}"/>
+                                </combobox>
+                            </row>  
+                            
+                            <row>
+                                <label value="Ville " />
+                                <combobox id="covilles" hflex="2" model="@{bienEnLigneWin.villes}" selectedItem="@{bienEnLigneWin.villeSelected, save-when='btnSend.onClick'}">
+                                    <comboitem self="@{each=elementville}" label="@{elementville}"/>
+                                </combobox>
+                                
+                                <cell align="right">
+                                    <label value="Adresse"/>
+                                </cell>
+                                <cell colspan="3">                                    
+                                    <textbox id="fieldAdresse" hflex="1" multiline="true" rows="2" value="@{bienEnLigneWin.client.adresse, save-when='btnSend.onClick'}" />
+                                </cell>
+                    	                          
+                            </row>
+                
+                            <row>
+                   
+                                <cell >
+                                    <label value="Date contact : "/>
+                                </cell>
+                                <datebox id="fieldDateContact" hflex="2" format="dd/MM/yyyy" value="@{bienEnLigneWin.client.dateContact, save-when='btnSend.onClick'}" onCreate="self.value = new Date()" disabled="true"/>                           
+
+                                <cell align="right">
+                                    <label value="Commentaire"/>
+                                </cell>
+                                <cell colspan="3">                                  
+                                    <textbox id="fieldCommentaire" hflex="1" multiline="true" rows="2" value="@{bienEnLigneWin.client.commentaire, save-when='btnSend.onClick'}" />
+                                </cell>
+                            </row>
+						
+                        </rows>
+                    </grid>	
+                    <separator/>
+                    <hbox>
+                        
+                        
+                        <button id="btnSend" label="Envoyer la demande" image="/images/skin/validate.png" >   
+
+                            <attribute name="onClick"><![CDATA[
+                            
+                            String numTel = fieldGsm.value + "";
+                            boolean valide = true;
+                            if (numTel.length() < 9 ){
+                            valide = false;
+                            Clients.evalJavaScript("afficherAlert()");
+                            }
+                            else{
+                            bienEnLigneWin.envoiMail();
+                            valide = bienEnLigneWin.execDemande;
+                            }
+                                                       
+                            if(valide){
+                            
+                            Messagebox.show("Réservation en ligne terminée avec succès\n\nCette fenêtre va se fermer automatiquement", "Confirmation", Messagebox.OK , Messagebox.INFORMATION, new org.zkoss.zk.ui.event.EventListener() {
+                            public void onEvent(Event evt) throws InterruptedException {
+                            if (evt.getName().equals("onOK")) {
+                            Clients.evalJavaScript("closeWin()");
+                            }
+                            
+                            }
+                            });
+                            
+                            };
+                            ]]>
+
+                            </attribute>
+                        </button>
+                        <button visible="false" id="triggerBtn" onBindingValidate=""/>
+                        <button id="btnClose" label="Fermer" image="/images/skin/Actions-edit-delete-icon.png" style="background: #F7BDC9" >
+                            <attribute name="onClick"><![CDATA[
+                            Clients.evalJavaScript("closeWin()");
+                             ]]>
+
+                            </attribute>
+                        </button>
+                    </hbox>
+                    
+          
+                    <separator/>
+<!--                    <hbox width="100%">
+                    <div width="100%" align="center">
+                        <image id = "imgProjet" src="/images/skin/projet.gif" height="215px" width="850px"/> 
+                    </div>
+                    </hbox>-->
+
+                    <hlayout style="text-align: center;">
+                        <image id = "img1" src="/images/skin/projet.gif" height="90px" width="356px"/> 
+                        <image id = "img2" src="/images/skin/couverture 2.gif" height="90px" width="356px"/>
+                        <image id = "img3" src="/images/skin/acceuil.gif" height="90px" width="356px"/>
+                    </hlayout>
+                </groupbox>  
+            </center>
+
+        </borderlayout>
+
+    </window>
+    <script type="text/javascript">
+        function closeWin() {
+        
+   <!--   alert("Réservation en ligne terminée avec succès\n\nVous allez être redirigé vers le plan de masse");
+        window.parent.location = "http://www.bassatinekenitra.com/index.php/fr/plan-de-masse";
+        window.onload=window.parent.jcepopup.close();-->
+        javascript:window.opener='x';
+        window.close();
+
+        }
+        
+        function afficherAlert() {
+        alert("* Saisir un numéro de téléphone composé de 9 chiffres [XXXXXXXXX]");
+        }
+
+    </script>
+</zk>

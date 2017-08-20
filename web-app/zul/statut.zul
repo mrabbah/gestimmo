@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./statutWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window id="statutWin" height="100%" width="100%" style="margin:auto;" use="${statutWindow}">
+    <!-- <zscript src="/zs/type.zs"/> -->
+        <borderlayout>
+            <north id="eastPanel" size="65px" open="false"  title="Recherche avancée" flex="true" splittable="true"  collapsible="true"  >
+                <hlayout spacing="10px" style="margin-top:9px;margin-left:10px">
+										                    
+                </hlayout>
+            </north>
+            <west id="westPanel" title="Type" size="40%" flex="true" splittable="true" collapsible="true" open="false">
+                <groupbox id="gbCrud" width="100%" height="100%">
+                    <grid fixedLayout="true">
+                        <rows>
+                            
+                            <row>
+                                <label value="Code"/>
+								 
+                                <textbox id="fieldCode" constraint="no empty: Veillez indiquez une valeur" value="@{statutWin.objet.code, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' />
+                            </row>
+						
+                            <row>
+                                <label value="Intitule"/>
+								 
+                                <textbox id="fieldIntitule" constraint="no empty: Veillez indiquez une valeur" value="@{statutWin.objet.intitule, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>												
+					
+                            <row>
+                                <label value="Type"/>
+								 
+                                <textbox id="fieldType" constraint="no empty: Veillez indiquez une valeur" value="@{statutWin.objet.type, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>
+						
+                        </rows>
+                    </grid>					
+					
+                    <separator />
+                    <button id="btnSave" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));statutWin.add()" label="Sauvegarder" image="/images/skin/database_save.png"/>
+                    <button id="btnUpdate" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));statutWin.update()" label="Modifier" image="/images/skin/database_edit.png" visible="false"/>
+                    <button id="btnDelete" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));statutWin.delete()" label="Supprimer" image="/images/skin/database_delete.png" visible="false"/>
+                    <!-- <button id="btnNew" onClick="statutWin.newRecord()" label="Nouveau enregistrement" image="/images/skin/database_add.png"/> -->
+                    <button id="btnCancel" onClick="statutWin.cancel()" label="Annuler" image="/images/skin/cancel.png"/>
+                    <button visible="false" id="triggerBtn" onBindingValidate=""/>
+                </groupbox>
+            </west>
+            <center border="none" flex="true">
+                <groupbox width="100%" height="100%">
+                    <listbox id="lstObjet" onSelect="statutWin.select()" model="@{statutWin.listeObjets}" selectedItem="@{statutWin.objetSelected}"  width="100%" height="100%" mold="paging" paginal="${paging}">
+                        <auxhead sclass="category-center">
+                            <auxheader colspan="1"/>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterCode" value="@{statutWin.filtre.code}" onOK="statutWin.ofs; statutWin.filtre.code=self.value; statutWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+							
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterIntitule" value="@{statutWin.filtre.intitule}" onOK="statutWin.ofs; statutWin.filtre.intitule=self.value; statutWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterType" value="@{statutWin.filtre.type}" onOK="statutWin.ofs; statutWin.filtre.type=self.value; statutWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+								 
+                        </auxhead>
+                        <listhead sizable="true">
+                            <listheader width="32px" />
+                            <listheader id="hcode" label="Code" sort="auto(code)" onSort="statutWin.sort(event)"/>				
+                            <listheader id="hintitule" label="Intitule" sort="auto(intitule)" onSort="statutWin.sort(event)"/>	
+                            <listheader id="htype" label="Type" sort="auto(type)" onSort="statutWin.sort(event)"/>	
+							                                 
+                        </listhead>
+                        <listitem value="@{element}" self="@{each=element}">    
+                            <listcell image="/images/skin/icon_selection.png"/>
+                            
+                            <listcell label="@{element.code}">
+							
+<!--                                <textbox value="@{element.code, save-when='self.onChange'}" inplace="true" onOK="statutWin.objet=self.parent.parent.value; statutWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>-->
+							
+                            </listcell>	
+                            
+                            <listcell>
+							
+                                <textbox value="@{element.intitule, save-when='self.onChange'}" inplace="true" onOK="statutWin.objet=self.parent.parent.value; statutWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>		
+                            
+                            <listcell>
+							
+                                <textbox value="@{element.type, save-when='self.onChange'}" inplace="true" onOK="statutWin.objet=self.parent.parent.value; statutWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>	
+							     
+                        </listitem>
+                    </listbox>
+                    <paging id="paging" totalSize="@{statutWin.tailleListe}" pageSize="@{statutWin.maxNb}" onPaging="statutWin.getNextElements(event);" />
+                    <separator/>
+                    <grid>
+                        <columns>
+                            <column width="32px" />
+				
+                            <column />
+                            <column />
+                            <column />
+							
+                        </columns>
+                        <rows>
+                            <row>
+                                <image src="/images/skin/database_edit.png"  />
+                                <textbox id="fieldcodebis" value="@{statutWin.objet.code, save-when='self.onChange'}" inplace="true" onOK="statutWin.add();" width="99%"/>				
+                                <textbox id="fieldintitulebis" value="@{statutWin.objet.intitule, save-when='self.onChange'}" inplace="true" onOK="statutWin.add();" width="99%"/>
+                                <textbox id="fieldtypebis" value="@{statutWin.objet.type, save-when='self.onChange'}" inplace="true" onOK="statutWin.add();" width="99%"/>
+								  
+                            </row>
+                        </rows>
+                    </grid>
+                    <separator/>
+                    <button id="btnNew" onClick="statutWin.newRecord()" label="Nouveau" image="/images/skin/database_add.png"/>
+<!--                    <button id="btnPdf" onClick="statutWin.genererRapportPdf()" label="Generer rapport" image="/images/skin/pdf-soubor-logo.png"/>
+                    <button id="btnExcel" onClick="statutWin.genererRapportExcel()" label="Generer excel" image="/images/skin/excel-icon.png"/>-->
+                </groupbox>
+            </center>
+        </borderlayout>
+    </window>
+</zk>

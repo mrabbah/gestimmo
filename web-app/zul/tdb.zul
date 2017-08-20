@@ -1,0 +1,550 @@
+
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./tdbWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?component name="minibienmanager" macroURI="/zul/util/minibienmanager.zul" class="com.choranet.zk.MiniBienManager"?>
+<?component name="bienmanager" macroURI="/zul/util/bienmanagerList.zul" class="com.choranet.zk.BienManager"?>
+
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window id="tdbWin" height="100%" width="100%" style="margin:auto;" use="${tdbWindow}">
+         <zscript>
+        <![CDATA[
+        boolean ACCES_RAPPORTS = (boolean) session.getAttribute("ACCES_RAPPORTS");
+              ]]>
+        </zscript>
+        <borderlayout>
+            <north title="Vue d'ensemble" size="100%" flex="true" splittable="true" collapsible="true" open="true">
+                <borderlayout>
+                    <west size="460px">
+                        <vlayout>
+                            <panel height="500px" width="450px" style="margin-bottom:10px"
+                                   title="Etat des projets" border="normal" 
+                                   collapsible="true">
+                                <panelchildren style="overflow: auto">
+                                    <panel>
+                                        <panelchildren>
+                                            <grid>
+                                                <rows>
+                                                    <row>
+                                                        <cell width= "80px">
+                                                            <label value="Projet"/>
+                                                        </cell>	
+                                                        <cell >
+                                                            <combobox id="coprojets" hflex="1" model="@{tdbWin.projets}" selectedItem="@{tdbWin.projetSelected}" onSelect="tdbWin.genererChart(true)" >
+                                                                <comboitem self="@{each=elementprojet}" label="@{elementprojet}"/>
+                                                            </combobox>
+                                                        </cell>
+                                                    </row>
+                                                </rows>
+                                            </grid>
+                                        </panelchildren>                                                                                                                      
+                                    </panel>
+                                    <separator/>
+                                    <chart id="etatprojet" title="Etat des biens du projet" width="448" height="210"
+                                           type="pie" threeD="true" fgAlpha="128" model="@{tdbWin.etatprojet}" />
+                                    <separator/>
+                                    <chart id="etatPhase" title="Etat des phases du projet" width="448" height="200"
+                                           type="pie" threeD="true" fgAlpha="128" model="@{tdbWin.etatprojetPhase}" />  
+                                </panelchildren>
+                            </panel>
+                        </vlayout>
+
+                    </west>
+                    <center autoscroll="true">
+                        <vlayout>
+                            <panel height="140px" width="100%" style="margin-bottom:10px"
+                                   title="Liste des alertes programmées par l'utilisateur" border="normal" maximizable="true"
+                                   collapsible="true" open="@{tdbWin.existListeAlertes}">
+                                <panelchildren>
+                                    <listbox id="listeAlertes" model="@{tdbWin.listeAlertes}"  width="100%" height="100%" autopaging="true" vflex="120px" >
+                                        
+                                        <listhead sizable="true">
+                                            <listheader label="Projet "/> 
+                                            <listheader label="Client "/>
+                                            <listheader label="Date exécution"/>
+                                            <listheader label="Date déclenchement "/>
+                                            <listheader label="Contenu "/>
+                                        </listhead>
+                                       
+                                       
+                                        <listitem self="@{each=element}"> 
+                                            <listcell label="@{element.projet}" />
+                                            <listcell label="@{element.client}" />
+                                            <listcell>
+                                                <datebox style="color:red" value="@{element.date}" width="90%" format="dd/MM/yyyy" buttonVisible="false" readonly="true"/>
+                                            </listcell>
+                                            <listcell>
+                                                <datebox style="color:red" value="@{element.dateDeclenchement}" width="90%" format="dd/MM/yyyy" buttonVisible="false" readonly="true"/>
+                                            </listcell>
+                                            <listcell >
+                                                <html content="@{element.messagePersonalise}"/>
+                                            </listcell>
+                                        </listitem>
+                                       
+                                    </listbox>
+<!--                                    <button id="btnAlrt" onClick="tdbWin.alerteMail()" label="mail envoi" image="/images/skin/cancel.png"/>-->
+                                </panelchildren>
+                            </panel>
+                            <panel height="140px" width="100%" style="margin-bottom:10px"
+                                   title="Rappel des paiements non validés" border="normal" maximizable="true"
+                                   collapsible="true" open="@{tdbWin.existRappelPaiements}">
+                                <panelchildren>
+                                    <listbox id="rappelPaiements" model="@{tdbWin.RappelPaiements}" width="100%" height="100%" autopaging="true" vflex="140px">
+                                        <listhead sizable="false">
+                                            <listheader label="Projet "/> 
+                                            <listheader label="Client "/>
+                                            <listheader label="Date paiement"/>
+                                            <listheader label="Date encaissement"/>
+                                            <listheader label="Montant paiement"/>
+                                        </listhead>
+                                        
+                                        <listitem self="@{each=element}"> 
+                                            <listcell label="@{element.phase.projet}" style="color:red" />
+                                            <listcell label="@{element.phase.client}" style="color:red" />
+                                            <listcell>
+                                                <datebox style="color:red" value="@{element.datePaiement}" width="90%" format="dd/MM/yyyy" buttonVisible="false" readonly="true"/>
+                                            </listcell>
+                                            <listcell>
+                                                <datebox style="color:red" value="@{element.dateEncaissement}" width="90%" format="dd/MM/yyyy" buttonVisible="false" readonly="true"/>
+                                            </listcell>
+                                            <listcell>
+                                                <doublebox value="@{element.montant}" hflex="1" format="#,##0.##" style="color:red" readonly="true" />
+                                            </listcell>
+                                        </listitem>
+                                        
+                                    </listbox>
+                                </panelchildren>
+                            </panel>
+                            <panel height="120px" width="100%" style="margin-bottom:10px"
+                                   title="Rappel des échéances" border="normal" maximizable="true"
+                                   collapsible="true" sizable="false" open="@{tdbWin.existRappelEcheances}">
+                                <panelchildren>
+                                    <listbox id="rappelEcheances" model="@{tdbWin.RappelEcheances}" width="100%" height="100%" autopaging="true" vflex="120px">
+                                        <listhead sizable="false">
+                                            <listheader label="Projet"/>
+                                            <listheader label="Client"/>
+                                            <listheader label="Date échéance"/>
+                                            <listheader label="Montant échéance"/>
+                                        </listhead>
+                                        
+                                        <listitem self="@{each=element}"> 
+                                        
+                                            <listcell label="@{element.phase.projet}" />
+                                            <listcell label="@{element.phase.client}" />
+                                            <listcell >
+                                                <datebox  value="@{element.date}"  width="90%" format="dd/MM/yyyy" buttonVisible="false" readonly="true"/>
+                                            </listcell>
+                                            <listcell>
+                                                <doublebox value="@{element.montantEcheance}" hflex="1" format="#,##0.##" readonly="true" />
+                                            </listcell>
+                                        </listitem>
+                                     
+                                    </listbox>
+                                </panelchildren>
+                            </panel>
+                            <panel height="120px" width="100%" style="margin-bottom:10px"
+                                   title="Rappel des phases expirées" border="normal" maximizable="true"
+                                   collapsible="true" sizable="false"  open="@{tdbWin.existListePhases}">
+                                <panelchildren>
+                                    <listbox id="listePhases" model="@{tdbWin.listePhases}" width="100%" height="100%" autopaging="true" vflex="120px">
+                                        <listhead sizable="false">
+                                            <listheader label="Projet"/>
+                                            <listheader label="Client"/>
+                                            <listheader label="Date expiration"/>
+                                            <listheader label="Phase"/>
+                                            
+                                        </listhead>
+                                        
+                                        
+                                        <listitem self="@{each=element}"> 
+                                            <listcell label="@{element.projet}" />
+                                            <listcell label="@{element.client}" />
+                                            <listcell> 
+                                                <datebox  value="@{element.dateFin}" width="90%" format="dd/MM/yyyy" buttonVisible="false" readonly="true"/>
+                                            </listcell>
+                                            <listcell label="@{element.intitule}" />
+                                        </listitem>
+                                       
+                                    </listbox>
+                                </panelchildren>
+                            </panel>
+                           
+                        </vlayout>
+                    </center>
+                </borderlayout>
+            </north>
+            <center title="Rapports" flex="true"  >
+                <vlayout visible="${ACCES_RAPPORTS}">
+                    <tabbox height="99%" vflex="true" >
+                        <tabs>
+                            <tab label="Rapport des Prospects et clients" />
+                            <tab label=" Rapport des phases"/>
+                            <tab label=" Rapport des biens"/>
+                        </tabs>
+                        <tabpanels>
+                            <tabpanel  >
+                                <groupbox mold="3d"  open="true" height="99%">
+                
+                                    <grid height="99%" fixedLayout="true">
+                                        <columns>
+                                            <column width="120px"/>
+                                            <column width="250px"/>
+                                            <column width="120px"/>
+                                            <column width = "250px"/> 
+                                            <column width="120px"/>
+                                            <column width="250px"/>
+                                            <column/>
+                                        </columns>
+                                        <rows>
+                                           
+                                            <row>
+                                               
+                                                <cell>
+                                                    <label value= "Type : "/>  
+                                                </cell>
+                                                <cell> 
+                                                    <combobox id="cotypeClients" hflex="2" model="@{tdbWin.typeClients}" selectedItem="@{tdbWin.typeClientSelected}">
+                                                        <comboitem self="@{each=elementstatut}" label="@{elementstatut}"/>
+                                                    </combobox>
+                                                </cell> 
+                                                <cell colspan="5"> 
+                                                    <button image="/images/skin/pdf-soubor-logo.png" onClick='tdbWin.genererRapportClientProspect("PDF");' />
+                                                    <button image="/images/skin/Excel-icon.png" onClick='tdbWin.genererRapportClientProspect("EXCEL");' />
+                                                </cell> 
+                                            </row>
+                                            <row>
+                                                <cell>
+                                                    <label value="Projet : "/>
+                                                </cell>
+                                                <cell> 
+                                                    <combobox id="coprojetsRapport" hflex="2" model="@{tdbWin.projets}" selectedItem="@{tdbWin.projetRapportSelected}">
+                                                        <comboitem self="@{each=elementprojetRapport}" label="@{elementprojetRapport}"/>
+                                                    </combobox>
+                                                </cell> 
+                                                <cell colspan="5"> 
+                                                    <button image="/images/skin/pdf-soubor-logo.png" onClick='tdbWin.genererRapportClientProspectParProjet("PDF")' />
+                                                    <button image="/images/skin/Excel-icon.png" onClick='tdbWin.genererRapportClientProspectParProjet("EXCEL")' />
+                                                </cell> 
+                                            </row>
+                                            
+                                            <row>
+                                               <cell>
+                                                    <label value="Projet : "/>
+                                                </cell>
+                                                <cell> 
+                                                    <combobox id="coprojetsTypeRapport" hflex="2" model="@{tdbWin.projets}" selectedItem="@{tdbWin.projetTypeSelected}">
+                                                        <comboitem self="@{each=elementprojetTypeRapport}" label="@{elementprojetTypeRapport}"/>
+                                                    </combobox>
+                                                </cell> 
+                                                 <cell>
+                                                    <label value= "Type : "/>  
+                                                </cell>
+                                                <cell> 
+                                                    <combobox id="cotypeClientsProjet" hflex="2" model="@{tdbWin.typeClients}" selectedItem="@{tdbWin.typeClientProjetSelected}">
+                                                        <comboitem self="@{each=elementtypeClientsProjet}" label="@{elementtypeClientsProjet}"/>
+                                                    </combobox>
+                                                </cell> 
+                                                <cell colspan="2"> 
+                                                    <button image="/images/skin/pdf-soubor-logo.png" onClick='tdbWin.genererRapportClientProspectParProjetEtType("PDF")' />
+                                                    <button image="/images/skin/Excel-icon.png" onClick='tdbWin.genererRapportClientProspectParProjetEtType("EXCEL")' />
+                                                </cell>  
+                                            </row>
+<!--                                            
+                                            <row>
+                                                <cell>
+                                                    <label value="Projet : "/>
+                                                </cell>
+                                                <cell> 
+                                                    <combobox id="coprojetRProspect" hflex="2" model="@{tdbWin.projets}" selectedItem="@{tdbWin.projetRProspectSelected}">
+                                                        <comboitem self="@{each=elementprojetRProspectSelected}" label="@{elementprojetRProspectSelected}"/>
+                                                    </combobox>
+                                                </cell> 
+                                                <cell>
+                                                    <label value="Prospect/Client : "/>
+                                                </cell>
+                                              
+                                                <cell> 
+                                                    <combobox id="coclientsRProspect" hflex="4" model="@{tdbWin.clients}" selectedItem="@{tdbWin.clientRProjetProspectSelected}">
+                                                        <comboitem self="@{each=elementclientRProjetProspect}" label="@{elementclientRProjetProspect}"/>
+                                                    </combobox>
+                                                </cell>
+                                                <cell colspan="3"> 
+                                                    <button image="/images/skin/pdf-soubor-logo.png" onClick='tdbWin.genererRapportClientProspectParProjetProspect("PDF")' />
+                                                    <button image="/images/skin/Excel-icon.png" onClick='tdbWin.genererRapportClientProspectParProjetProspect("EXCEL")' />
+                                                </cell> 
+                                            </row>
+                                            -->
+                                            <row>
+                                                <cell>
+                                                    <label value="Projet : "/>
+                                                </cell>
+                                                <cell> 
+                                                    <combobox id="coprojetRSources" hflex="2" model="@{tdbWin.projets}" selectedItem="@{tdbWin.projetRSourceSelected}">
+                                                        <comboitem self="@{each=elementprojetRSource}" label="@{elementprojetRSource}"/>
+                                                    </combobox>
+                                                </cell> 
+                                                <cell> 
+                                                    <label value="Source : " />
+                                                </cell>
+                                                <cell> 
+                                                    <combobox id="cosourceInformations" hflex="4" model="@{tdbWin.sourceInformations}" selectedItem="@{tdbWin.sourceInformationSelected}">
+                                                        <comboitem self="@{each=elementsourceInformation}" label="@{elementsourceInformation}"/>
+                                                    </combobox>
+                                                </cell> 
+                                                <cell colspan="3"> 
+                                                    <button image="/images/skin/pdf-soubor-logo.png" onClick='tdbWin.genererRapportClientProspectParProjetSourceInfo("PDF")' />
+                                                    <button image="/images/skin/Excel-icon.png" onClick='tdbWin.genererRapportClientProspectParProjetSourceInfo("EXCEL")' />
+                                                </cell> 
+                                            </row>
+                                            
+                                            <row>
+                                                <cell> 
+                                                    <label value= "Age 1 : "/>
+                                                </cell>                                               
+                                                <cell> 
+                                                    <doublebox hflex="2" value="@{tdbWin.age1}" />
+                                                </cell> 
+                                                <cell> 
+                                                    <label value="Age 2 : " />
+                                                </cell>
+                                                <cell> 
+                                                    <doublebox hflex="4" value="@{tdbWin.age2}"  />
+                                                </cell> 
+                                                <cell> 
+                                                    <label hflex="5"  value="Sexe : " /> 
+                                                </cell>
+                                                <cell> 
+                                                    <combobox id="cosexes" hflex="6" model="@{tdbWin.sexes}" selectedItem="@{tdbWin.sexeSelected}">
+                                                        <comboitem self="@{each=elementsexe}" label="@{elementsexe}"/>
+                                                    </combobox>
+                                                </cell> 
+                                                <cell> 
+                                                    <button image="/images/skin/pdf-soubor-logo.png" onClick='tdbWin.genererRapportClientProspectParAgeSexe("PDF")' />
+                                                    <button image="/images/skin/Excel-icon.png" onClick='tdbWin.genererRapportClientProspectParAgeSexe("EXCEL")' />
+                                                </cell> 
+                                            </row>
+                                            
+                                            <row>
+                                               
+                                                <cell>
+                                                    <label value= "Ville : "/>  
+                                                </cell>
+                                                <cell> 
+                                                    <combobox id="covilles" hflex="2" model="@{tdbWin.villes}" selectedItem="@{tdbWin.villeSelected}">
+                                                        <comboitem self="@{each=elementville}" label="@{elementville}"/>
+                                                    </combobox>
+                                                </cell> 
+                                                <cell colspan="5"> 
+                                                    <button image="/images/skin/pdf-soubor-logo.png" onClick='tdbWin.genererRapportClientProspectParVille("PDF")' />
+                                                    <button image="/images/skin/Excel-icon.png" onClick='tdbWin.genererRapportClientProspectParVille("EXCEL")' />
+                                                </cell> 
+                                            </row>
+                                                                                        
+                                        </rows>
+                                    </grid>
+                   
+                                </groupbox>
+                            </tabpanel>
+                            <tabpanel >
+                                <groupbox>
+                                    <grid fixedLayout="true">
+                                        <columns>
+                                            <column width="145px"/>
+                                            <column width="250px"/>
+                                            <column width="125px"/>
+                                            <column width="120px"/>
+                                            <column width="120px"/>
+                                            <column width="250px"/>
+                                            <column width="120px"/>
+                                        </columns>
+                                        <rows>
+                                            <row>
+                                                <cell style="background-color: #C4D7ED; color: white;" colspan="1">
+                                                    <label value= "Phase : "/>  
+                                                </cell>
+                                                <cell style="background-color: #C4D7ED; color: white;" colspan="2"> 
+                                                    <combobox id="cophases" hflex="2" model="@{tdbWin.phases}" selectedItem="@{tdbWin.phaseSelected}">
+                                                        <comboitem self="@{each=elementphase}" label="@{elementphase}"/>
+                                                    </combobox>
+                                                </cell> 
+                                                <cell colspan="5"  style="background-color: #C4D7ED; color: white;">
+                                                    
+                                                </cell>
+                                            </row>
+                                            
+                                            <row>
+                                                <cell >
+                                                    <label value= "Liste des versements : "/>  
+                                                </cell>
+<!--                                                <cell> 
+                                                    <combobox hflex="2" id="coprojetPaiement" model="@{tdbWin.projets}" selectedItem="@{tdbWin.projetPaiementSelected}">
+                                                        <comboitem self="@{each=elementprojetPaiement}" label="@{elementprojetPaiement}"/>
+                                                    </combobox>
+                                                </cell> -->
+                                                <cell >
+                                                    <label value= "Type de paiement : "/>  
+                                                </cell>
+                                                <cell> 
+                                                    <combobox hflex="4" id="cotypePaiements" model="@{tdbWin.typePaiements}" selectedItem="@{tdbWin.typePaiementSelected}">
+                                                        <comboitem self="@{each=elementtypePaiement}" label="@{elementtypePaiement}"/>
+                                                    </combobox>
+                                                </cell> 
+                                                <cell colspan="5"> 
+                                                    <button image="/images/skin/pdf-soubor-logo.png" onClick='tdbWin.genererRapportpaiement("PDF")' />
+                                                    <button image="/images/skin/Excel-icon.png" onClick='tdbWin.genererRapportpaiement("EXCEL")' />
+                                                </cell> 
+                                            </row>
+                                            
+                                            <row>
+                                                <cell >
+                                                    <label value= "Liste des phases : "/>  
+                                                </cell>
+                                                <cell colspan="7"> 
+                                                    <button image="/images/skin/pdf-soubor-logo.png" onClick='tdbWin.genererRapportPhase("PDF")' />
+                                                    <button image="/images/skin/Excel-icon.png" onClick='tdbWin.genererRapportPhase("EXCEL")' />
+                                                </cell> 
+                                            </row>
+                                            
+                                            <row>
+                                                <cell >
+                                                    <label value= "Liste des phases expirées : "/>  
+                                                </cell>
+                                                <cell colspan="7"> 
+                                                    <button image="/images/skin/pdf-soubor-logo.png" onClick='tdbWin.genererRapportPhaseExpiree("PDF")' />
+                                                    <button image="/images/skin/Excel-icon.png" onClick='tdbWin.genererRapportPhaseExpiree("EXCEL")' />
+                                                </cell> 
+                                            </row>
+                                            
+                                            <row>
+                                                <cell>
+                                                    <label value= "Type de bien : "/> 
+                                                </cell>
+                                                
+                                                <cell>
+                                                    <combobox id="cotypebiens" hflex="2" model="@{tdbWin.typeBiens}" selectedItem="@{tdbWin.typeBienSelected}">
+                                                        <comboitem self="@{each=elementtypeBien}" label="@{elementtypeBien}"/>
+                                                    </combobox>
+                                                </cell>
+                                                <cell>
+                                                    <label value= "Intervalle superficie : "/> 
+                                                </cell>
+                                                <cell>  
+                                                    <doublebox id="sup1" value="@{tdbWin.sup1}" />
+                                                </cell>
+                                                <cell>  
+                                                    <doublebox id="sup2" value="@{tdbWin.sup2}" />
+                                                </cell>
+                                                <cell> 
+                                                    <combobox hflex="6" id="coprojetPhases" model="@{tdbWin.projets}" selectedItem="@{tdbWin.projetPhaseSelected}">
+                                                        <comboitem self="@{each=elementprojetPhase}" label="@{elementprojetPhase}"/>
+                                                    </combobox>
+                                                </cell> 
+                                                <cell colspan="2"> 
+                                                    <button image="/images/skin/pdf-soubor-logo.png" onClick='tdbWin.genererRapportPhasePArTypeBienEtSuperficieProjet("PDF")' />
+                                                    <button image="/images/skin/Excel-icon.png" onClick='tdbWin.genererRapportPhasePArTypeBienEtSuperficieProjet("EXCEL")' />
+                                                </cell> 
+                                            </row>
+                                            
+                                            <row>
+                                                <cell>
+                                                    <label value= "Projet"/> 
+                                                </cell>
+                                                <cell>
+                                                    <combobox hflex="2" id="coprojetPhase2s" model="@{tdbWin.projets}" selectedItem="@{tdbWin.projetPhase2Selected}">
+                                                        <comboitem self="@{each=elementprojetPhase2}" label="@{elementprojetPhase2}"/>
+                                                    </combobox>
+                                                </cell>
+                                                <cell colspan="6"> 
+                                                    <button image="/images/skin/pdf-soubor-logo.png" onClick='tdbWin.genererRapportPhaseParProjet("PDF")' />
+                                                    <button image="/images/skin/Excel-icon.png" onClick='tdbWin.genererRapportPhaseParProjet("EXCEL")' />
+                                                </cell> 
+                                            </row>
+                                            
+                                            <row>
+                                                <cell>
+                                                    <label value= "Projet"/> 
+                                                </cell>
+                                                <cell>
+                                                    <combobox hflex="2" id="coprojetPhase3s" model="@{tdbWin.projets}" selectedItem="@{tdbWin.projetPhase3Selected}">
+                                                        <comboitem self="@{each=elementprojetPhase3}" label="@{elementprojetPhase3}"/>
+                                                    </combobox>
+                                                </cell>
+                                                <cell>
+                                                    <label value= "Ville clients"/> 
+                                                </cell>
+                                                <cell> 
+                                                    <combobox id="covilles2" hflex="2" model="@{tdbWin.villes}" selectedItem="@{tdbWin.villeSelected2}">
+                                                        <comboitem self="@{each=elementville2}" label="@{elementville2}"/>
+                                                    </combobox>
+                                                </cell> 
+                                                <cell colspan="4"> 
+                                                    <button image="/images/skin/pdf-soubor-logo.png" onClick='tdbWin.genererRapportPhaseParProjetEtVille("PDF")' />
+                                                    <button image="/images/skin/Excel-icon.png" onClick='tdbWin.genererRapportPhaseParProjetEtVille("EXCEL")' />
+                                                </cell> 
+                                            </row>
+                                            
+                                            <row>
+                                                <cell>
+                                                    <label value= "Notaire"/>  
+                                                </cell>
+                                                <cell>
+                                                    <combobox hflex="2" id="conotaires" model="@{tdbWin.notaires}" selectedItem="@{tdbWin.notaireSelected}">
+                                                        <comboitem self="@{each=elementnotaire}" label="@{elementnotaire}"/>
+                                                    </combobox>  
+                                                </cell>
+                                                <cell colspan="6"> 
+                                                    <button image="/images/skin/pdf-soubor-logo.png" onClick='tdbWin.genererRapportPhaseParNotaire("PDF")' />
+                                                    <button image="/images/skin/Excel-icon.png" onClick='tdbWin.genererRapportPhaseParNotaire("EXCEL")' />
+                                                </cell> 
+                                            </row>
+                                            <row>
+                                                <cell>
+                                                    <label value= "Commercial"/>  
+                                                </cell>
+                                                <cell>
+                                                    <combobox hflex="2" id="cocommercials" model="@{tdbWin.commercials}" selectedItem="@{tdbWin.commercialSelected}">
+                                                        <comboitem self="@{each=elementcommercial}" label="@{elementcommercial}"/>
+                                                    </combobox>  
+                                                </cell>
+                                                <cell colspan="6"> 
+                                                    <button image="/images/skin/pdf-soubor-logo.png" onClick='tdbWin.genererRapportPhaseParCommercial("PDF")' />
+                                                    <button image="/images/skin/Excel-icon.png" onClick='tdbWin.genererRapportPhaseParCommercial("EXCEL")' />
+                                                </cell> 
+                                            </row>
+                                          
+                                        </rows>
+                                    </grid>
+                                </groupbox>
+                            </tabpanel>
+                            <tabpanel >
+                                <vbox height="380px">
+                                    <hbox >
+                                        <label value="Projet"/>
+                                        <separator width="10px"/>
+                                        <combobox  id="coprojetBiens" model="@{tdbWin.projetsBiens}" selectedItem="@{tdbWin.projetBienSelected}" onSelect="tdbWin.genererArchitectureBiens()">
+                                            <comboitem self="@{each=elementprojetBienSelected}" label="@{elementprojetBienSelected}"/>
+                                        </combobox>  
+                                    </hbox>
+                                
+                                    <tabbox width="99%" mold="accordion">
+                                        <tabs id="tabBien"/>                                 
+                                        <tabpanels id="tabpanelsBien"/>                                  
+                                    </tabbox>
+                                </vbox>
+                        
+                            </tabpanel>
+                            
+                        </tabpanels>
+                    </tabbox>
+                    <button visible="false" id="triggerBtn1" onBindingValidate=""/>
+                </vlayout>
+            </center>
+        </borderlayout>
+        
+        
+    </window>
+</zk>

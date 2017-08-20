@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./annulationWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window id="annulationWin" height="100%" width="100%" style="margin:auto;" use="${annulationWindow}">
+    <!-- <zscript src="/zs/annulation.zs"/> -->
+        <borderlayout>
+            <north id="eastPanel" size="65px" open="false"  title="Recherche avancée" flex="true" splittable="true"  collapsible="true"  >
+                <hlayout spacing="10px" style="margin-top:9px;margin-left:10px">
+
+										                    
+                </hlayout>
+            </north>
+            <west id="westPanel" title="Annulation" size="40%" flex="true" splittable="true" collapsible="true" open="false">
+                <groupbox id="gbCrud" width="100%" height="100%">
+                    <grid fixedLayout="true">
+                        <rows>
+                            
+
+            <!--                
+                            <row>
+                                <label value="Phase" />
+                                <combobox id="cophases" model="@{annulationWin.phases}" selectedItem="@{annulationWin.phaseSelected}">
+                                    <comboitem self="@{each=elementphase}" label="@{elementphase}"/>
+                                </combobox>
+                            </row>
+                            -->
+                            <row>
+                                <cell width="15%">
+                                    <label value="Projet " />
+                                </cell>
+                                <combobox id="coprojets" hflex="1" model="@{annulationWin.projets}" selectedItem="@{annulationWin.projetSelected}" onSelect='annulationWin.ActualiserClientProjet("projet",true,true)'>
+                                    <comboitem self="@{each=elementprojet}" label="@{elementprojet}"/>
+                                </combobox>
+                            </row>
+                            
+                            <row>
+                                <label value="Client " />
+                                <cell>
+                                    <combobox id="coclients"  hflex="1" model="@{annulationWin.clients}" selectedItem="@{annulationWin.clientSelected}"  onSelect='annulationWin.ActualiserClientProjet("client",true,true)'>
+                                        <comboitem self="@{each=elementclient}" label="@{elementclient}"/>
+                                    </combobox>
+                                    <textbox id="clientText" disabled="true" value="@{annulationWin.objet.phase.client}" width="99%" visible="false" />
+                                </cell>
+                            </row>
+                            
+                            <row>
+                                <label value="Phase " />
+                                <cell>
+                                    <combobox id="cophases"  hflex="1" model="@{annulationWin.phases}" selectedItem="@{annulationWin.phaseSelected}" onSelect ='annulationWin.actualiserMontantAnnule(true,true)' >
+                                        <comboitem self="@{each=elementphase}" label="@{elementphase}"/>
+                                    </combobox>
+                                    <textbox id="phaseText" disabled="true" value="@{annulationWin.objet.phase}" width="99%" visible="false" />
+                                </cell>
+                            </row>
+                            <row>
+                                <label value="Date"/>
+								 
+                                <datebox id="fieldDate" hflex="1" constraint="no empty: Veillez indiquez une valeur" format="dd/MM/yyyy" value="@{annulationWin.objet.date, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>
+                            <row>
+                                <label value="Cause"/>
+								 
+                                <textbox id="fieldCause" hflex="1" multiline="true" rows="5" constraint="no empty: Veillez indiquez une valeur" value="@{annulationWin.objet.cause, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>												
+						
+                            <row>
+                                <label value="Montant annulé"/>
+								 
+                                <cell>
+                                    <doublebox id="fieldMontantAnnule" hflex="1" constraint="no empty: Veillez indiquez une valeur" value="@{annulationWin.objet.montantAnnule, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' format="#,##0.##" width="90%"/>
+                                    <label value=" DH"/>
+                                </cell>
+                            </row>												
+						
+                            <row>
+                                <label value="Montant penalité"/>
+				
+                                <cell>
+                                    <doublebox id="fieldMontanPenalite" hflex="1" constraint="no empty: Veillez indiquez une valeur" value="@{annulationWin.objet.montanPenalite, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' format="#,##0.##" width="90%"/>
+                                    <label value=" DH"/>
+                                </cell>
+                            </row>												
+						 
+						
+
+                            
+                            <row>
+                                <label value="Commentaire"/>
+								 
+                                <textbox id="fieldCommentaire" hflex="1" multiline="true" rows="4" value="@{annulationWin.objet.commentaire, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>
+						
+                        </rows>
+                    </grid>					
+					
+                    <separator />
+                    <button id="btnSave" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));annulationWin.add()" label="Sauvegarder" image="/images/skin/database_save.png"/>
+                    <button id="btnUpdate" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));annulationWin.update()" label="Modifier" image="/images/skin/database_edit.png" visible="false"/>
+                    <button id="btnDeleteHided" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));annulationWin.delete()" label="Supprimer" image="/images/skin/database_delete.png" visible="false"/>
+                    <!-- <button id="btnNew" onClick="annulationWin.newRecord()" label="Nouveau enregistrement" image="/images/skin/database_add.png"/> -->
+                    <button id="btnCancel" onClick="annulationWin.cancel()" label="Annuler" image="/images/skin/cancel.png"/>
+                    <button visible="false" id="triggerBtn" onBindingValidate=""/>
+                </groupbox>
+            </west>
+            <center border="none" flex="true">
+                <groupbox width="100%" height="100%">
+                    <listbox id="lstObjet" onSelect="annulationWin.select()" model="@{annulationWin.listeObjets}" selectedItem="@{annulationWin.objetSelected}"  width="100%" height="100%" mold="paging" paginal="${paging}">
+                        <auxhead sclass="category-center">
+                            <auxheader colspan="1"/>
+				
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filterprojet" model="@{annulationWin.projets}" selectedItem="@{annulationWin.filtre.phase.projet}" autocomplete="true" autodrop="true" mold="rounded" onSelect="annulationWin.ofs=0;annulationWin.filtrer()" onOK="annulationWin.ofs=0;annulationWin.filtrer()" width="90%">
+                                    <comboitem self="@{each=elementfiltreprojet}" label="@{elementfiltreprojet}"/>
+                                </combobox>
+                                <!--<textbox id="filterProjet" value="@{annulationWin.filtre.phase.projet}" onChanging="annulationWin.ofs; annulationWin.filtre.phase.projet=event.value; annulationWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>-->
+                            </auxheader>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filterclient" model="@{annulationWin.clients}" selectedItem="@{annulationWin.filtre.phase.client}" autocomplete="true" autodrop="true" mold="rounded" onSelect="annulationWin.ofs=0;annulationWin.filtrer()" onOK="annulationWin.ofs=0;annulationWin.filtrer()" width="90%">
+                                    <comboitem self="@{each=elementfiltreclient}" label="@{elementfiltreclient}"/>
+                                </combobox>
+                            </auxheader>
+
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filterphase" model="@{annulationWin.phases}" selectedItem="@{annulationWin.filtre.phase}" autocomplete="true" autodrop="true" mold="rounded" onSelect="annulationWin.ofs=0;annulationWin.filtrer()" onOK="annulationWin.ofs=0;annulationWin.filtrer()" width="90%">
+                                    <comboitem self="@{each=elementfiltreclient}" label="@{elementfiltreclient}"/>
+                                </combobox>
+                            </auxheader>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <datebox id="filterDate" format="dd/MM/yyyy" value="@{annulationWin.filtre.date}" onOK="annulationWin.ofs=0; annulationWin.filtrer(); self.focus();" width="90%"/>
+                            </auxheader>
+                          
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterCause" value="@{annulationWin.filtre.cause}" onOK="annulationWin.ofs; annulationWin.filtre.cause=self.value; annulationWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <doublebox id="filterMontantAnnule" value="@{annulationWin.filtre.montantAnnule}" width="100%">
+                                    <attribute name="onOK">
+										<![CDATA[
+											annulationWin.ofs=0;
+											if(self.value.equals("")) {
+												if(annulationWin.filtre.montantAnnule != null) {
+													annulationWin.filtre.montantAnnule = null;
+												}
+											} else {
+												annulationWin.filtre.montantAnnule=new Double(self.value);
+											}
+											annulationWin.filtrer();
+											self.focus();
+											if(!event.value.equals("")) {
+												self.setSelectionRange(self.value.toString().length(), self.value.toString().length());
+											}
+										]]>
+                                    </attribute>    
+                                </doublebox>
+                            </auxheader>
+								
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <doublebox id="filterMontanPenalite" value="@{annulationWin.filtre.montanPenalite}" width="100%">
+                                    <attribute name="onOK">
+										<![CDATA[
+											annulationWin.ofs=0;
+											if(self.value.equals("")) {
+												if(annulationWin.filtre.montanPenalite != null) {
+													annulationWin.filtre.montanPenalite = null;
+												}
+											} else {
+												annulationWin.filtre.montanPenalite=new Double(self.value);
+											}
+											annulationWin.filtrer();
+											self.focus();
+											if(!event.value.equals("")) {
+												self.setSelectionRange(self.value.toString().length(), self.value.toString().length());
+											}
+										]]>
+                                    </attribute>    
+                                </doublebox>
+                            </auxheader>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterCommentaire" value="@{annulationWin.filtre.commentaire}" onOK="annulationWin.ofs; annulationWin.filtre.commentaire=self.value; annulationWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+								 
+                        </auxhead>
+                        <listhead sizable="true">
+                            <listheader width="32px" />
+                                             
+                            <listheader id="hprojet" label="Projet" sort="auto(phase.projet.code)" onSort="annulationWin.sort(event)"/>	
+				
+                            <listheader id="hclient" label="Client" sort="auto(phase.client.nom)" onSort="annulationWin.sort(event)"/>
+                            
+                            <listheader id="hphase" label="Phase" sort="auto(phase.numPhase)" onSort="annulationWin.sort(event)"/>
+                            			
+                            <listheader id="hdate" label="Date" sort="auto(date)" onSort="annulationWin.sort(event)"/>	                          
+                            
+                            <listheader id="hcause" label="Cause" sort="auto(cause)" onSort="annulationWin.sort(event)"/>	
+							
+                            <listheader id="hmontantAnnule" label="Montant annulé" sort="auto(montantAnnule)" onSort="annulationWin.sort(event)"/>	
+							
+                            <listheader id="hmontanPenalite" label="Montan penalité" sort="auto(montanPenalite)" onSort="annulationWin.sort(event)"/>	
+				
+                            <listheader id="hcommentaire" label="Commentaire" sort="auto(commentaire)" onSort="annulationWin.sort(event)"/>	
+							
+                         
+                        </listhead>
+                        <listitem value="@{element}" self="@{each=element}">    
+                            <listcell image="/images/skin/icon_selection.png"/>
+                            
+                            <listcell label="@{element.phase.projet}">
+							
+<!--                                <textbox value="@{element.projet, save-when='self.onChange'}" inplace="true" onOK="annulationWin.objet=self.parent.parent.value; annulationWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>-->
+							
+                            </listcell>
+                            
+                            <listcell label="@{element.phase.client}">
+							
+<!--                                <textbox value="@{element.client, save-when='self.onChange'}" inplace="true" onOK="annulationWin.objet=self.parent.parent.value; annulationWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>-->
+							
+                            </listcell>
+                            
+                            <listcell label="@{element.phase}">
+							
+<!--                                <textbox value="@{element.phase, save-when='self.onChange'}" inplace="true" onOK="annulationWin.objet=self.parent.parent.value; annulationWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>-->
+							
+                            </listcell>
+                            
+                            <listcell>
+							
+                                <datebox format="dd/MM/yyyy" value="@{element.date, save-when='self.onChange'}" inplace="true" onOK="annulationWin.objet=self.parent.parent.value; annulationWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>	
+                            
+                            <listcell>
+							
+                                <textbox value="@{element.cause, save-when='self.onChange'}" inplace="true" onOK="annulationWin.objet=self.parent.parent.value; annulationWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>	
+                            
+                            <listcell>
+							
+                                <doublebox value="@{element.montantAnnule, save-when='self.onChange'}" inplace="true" onOK="annulationWin.objet=self.parent.parent.value; annulationWin.update();" onChange='self.style="font-weight:bold"' width="99%" />
+							
+                            </listcell>	
+                            
+                            <listcell>
+							
+                                <doublebox value="@{element.montanPenalite, save-when='self.onChange'}" inplace="true" onOK="annulationWin.objet=self.parent.parent.value; annulationWin.update();" onChange='self.style="font-weight:bold"' width="99%" />
+							
+                            </listcell>	
+							
+                            <listcell>
+							
+                                <textbox value="@{element.commentaire, save-when='self.onChange'}" inplace="true" onOK="annulationWin.objet=self.parent.parent.value; annulationWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>														                      												
+																							     
+                        </listitem>
+                    </listbox>
+                    <paging id="paging" totalSize="@{annulationWin.tailleListe}" pageSize="@{annulationWin.maxNb}" onPaging="annulationWin.getNextElements(event);" />
+                    <separator/>
+                    <grid>
+                        <columns>
+                            <column width="32px" />
+							
+                            <column />
+							
+                            <column />
+							
+                            <column />
+                            
+                            <column />
+							
+                            <column />
+							
+                            <column />
+                            
+                            <column />
+                            
+                            <column />
+							
+                        </columns>
+<!--                        <rows>
+                            <row>
+                                <image src="/images/skin/database_edit.png"  />
+				
+                                <combobox id="fieldcoprojetsbis" inplace="true" width="99%" model="@{annulationWin.projets}" selectedItem="@{annulationWin.projetSelected}" onSelect='annulationWin.ActualiserClientProjet("projet",true,true)'
+                                          onOK="annulationWin.add()">                                    
+                                    <comboitem self="@{each=elementprojetbis}" label="@{elementprojetbis}"/>
+                                </combobox>
+                                
+                                <combobox id="fieldcoclientsbis" inplace="true" width="99%" model="@{annulationWin.clients}" selectedItem="@{annulationWin.clientSelected}" onSelect='annulationWin.ActualiserClientProjet("client",true,true)'
+                                          onOK="annulationWin.add()">                                    
+                                    <comboitem self="@{each=elementclientbis}" label="@{elementclientbis}"/>
+                                </combobox>
+                                
+                                <combobox id="fieldcophasesbis" inplace="true" width="99%" model="@{annulationWin.phases}" selectedItem="@{annulationWin.phaseSelected}" 
+                                          onOK="annulationWin.add()" onSelect ="annulationWin.actualiserMontantAnnule(true,true)">                                    
+                                    <comboitem self="@{each=elementphasebis}" label="@{elementphasebis}"/>
+                                </combobox>
+                                
+                                <datebox id="fielddatebis" format="dd/MM/yyyy" value="@{annulationWin.objet.date, save-when='self.onChange'}" inplace="true" onOK="annulationWin.add();" width="99%"/>
+				                               
+                                <textbox id="fieldcausebis" value="@{annulationWin.objet.cause, save-when='self.onChange'}" inplace="true" onOK="annulationWin.add();" width="99%"/>
+				
+                                <doublebox id="fieldmontantAnnulebis" value="@{annulationWin.objet.montantAnnule, save-when='self.onChange'}" inplace="true" onOK="annulationWin.add();" width="99%" />				
+                                
+                                <doublebox id="fieldmontanPenalitebis" value="@{annulationWin.objet.montanPenalite, save-when='self.onChange'}" inplace="true" onOK="annulationWin.add();" width="99%" />
+				                                                                
+                                <textbox id="fieldcommentairebis" value="@{annulationWin.objet.commentaire, save-when='self.onChange'}" inplace="true" onOK="annulationWin.add();" width="99%"/>								
+                               				                           				                             				  
+                            </row>
+                        </rows>-->
+                    </grid>
+                    <separator/>
+                    <button id="btnNew" onClick="annulationWin.newRecord()" label="Nouveau" image="/images/skin/database_add.png"/>
+<!--                    <button id="btnPdf" onClick="annulationWin.genererRapportPdf()" label="Generer rapport" image="/images/skin/pdf-soubor-logo.png"/>
+                    <button id="btnExcel" onClick="annulationWin.genererRapportExcel()" label="Generer excel" image="/images/skin/excel-icon.png"/>-->
+                </groupbox>
+            </center>
+        </borderlayout>
+    </window>
+</zk>

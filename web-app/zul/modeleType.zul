@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./modeleTypeWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window id="modeleTypeWin" height="100%" width="100%" style="margin:auto;" use="${modeleTypeWindow}">
+    <!-- <zscript src="/zs/type.zs"/> -->
+        <borderlayout>
+            
+            <west id="westPanel" title="Type" size="30%" flex="true" splittable="true" collapsible="true" open="false">
+              
+                <groupbox id="gbCrud" width="100%" height="100%">
+                    <grid fixedLayout="true">
+                        <rows>
+                            
+                            <row>
+                                <label value="Modele"/>
+                                <bandbox id="band" autodrop="true" hflex="1" >
+                                    <bandpopup>
+                                        <vbox>
+                                            
+								 
+                                            <combobox id="comodeles" hflex="1" model="@{modeleTypeWin.modeles}" selectedItem="@{modeleTypeWin.modeleSelected}">
+                                              
+                                                <attribute name="onSelect">
+                                                    
+                                                            <![CDATA[
+                                                                
+                                                                band.close();
+                                                                modeleTypeWin.bandvalue();
+                                                                btnSave.visible = true;
+                                                            ]]>
+                                                            
+                                                </attribute>
+                                                <attribute name="onOK">
+                                                            <![CDATA[
+                                                                
+                                                                band.close();                                                              
+                                                                btnSave.visible = true;
+                                                            ]]>
+                                                </attribute>
+                                                
+                                                <comboitem self="@{each=elementmodele}" label="@{elementmodele}"/>
+                                            </combobox>
+                                
+                                            <button label="Ajouter un nouveau modele" image="/images/skin/database_edit.png" onClick="winMod.visible = true;" />
+                                            <window id="winMod" hflex="1" title="Ajout d'un nouveau Modele"  height="170px" closable="true" visible="false" onClose="self.visible = false; event.stopPropagation();">
+                                                <toolbar>
+                                                    <toolbarbutton id="btnSaveModele" label="Enregistrer" image="/images/skin/DisketteBlack-16x16.png" onClick="winMod.visible = false; modeleTypeWin.ajouterModele();" />
+                                                    <toolbarbutton label="Annuler" image="/images/skin/cancel.png" onClick="winMod.visible = false;" />
+                                                </toolbar>
+                                                <grid>
+                                                    <rows>
+                                                        <row>
+                                                            <cell width="40px"> 
+                                                                <label value="Code" />
+                                                            </cell>
+                                                            <cell> 
+                                                                <textbox value="@{modeleTypeWin.nouveauModele.code, save-when='btnSaveModele.onClick'}" constraint="no empty:Veuillez indiquez le code Modele" width="135px" />
+                                                            </cell> 
+                                                        </row>
+                                                                    
+                                                    </rows>
+                                                </grid>
+                                            </window>
+                                        </vbox>
+                                    </bandpopup>
+                                </bandbox>
+                            </row>
+                            
+                            <row>
+                                <label value="Type"/>
+                                <combobox id="cotypes" hflex="1" model="@{modeleTypeWin.types}" selectedItem="@{modeleTypeWin.typeSelected}">
+                                    <comboitem self="@{each=elementtype}" label="@{elementtype}"/>
+                                </combobox>			 
+                            </row>
+				
+                            <row>
+                                <label value="Numéro d'ordre"/>
+                                <intbox id="fieldNumOrdre" hflex="1" constraint="no empty: Veillez indiquez une valeur" value="@{modeleTypeWin.objet.numOrdre, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>
+                            
+                        </rows>
+                    </grid>					
+                   		
+                    <separator />
+                    <button id="btnSave" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));modeleTypeWin.add()" label="Sauvegarder" image="/images/skin/database_save.png"/>
+                    <button id="btnUpdate" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));modeleTypeWin.update()" label="Modifier" image="/images/skin/database_edit.png" visible="false"/>
+                    <button id="btnDelete" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));modeleTypeWin.delete()" label="Supprimer" image="/images/skin/database_delete.png" visible="false"/>
+                     <!--<button id="btnNew" onClick="modeleTypeWin.newRecord()" label="Nouveau enregistrement" image="/images/skin/database_add.png"/>-->
+                    <button id="btnCancel" onClick="modeleTypeWin.cancel()" label="Annuler" image="/images/skin/cancel.png"/>
+                    <button visible="false" id="triggerBtn" onBindingValidate=""/>
+                </groupbox>
+               
+            </west>
+            <center border="none" flex="true">
+              
+                <groupbox width="100%" height="100%">
+                  
+                    <listbox id="lstObjet" onSelect="modeleTypeWin.select()" model="@{modeleTypeWin.listeObjets}" selectedItem="@{modeleTypeWin.objetSelected}"  width="100%" height="100%" mold="paging" paginal="${paging}">
+                        <auxhead sclass="category-center">
+                            <auxheader colspan="1"/>
+
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filtermodele" width="90%" model="@{modeleTypeWin.modeles}" selectedItem="@{modeleTypeWin.filtre.modele}" autocomplete="true" autodrop="true" mold="rounded" onSelect="projetWin.ofs=0;modeleTypeWin.filtrer()" onOK="modeleTypeWin.ofs=0;modeleTypeWin.filtrer()">
+                                    <comboitem self="@{each=elementfiltremodele}" label="@{elementfiltremodele}"/>
+                                </combobox>
+                            </auxheader>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filtertype" width="90%" model="@{modeleTypeWin.types}" selectedItem="@{modeleTypeWin.filtre.type}" autocomplete="true" autodrop="true" mold="rounded" onSelect="projetWin.ofs=0;modeleTypeWin.filtrer()" onOK="modeleTypeWin.ofs=0;modeleTypeWin.filtrer()">
+                       
+                                    <comboitem self="@{each=elementfiltretype}" label="@{elementfiltretype}"/>
+                                </combobox>
+                            </auxheader>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <intbox id="filterNumOrdre" value="@{modeleTypeWin.filtre.numOrdre}"  width="100%">
+                                    <attribute name="onOK">
+										<![CDATA[
+											modeleTypeWin.ofs=0;
+											if(self.value.equals("")) {
+												if(modeleTypeWin.filtre.numOrdre != null) {
+													modeleTypeWin.filtre.numOrdre = null;
+												}
+											} else {
+												modeleTypeWin.filtre.numOrdre = new Integer(self.value);
+											}
+											modeleTypeWin.filtrer();
+											self.focus();
+											if(!self.value.equals("")) {
+												self.setSelectionRange(self.value.toString().length(), self.value.toString().length());
+											}
+										]]>
+                                    </attribute>    
+                                </intbox>
+                            </auxheader>
+								 
+                        </auxhead>
+                        
+                        <listhead sizable="true">
+                            <listheader width="32px" />
+
+                            <listheader id="hmodele" label="Modele" sort="auto(modele.code)" onSort="modeleTypeWin.sort(event)"/>	
+                            <listheader id="htype" label="Type" sort="auto(type.intitule)" onSort="modeleTypeWin.sort(event)"/>				                                 
+                            <listheader id="hnumOrdre" label="Numéro ordre" sort="auto(numOrdre)" onSort="modeleTypeWin.sort(event)"/>	
+                        
+                        </listhead>
+                        
+                        <listitem value="@{element}" self="@{each=element}">    
+                            <listcell image="/images/skin/icon_selection.png"/>
+                            
+                            <listcell>
+							
+                                <textbox readonly="true" value="@{element.modele, save-when='self.onChange'}" inplace="true" onOK="modeleTypeWin.objet=self.parent.parent.value; modeleTypeWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+                                
+                            </listcell>	
+                            
+                            <listcell>
+                                
+                                <textbox readonly="true" value="@{element.type, save-when='self.onChange'}" inplace="true" onOK="modeleTypeWin.objet=self.parent.parent.value; modeleTypeWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>	
+                            
+                            </listcell>
+                            
+                            <listcell>
+							
+                                <textbox value="@{element.numOrdre, save-when='self.onChange'}" inplace="true" onOK="modeleTypeWin.objet=self.parent.parent.value; modeleTypeWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>
+							     
+                        </listitem>
+                    </listbox>
+                    
+                    <paging id="paging" totalSize="@{modeleTypeWin.tailleListe}" pageSize="@{modeleTypeWin.maxNb}" onPaging="modeleTypeWin.getNextElements(event);" />
+                    <separator/>
+                      
+                    <grid>
+                        <columns>
+                            <column width="32px" />
+							
+                            <column />
+                            <column />
+                            <column />
+							
+                        </columns>
+                        <rows>
+                            <row>
+                                
+                                <image src="/images/skin/database_edit.png"  />
+
+                                <combobox id="fieldcomodelesbis" inplace="true" width="99%" constraint="no empty : Veillez choisir une valeur" model="@{modeleTypeWin.modeles}" selectedItem="@{modeleTypeWin.modeleSelected}" 
+                                          onOK="modeleTypeWin.add()">                                    
+                                    <comboitem self="@{each=elementmodelebis}" label="@{elementmodelebis}"/>
+                                </combobox>
+                                <combobox id="fieldcotypesbis" inplace="true" width="99%" constraint="no empty : Veillez choisir une valeur" model="@{modeleTypeWin.types}" selectedItem="@{modeleTypeWin.typeSelected}" 
+                                          onOK="modeleTypeWin.add()">                                    
+                                    <comboitem self="@{each=elementtypebis}" label="@{elementtypebis}"/>
+                                </combobox>
+                                <doublebox id="fieldnumOrdrebis" value="@{modeleTypeWin.objet.numOrdre, save-when='self.onChange'}" inplace="true" onOK="modeleTypeWin.add();" width="99%"/>
+
+                            </row>
+                        </rows>
+                    </grid>
+                  
+                    <separator/>
+                    <button id="btnNew" onClick="modeleTypeWin.newRecord()" label="Nouveau" image="/images/skin/database_add.png"/>
+<!--                    <button id="btnPdf" onClick="modeleTypeWin.genererRapportPdf()" label="Generer rapport" image="/images/skin/pdf-soubor-logo.png"/>
+                    <button id="btnExcel" onClick="modeleTypeWin.genererRapportExcel()" label="Generer excel" image="/images/skin/excel-icon.png"/>-->
+                </groupbox>
+            
+            </center>
+        </borderlayout>
+    </window>
+</zk>

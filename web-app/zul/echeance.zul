@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./echeanceWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window id="echeanceWin" height="100%" width="100%" style="margin:auto;" use="${echeanceWindow}">
+    <!-- <zscript src="/zs/echeance.zs"/> -->
+        <borderlayout>
+            <north id="eastPanel" size="65px" open="false"  title="Recherche avancée" flex="true" splittable="true"  collapsible="true"  >
+                <hlayout spacing="10px" style="margin-top:9px;margin-left:10px">
+		
+                   <!--             
+                    <label value="Projet :" />
+                    <combobox id="filterprojet" model="@{echeanceWin.projets}" selectedItem="@{echeanceWin.filtre.projet}" autocomplete="true" autodrop="true" mold="rounded" onChange='echeanceWin.ofs=0;echeanceWin.filtrer();' onOK="echeanceWin.ofs=0;echeanceWin.filtrer()">
+                        <comboitem self="@{each=elementfiltreprojet}" label="@{elementfiltreprojet}"/>
+                    </combobox>
+                
+                    <label value="Client :" />
+                    <combobox id="filterclient" model="@{echeanceWin.clients}" selectedItem="@{echeanceWin.filtre.client}" autocomplete="true" autodrop="true" mold="rounded" onSelect="echeanceWin.ofs=0;echeanceWin.filtrer()" onOK="echeanceWin.ofs=0;echeanceWin.filtrer()">
+                        <comboitem self="@{each=elementfiltreclient}" label="@{elementfiltreclient}"/>
+                    </combobox>
+-->
+										                    
+                </hlayout>
+            </north>
+            <west id="westPanel" title="Echeance" size="40%" flex="true" splittable="true" collapsible="true" open="false">
+                <groupbox id="gbCrud" width="100%" height="100%">
+                    <grid fixedLayout="true">
+                        <columns>
+                            <column width="30%"/>
+                            <column width="70%"/>
+                        </columns>
+                        <rows>
+                            
+                            <row>
+                                <label value="Date"/>
+								 
+                                <datebox id="fieldDate" hflex="1" constraint="no empty: Veillez indiquez une valeur" format="dd/MM/yyyy" value="@{echeanceWin.objet.date, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>
+                            
+                            <row>
+                                <label value="Projet " />
+                                <combobox id="coprojets" hflex="1" model="@{echeanceWin.projets}" selectedItem="@{echeanceWin.projetSelected}" onSelect='echeanceWin.ActualiserClientProjet("projet",true)'>
+                                    <comboitem self="@{each=elementprojet}" label="@{elementprojet}"/>
+                                </combobox>
+                            </row>
+                            
+                            <row>
+                                <label value="Client " />
+                                <cell>
+                                    <combobox id="coclients" hflex="1" model="@{echeanceWin.clients}" selectedItem="@{echeanceWin.clientSelected}" onSelect='echeanceWin.ActualiserClientProjet("client",true)'>
+                                        <comboitem self="@{each=elementclient}" label="@{elementclient}"/>
+                                    </combobox>
+                                    <textbox id="clientText" disabled="true" value="@{echeanceWin.objet.phase.client}" width="99%" visible="false" />
+                                </cell>
+                            </row>
+                            
+                            <row>
+                                <label value="Phase " />
+                                <cell>
+                                    <combobox id="cophases"  hflex="1" model="@{echeanceWin.phases}" selectedItem="@{echeanceWin.phaseSelected}">
+                                        <comboitem self="@{each=elementphase}" label="@{elementphase}"/>
+                                    </combobox>
+                                    <textbox id="phaseText" disabled="true" value="@{echeanceWin.objet.phase}" width="99%" visible="false" />
+                                </cell>
+                            </row>
+						
+                            <row>
+                                <label value="Montant échéance"/>
+                                <cell>				 
+                                    <doublebox id="fieldMontantEcheance" hflex="1" constraint="no empty: Veillez indiquez une valeur" value="@{echeanceWin.objet.montantEcheance, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");' format="#,##0.##"/>
+                                    <label value=" DH"/>
+                                </cell>
+                            </row>												
+						
+                            <row>
+                                <label value="Montant payé"/>
+				
+                                <cell>
+                                    <doublebox id="fieldMontantPaye" readonly="true" hflex="1" value="@{echeanceWin.objet.montantPaye, save-when='triggerBtn.onClick'}"  format="#,##0.##"/>
+                                    <label value=" DH"/>
+                                </cell>
+                            </row>												
+						
+                            <row>
+                                <label value="Commentaire"/>
+								 
+                                <textbox id="fieldCommentaire" hflex="1" multiline="true" rows="3" constraint="" value="@{echeanceWin.objet.commentaire, save-when='triggerBtn.onClick'}" onBindingSave='if(self.value == null)throw new WrongValueException(self, "Vous devriez indiquer une valeur");'/>
+                            </row>												
+
+                            <row>
+                                <label value="Statut"/>
+                                 
+                                <combobox id="costatuts" hflex="1" model="@{echeanceWin.statuts}" selectedItem="@{echeanceWin.statutSelected}">
+                                    <comboitem self="@{each=elementstatut}" label="@{elementstatut}"/>
+                                </combobox>
+                            </row>		
+                        </rows>
+                    </grid>					
+					
+                    <separator />
+                    <button id="btnSave" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));echeanceWin.add()" label="Sauvegarder" image="/images/skin/database_save.png"/>
+                    <button id="btnUpdate" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));echeanceWin.update()" label="Modifier" image="/images/skin/database_edit.png" visible="false"/>
+                    <button id="btnDelete" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));echeanceWin.delete()" label="Supprimer" image="/images/skin/database_delete.png" visible="false">
+                        <attribute name="onClick"><![CDATA[
+                       Messagebox.show("Merci de confirmer la suppression ?", "Confirmation", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
+                        public void onEvent(Event evt) throws InterruptedException {
+                        if (evt.getName().equals("onOK")) {
+                        TRTOK = true;
+                        try
+                        {
+                        Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));
+                         echeanceWin.delete();
+                        }
+                        catch (err)
+                        {
+                        alert("Erreur lors de la suppression !");
+                        TRTOK = false;
+                        }
+                        if (TRTOK){}
+                        } else {
+                        alert("Suppression annulée !");
+                        }
+                        }
+                        });
+                        ]]>
+                        </attribute>
+                    </button>
+                    <!-- <button id="btnNew" onClick="echeanceWin.newRecord()" label="Nouveau enregistrement" image="/images/skin/database_add.png"/> -->
+                    <button id="btnCancel" onClick="echeanceWin.cancel()" label="Annuler" image="/images/skin/cancel.png"/>
+                    <button visible="false" id="triggerBtn" onBindingValidate=""/>
+                </groupbox>
+            </west>
+            <center border="none" flex="true">
+                <groupbox width="100%" height="100%">
+                    <listbox id="lstObjet" onSelect="echeanceWin.select()" model="@{echeanceWin.listeObjets}" selectedItem="@{echeanceWin.objetSelected}"  width="100%" height="100%" mold="paging" paginal="${paging}">
+                        <auxhead sclass="category-center">
+                            <auxheader colspan="1"/>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filterprojet" model="@{echeanceWin.projetsF}" selectedItem="@{echeanceWin.filtre.projet}" autocomplete="true" autodrop="true" mold="rounded" onSelect='echeanceWin.ofs=0;echeanceWin.filtrer()' onChange='' onOK="echeanceWin.ofs=0;echeanceWin.filtrer()" width="90%">
+                                    <comboitem self="@{each=elementfiltreprojet}" label="@{elementfiltreprojet}"/>
+                                </combobox>
+<!--                                <textbox id="filterProjet" value="@{echeanceWin.filtre.projet}" onChanging="echeanceWin.ofs; echeanceWin.filtre.projet=event.value; echeanceWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="90%"/>-->
+                            </auxheader>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterbien" value="@{echeanceWin.filtre.bien}" onOK="echeanceWin.ofs; echeanceWin.filtre.bien=self.value; echeanceWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="90%"/>
+                            </auxheader>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filterclient" model="@{echeanceWin.clientsF}" selectedItem="@{echeanceWin.filtre.client}" autocomplete="true" autodrop="true" mold="rounded" onSelect="echeanceWin.ofs=0;echeanceWin.filtrer()" onOK="echeanceWin.ofs=0;echeanceWin.filtrer()" width="90%">
+                                    <comboitem self="@{each=elementfiltreclient}" label="@{elementfiltreclient}"/>
+                                </combobox>
+<!--                                <textbox id="filterClient" value="@{echeanceWin.filtre.client}" onChanging="echeanceWin.ofs; echeanceWin.filtre.client=event.value; echeanceWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="90%"/>-->
+                            </auxheader>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filterIntitulePhaseEcheance" model="@{echeanceWin.phasesF}" selectedItem="@{echeanceWin.filtre.intitulePhaseEcheance}" autocomplete="true" autodrop="true" mold="rounded" onSelect="echeanceWin.ofs=0;echeanceWin.filtrer()" onOK="echeanceWin.ofs=0;echeanceWin.filtrer()" width="90%">
+                                    <comboitem self="@{each=elementfiltrephase}" label="@{elementfiltrephase}"/>
+                                </combobox>
+<!--                                <textbox id="filterIntitulePhaseEcheance" value="@{echeanceWin.filtre.intitulePhaseEcheance}" onChanging="echeanceWin.ofs; echeanceWin.filtre.phase.projet=event.value; echeanceWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>-->
+                            </auxheader>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <datebox id="filterDate" format="dd/MM/yyyy" value="@{echeanceWin.filtre.date}" onChange= "echeanceWin.ofs=0; echeanceWin.filtrer(); self.focus();" width="90%"/>
+                            </auxheader>
+								
+
+								
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <doublebox id="filterMontantEcheance" value="@{echeanceWin.filtre.montantEcheance}" width="100%">
+                                    <attribute name="onOK">
+										<![CDATA[
+											echeanceWin.ofs=0;
+											if(self.value.equals("")) {
+												if(echeanceWin.filtre.montantEcheance != null) {
+													echeanceWin.filtre.montantEcheance = null;
+												}
+											} else {
+												echeanceWin.filtre.montantEcheance=new Double(self.value);
+											}
+											echeanceWin.filtrer();
+											self.focus();
+											if(!self.value.equals("")) {
+												self.setSelectionRange(self.value.toString().length(), self.value.toString().length());
+											}
+										]]>
+                                    </attribute>    
+                                </doublebox>
+                            </auxheader>
+								
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <doublebox id="filterMontantPaye" value="@{echeanceWin.filtre.montantPaye}" width="100%">
+                                    <attribute name="onOK">
+										<![CDATA[
+											echeanceWin.ofs=0;
+											if(self.value.equals("")) {
+												if(echeanceWin.filtre.montantPaye != null) {
+													echeanceWin.filtre.montantPaye = null;
+												}
+											} else {
+												echeanceWin.filtre.montantPaye=new Double(self.value);
+											}
+											echeanceWin.filtrer();
+											self.focus();
+											if(!self.value.equals("")) {
+												self.setSelectionRange(self.value.toString().length(), self.value.toString().length());
+											}
+										]]>
+                                    </attribute>    
+                                </doublebox>
+                            </auxheader>
+								
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filterCommentaire" value="@{echeanceWin.filtre.commentaire}" onChange="echeanceWin.ofs; echeanceWin.filtre.commentaire=event.value; echeanceWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())" width="100%"/>
+                            </auxheader>
+                            
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filterstatuts" model="@{echeanceWin.statuts}" selectedItem="@{echeanceWin.filtre.statut}"  autocomplete="true" autodrop="true" mold="rounded" onSelect="echeanceWin.ofs=0;echeanceWin.filtrer()" onOK="echeanceWin.ofs=0;echeanceWin.filtrer()" width="90%">
+                                    <comboitem self="@{each=elementfilterstatut}" label="@{elementfilterstatut}"/>
+                                </combobox>
+                            </auxheader>
+								 
+                        </auxhead>
+                        <listhead sizable="true">
+                            <listheader width="32px" />
+
+                            <listheader id="hprojet" label="Projet" sort="auto(phase.projet.code)" onSort="echeanceWin.sort(event)"/>	
+			   
+                            <listheader id="hbien" label="Bien" sort="auto(bien)" onSort="echeanceWin.sort(event)"/>
+                           
+                            <listheader id="hclient" label="Client" sort="auto(phase.client.nom)" onSort="echeanceWin.sort(event)"/>	
+                            
+                            <listheader id="hphase" label="Phase" sort="auto(phase.intitule)" onSort="echeanceWin.sort(event)"/>	                            
+                            
+                            <listheader id="hdate" label="Date" sort="auto(date)" onSort="echeanceWin.sort(event)"/>	
+                           			
+                            <listheader id="hmontantEcheance" label="Montant échéance (DH)" sort="auto(montantEcheance)" onSort="echeanceWin.sort(event)"/>	
+							
+                            <listheader id="hmontantPaye" label="Montant payé (DH)" sort="auto(montantPaye)" onSort="echeanceWin.sort(event)"/>	
+							
+                            <listheader id="hcommentaire" label="Commentaire" sort="auto(commentaire)" onSort="echeanceWin.sort(event)"/>	
+                            
+                            <listheader id="hstatut" label="Statut" sort="auto(statut.intitule)" onSort="echeanceWin.sort(event)"/>	
+							                                 
+                        </listhead>
+                        <listitem value="@{element}" self="@{each=element}">    
+                            <listcell image="/images/skin/icon_selection.png"/>
+
+                            <listcell label="@{element.phase.projet}">
+							
+                               <!-- <textbox value="@{element.projet, save-when='self.onChange'}" inplace="true" onOK="echeanceWin.objet=self.parent.parent.value; echeanceWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>-->
+							
+                            </listcell>	
+                            
+                            <listcell label="@{element.phase.bien}"/>
+                            
+                            <listcell label="@{element.phase.client}">
+							
+                             <!--   <textbox value="@{element.client, save-when='self.onChange'}" inplace="true" onOK="echeanceWin.objet=self.parent.parent.value; echeanceWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>-->
+							
+                            </listcell>	
+                            
+                            <listcell label="@{element.phase}">
+														
+                            </listcell>	
+                            
+                            <listcell>
+							
+                                <datebox format="dd/MM/yyyy" value="@{element.date, save-when='self.onChange'}" inplace="true" onOK="echeanceWin.objet=self.parent.parent.value; echeanceWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>							
+									
+
+                            			
+                            <listcell>
+							
+                                <doublebox value="@{element.montantEcheance, save-when='self.onChange'}" inplace="true" onOK="echeanceWin.objet=self.parent.parent.value; echeanceWin.update();" onChange='self.style="font-weight:bold"' width="99%" format="#,##0.##" />
+							
+                            </listcell>							
+							
+                            <listcell>
+							
+                                <doublebox value="@{element.montantPaye, save-when='self.onChange'}" inplace="true" onOK="echeanceWin.objet=self.parent.parent.value; echeanceWin.update();" onChange='self.style="font-weight:bold"' width="99%" format="#,##0.##" />
+							
+                            </listcell>							
+							
+						
+							
+                            <listcell>
+							
+                                <textbox value="@{element.commentaire, save-when='self.onChange'}" inplace="true" onOK="echeanceWin.objet=self.parent.parent.value; echeanceWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>
+							
+                            </listcell>		
+                            
+                            <listcell label="@{element.statut}">
+							
+                               <!-- <textbox value="@{element.statut, save-when='self.onChange'}" inplace="true" onOK="echeanceWin.objet=self.parent.parent.value; echeanceWin.update();" onChange='self.style="font-weight:bold"' width="99%"/>-->
+							
+                            </listcell>		
+							     
+                        </listitem>
+                    </listbox>
+                    <paging id="paging" totalSize="@{echeanceWin.tailleListe}" pageSize="@{echeanceWin.maxNb}" onPaging="echeanceWin.getNextElements(event);" />
+                    <separator/>
+                    <grid>
+                        <columns>
+                            <column width="32px" />
+							
+                            <column />
+							
+                            <column />
+							
+                            <column />
+                            
+                            <column />
+							
+                            <column />
+							
+                            <column />
+                            
+                            <column />
+                            
+                            <column /> 
+							
+                      
+							
+                        </columns>
+
+                    </grid>
+                    <separator/>
+                    <button id="btnNew" onClick="echeanceWin.newRecord()" label="Nouveau" image="/images/skin/database_add.png"/>
+<!--                    <button id="btnPdf" onClick="echeanceWin.genererRapportPdf()" label="Generer rapport" image="/images/skin/pdf-soubor-logo.png"/>
+                    <button id="btnExcel" onClick="echeanceWin.genererRapportExcel()" label="Generer excel" image="/images/skin/excel-icon.png"/>-->
+                    <button id="btnActualiser" onClick="echeanceWin.filtrer()" label="Actualiser" image="/images/skin/refresh-icon.png"/>
+                </groupbox>
+            </center>
+        </borderlayout>
+    </window>
+</zk>

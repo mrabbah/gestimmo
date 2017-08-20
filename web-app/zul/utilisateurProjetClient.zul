@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./utilisateurProjetClientWin" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<!--<?page zscriptLanguage="GroovyGrails"?>-->
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window id="utilisateurProjetClientWin" height="100%" width="100%" style="margin:auto;" use="${utilisateurProjetClientWindow}">
+        <borderlayout>
+            <west id="westPanel" title="Liste des utilisateurs " size="100%" flex="true" splittable="true" collapsible="true" open="false">
+                <borderlayout>
+                    <center border="none">
+                        <vlayout>
+                            <box pack="start" align="center" width="100%" height="100%">
+                                
+                                <hlayout height="400px" style="padding:10px" width="100%"> 
+                                    <vbox>
+                                        <combobox id="coutilisateurs"  model="@{utilisateurProjetClientWin.utilisateurs}" selectedItem="@{utilisateurProjetClientWin.utilisateurSelected}" onSelect="utilisateurProjetClientWin.utilisateurChoisi()">
+                                            <comboitem self="@{each=elementutilisateur}" label="@{elementutilisateur}"/>
+                                        </combobox>  
+                                               
+                                        <tabbox id = "tabboxCP" height="99%" width="1300px" mold="accordion-lite">
+                               
+                                            <tabs id="tabsCP" >
+                                                <tab label="Projet" />
+                                                <tab label="Client" />
+                                            </tabs>
+                                        
+                                            <tabpanels id="tabpanelsCP" >
+                                        
+                                                <tabpanel width="99%" style="overflow:auto">
+                                                    <hbox>
+                                                        <listbox id="lstprojets" multiple="true"  model="@{utilisateurProjetClientWin.projets}" selectedItem="@{utilisateurProjetClientWin.projetsSelected, converter=com.choranet.zk.SelectedItemsConverterV3}" rows="11" sizedByContent="true" span="true"  width="600px" >
+                                
+                                                            <listhead sizable="true">
+                                                                <listheader label="Code" width="90px"/>
+                                                                <listheader label="Désignation" width="100px"/>
+                                                                <listheader label="Type"/>	
+                              	
+                                                            </listhead>
+                                                            <listitem self="@{each=elementlp}">
+                                                                <listcell label="@{elementlp.code}"/>
+                                                                <listcell label="@{elementlp.designation}"/>
+                                                                <listcell label="@{elementlp.type}"/>
+                         
+                                                            </listitem>
+                                                        
+                                                        </listbox>
+                                    
+                                                        <vbox spacing="10px"> 
+                                                            <image style="cursor:pointer" src="/images/skin/rightrightarrow_g.png" onClick="utilisateurProjetClientWin.choisirTout()"/>
+                                                            <image style="cursor:pointer" src="/images/skin/rightarrow_g.png" onClick="utilisateurProjetClientWin.choisirDesElements()"/>
+                                                            <image style="cursor:pointer" src="/images/skin/leftarrow_g.png" onClick="utilisateurProjetClientWin.enleverDesElements()"/>
+                                                            <image style="cursor:pointer" src="/images/skin/leftleftarrow_g.png" onClick="utilisateurProjetClientWin.enleverTout()"/>
+                                                        </vbox>
+                                            
+                                                        <listbox id="lstprojetsUtilisateur" multiple="true"  model="@{utilisateurProjetClientWin.objet.projets}" selectedItem="@{utilisateurProjetClientWin.projetsUtilisateurSelected, converter=com.choranet.zk.SelectedItemsConverterV3}" rows="11" sizedByContent="true" span="true"  width="600px">
+                                                            <auxhead>
+                                                                <auxheader colspan="4">
+                                                
+                                                                </auxheader>
+                                            
+                                                            </auxhead>
+                                                            <listhead>
+                                                                <listheader label="Code" width="90px"/>
+                                                                <listheader label="Désignation" width="100px"/>
+                                                                <listheader label="Type"/>	
+                              	
+                                                            </listhead>
+                                                            <listitem self="@{each=elementlp}">
+                                                                <listcell label="@{elementlp.code}"/>
+                                                                <listcell label="@{elementlp.designation}"/>
+                                                                <listcell label="@{elementlp.type}"/>
+                                                            </listitem>
+
+                                                        </listbox>
+                                                    </hbox>
+                                                </tabpanel>                                            
+                                             
+                                                <tabpanel  style="overflow:auto">
+                                                    <hbox>
+                                                        <listbox id="lstclients" multiple="true" model="@{utilisateurProjetClientWin.clients}" selectedItem="@{utilisateurProjetClientWin.clientsSelected, converter=com.choranet.zk.SelectedItemsConverterV3}" rows="11" sizedByContent="true" span="true"  width="600px" height="100%">
+                                
+                                                            <listhead sizable="true">
+                                                                <listheader label="Nom" width="90px"/>
+                                                                <listheader label="Prénom" width="100px"/>
+                                                                <listheader label="CIN"/>	
+                              	
+                                                            </listhead>
+                                                            <listitem self="@{each=elementlp}">
+                                                                <listcell label="@{elementlp.nom}"/>
+                                                                <listcell label="@{elementlp.prenom}"/>
+                                                                <listcell label="@{elementlp.cin}"/>
+                         
+                                                            </listitem>
+                                                        </listbox>
+                                    
+                                                        <vbox spacing="10px"> 
+                                                            <image style="cursor:pointer" src="/images/skin/rightrightarrow_g.png" onClick="utilisateurProjetClientWin.choisirToutClient()"/>
+                                                            <image style="cursor:pointer" src="/images/skin/rightarrow_g.png" onClick="utilisateurProjetClientWin.choisirDesElementsClient()"/>
+                                                            <image style="cursor:pointer" src="/images/skin/leftarrow_g.png" onClick="utilisateurProjetClientWin.enleverDesElementsClient()"/>
+                                                            <image style="cursor:pointer" src="/images/skin/leftleftarrow_g.png" onClick="utilisateurProjetClientWin.enleverToutClient()"/>
+                                                        </vbox>
+                                            
+                                                        <listbox id="lstclientsUtilisateur" multiple="true" model="@{utilisateurProjetClientWin.objet.clients}" selectedItem="@{utilisateurProjetClientWin.clientsUtilisateurSelected, converter=com.choranet.zk.SelectedItemsConverterV3}" rows="11" sizedByContent="true" span="true"  width="600px" height="100%">
+
+                                                            <listhead>
+                                                                <listheader label="Nom" width="90px"/>
+                                                                <listheader label="Prénom" width="100px"/>
+                                                                <listheader label="CIN"/>	
+                              	
+                                                            </listhead>
+                                                            <listitem self="@{each=elementlp}">
+                                                                <listcell label="@{elementlp.nom}"/>
+                                                                <listcell label="@{elementlp.prenom}"/>
+                                                                <listcell label="@{elementlp.cin}"/>
+                                                            </listitem>
+
+                                                        </listbox>
+                                                    </hbox>
+                                                </tabpanel>
+                                            </tabpanels>
+                                      
+                                        </tabbox>
+                                    </vbox>
+                                </hlayout>
+                            </box>
+                                
+                            
+                        </vlayout>
+           
+                        
+                    </center>
+                    <south size="50px" border="none">
+                        <hbox>
+                            <button id="btnSave" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));utilisateurProjetClientWin.add()" label="Sauvegarder" image="/images/skin/database_save.png" visible="false"/>
+                            <button id="btnUpdate" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));utilisateurProjetClientWin.update()" label="Modifier" image="/images/skin/database_edit.png" visible="false"/>
+                            <button id="btnDelete" onClick="Events.sendEvent(new Event(Events.ON_CLICK,triggerBtn));utilisateurProjetClientWin.delete()" label="Supprimer" image="/images/skin/database_delete.png" visible="false"/>                            
+                            <button id="btnCancel" onClick="utilisateurProjetClientWin.cancel()" label="Annuler" image="/images/skin/cancel.png" />
+                            <button visible="false" id="triggerBtn" onBindingValidate=""/>
+                        </hbox>
+                    </south>
+                </borderlayout>
+            </west>
+                    
+            <center border="none" flex="true">
+                
+                <groupbox width="100%" height="100%">
+                    <listbox id="lstObjet" onSelect="utilisateurProjetClientWin.select()" model="@{utilisateurProjetClientWin.listeObjets}" 
+                             selectedItem="@{utilisateurProjetClientWin.objetSelected}"  width="100%" height="520px" rows="@{utilisateurProjetClientWin.maxNb}" mold="paging" paginal="${paging}">
+                        <auxhead sclass="category-center">
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filter1" value="@{utilisateurProjetClientWin.filtre.userRealName}" onOK='utilisateurProjetClientWin.ofs=0;utilisateurProjetClientWin.filtre.userRealName=self.value; utilisateurProjetClientWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())' width="100%" />
+                            </auxheader>
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filter2" value="@{utilisateurProjetClientWin.filtre.username}" onOK='utilisateurProjetClientWin.ofs=0;utilisateurProjetClientWin.filtre.username=self.value; utilisateurProjetClientWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())' width="100%" />
+                            </auxheader>
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <checkbox id="filter3" onCheck="utilisateurProjetClientWin.ofs=0;utilisateurProjetClientWin.filtre.enabled=filter3.checked; utilisateurProjetClientWin.filtrer()" />
+                            </auxheader>
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <textbox id="filter4" value="@{utilisateurProjetClientWin.filtre.email}" onOK='utilisateurProjetClientWin.ofs=0;utilisateurProjetClientWin.filtre.email=self.value; utilisateurProjetClientWin.filtrer(); self.focus(); self.setSelectionRange(self.value.length(), self.value.length())' width="100%" />
+                            </auxheader>
+                            <auxheader colspan="1">
+                                <image src="/images/skin/funnel.png" width="10px" height="10px" />
+                                <combobox id="filterGroupe" model="@{utilisateurProjetClientWin.groupes}" 
+                                          selectedItem="@{utilisateurProjetClientWin.filtre.groupe}"
+                                          onSelect="utilisateurProjetClientWin.ofs=0;utilisateurProjetClientWin.filtrer();"
+                                          width="90%" />                                    						
+                            </auxheader>
+                        </auxhead>
+                        <listhead sizable="true">
+                            <listheader id="huserRealName" label="Nom et prénom" sort="auto(userRealName)" onSort="utilisateurProjetClientWin.sort(event)"/>
+                            <listheader id="husername" label="Login" sort="auto(username)" onSort="utilisateurProjetClientWin.sort(event)"/>
+                            <listheader id="henabled" label="Active?" />
+                            <listheader id="hemail" label="Email" sort="auto(email)" onSort="utilisateurProjetClientWin.sort(event)"/>                            
+                            <listheader id="hgroupe" label="Groupe" sort="auto(groupe.intitule)" onSort="utilisateurProjetClientWin.sort(event)"/>                            
+                        </listhead>
+                        <listitem self="@{each=element}">
+                            <listcell label="@{element.userRealName}"/>
+                            <listcell label="@{element.username}"/>
+                            <listcell label="@{element.enabled}"/>
+                            <listcell label="@{element.email}"/>                            
+                            <listcell label="@{element.groupe}"/>                            
+                        </listitem>
+                    </listbox>
+                    <paging id="paging" totalSize="@{utilisateurProjetClientWin.tailleListe}" pageSize="@{utilisateurProjetClientWin.maxNb}" onPaging="utilisateurProjetClientWin.getNextElements(event);"/>
+                    <separator/>
+                                       
+                </groupbox>
+            </center>
+            
+        </borderlayout>
+    </window>
+</zk>
